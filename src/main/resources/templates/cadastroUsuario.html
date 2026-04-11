@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar</title>
+</head>
+<body>
+<form id="formCadastro">
+    <div class="mb-3">
+        <label class="form-label">Nome</label>
+        <label for="name"></label><input type="text" class="form-control" id="name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Data Nascimento</label>
+        <input type="date" class="form-control" id="dt_nasc">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Telefone</label>
+        <input type="tel" class="form-control" id="fone">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Tipo de usuário:</label><select id="user_type" name="userType">
+            <option value="writer">Escritor</option>
+            <option value="reader">Leitor</option>
+        </select>
+    </div>
+    <div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Senha</label>
+        <label for="password"></label><input type="password" class="form-control" id="criptography_password">
+    </div>
+<!--    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Salvar dados</label>
+    </div> -->
+    <button type="submit" class="btn btn-primary" id="btnSalvar,">Cadastrar</button>
+</form>
+</body>
+</html>
