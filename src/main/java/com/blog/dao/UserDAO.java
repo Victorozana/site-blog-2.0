@@ -10,10 +10,6 @@ import java.util.List;
 public class UserDAO implements IUserDAO {
     private IUserDAO userDAO;
 
-    public List<User> listAllUsers() {
-        return userDAO.listAll();
-    }
-
     public User getUserById(Long id) {
         return userDAO.findById(id);
     }

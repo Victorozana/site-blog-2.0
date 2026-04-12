@@ -1,15 +1,9 @@
 package com.blog.model.entity;
 
 import com.blog.model.UserType;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_users")
@@ -19,19 +13,16 @@ public class User extends PanacheEntityBase{
     private Integer id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private LocalDate dt_nasc;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "dt_nasc")
+    private LocalDate dtNasc;
+    @Column(nullable = false, length = 20)
     private String fone;
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
-    private String cryptography_password;
-    @Column(nullable = false)
-    private UserType user_type;
-
-    public User() {
-    }
+    @Column(nullable = false, name = "cryptography_password")
+    private String cryptographyPassword;
+    @Column(nullable = false, name = "user_type")
+    private UserType userType;
 
     public Integer getId() {
         return id;
@@ -45,12 +36,12 @@ public class User extends PanacheEntityBase{
         this.name = name;
     }
 
-    public LocalDate getDt_nasc() {
-        return dt_nasc;
+    public LocalDate getDtNasc() {
+        return dtNasc;
     }
 
-    public void setDt_nasc(LocalDate dt_nasc) {
-        this.dt_nasc = dt_nasc;
+    public void setDtNasc(LocalDate dtNasc) {
+        this.dtNasc = dtNasc;
     }
 
     public String getFone() {
@@ -61,6 +52,14 @@ public class User extends PanacheEntityBase{
         this.fone = fone;
     }
 
+    public String getCryptographyPassword() {
+        return cryptographyPassword;
+    }
+
+    public void setCryptographyPassword(String cryptographyPassword) {
+        this.cryptographyPassword = cryptographyPassword;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -69,19 +68,11 @@ public class User extends PanacheEntityBase{
         this.email = email;
     }
 
-    public String getcryptography_password() {
-        return cryptography_password;
+    public UserType getUserType() {
+        return userType;
     }
 
-    public void setcryptography_password(String cryptography_password) {
-        this.cryptography_password = cryptography_password;
-    }
-
-    public UserType getUser_type() {
-        return user_type;
-    }
-
-    public void setUser_type(UserType user_type) {
-        this.user_type = user_type;
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 }

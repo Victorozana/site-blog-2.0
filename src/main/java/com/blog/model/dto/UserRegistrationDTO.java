@@ -1,6 +1,7 @@
 package com.blog.model.dto;
 
 import com.blog.model.UserType;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -9,11 +10,11 @@ import java.util.UUID;
 
 public class UserRegistrationDTO {
     private String name;
-    private LocalDate dt_nasc;
+    private LocalDate dtNasc;
     private String fone;
     private String email;
-    private String cryptography_password;
-    private UserType user_type;
+    private String cryptographyPassword;
+    private UserType userType;
 
     public String getName() {
         return name;
@@ -23,20 +24,12 @@ public class UserRegistrationDTO {
         this.name = name;
     }
 
-    public LocalDate getDt_nasc() {
-        return dt_nasc;
+    public LocalDate getDtNasc() {
+        return dtNasc;
     }
 
-    public void setDt_nasc(LocalDate dt_nasc) {
-        this.dt_nasc = dt_nasc;
-    }
-
-    public String getFone() {
-        return fone;
-    }
-
-    public void setFone(String fone) {
-        this.fone = fone;
+    public void setDtNasc(LocalDate dtNasc) {
+        this.dtNasc = dtNasc;
     }
 
     public String getEmail() {
@@ -47,19 +40,27 @@ public class UserRegistrationDTO {
         this.email = email;
     }
 
-    public String getcryptography_password() {
-        return cryptography_password;
+    public String getFone() {
+        return fone;
     }
 
-    public void setcryptography_password(String cryptography_password) {
-        this.cryptography_password = cryptography_password;
+    public void setFone(String fone) {
+        this.fone = fone;
     }
 
-    public UserType getUser_type() {
-        return user_type;
+    public UserType getUserType() {
+        return userType;
     }
 
-    public void setUser_type(UserType user_type) {
-        this.user_type = user_type;
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public String getCryptographyPassword() {
+        return cryptographyPassword;
+    }
+
+    public void setCryptographyPassword(String cryptographyPassword) {
+        this.cryptographyPassword = cryptographyPassword;
     }
 }

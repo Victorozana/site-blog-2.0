@@ -1,18 +1,13 @@
 package com.blog.bo;
 
-import com.blog.bo.IUserBO;
 import com.blog.dao.IUserDAO;
 import com.blog.dao.UserDAO;
-import com.blog.model.UserType;
+import com.blog.model.dto.UserLoginDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.entity.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @ApplicationScoped
 public class UserBO implements IUserBO{
@@ -21,11 +16,6 @@ public class UserBO implements IUserBO{
 
     public UserBO(){
         this.userDAO = new UserDAO();
-    }
-
-    @Override
-    public List<User> listAllUsers() {
-        return userDAO.listAll();
     }
 
     @Override
@@ -38,16 +28,16 @@ public class UserBO implements IUserBO{
     public void saveUser(UserRegistrationDTO dto) {
         User entity = new User();
         entity.setName(dto.getName());
-        entity.setDt_nasc(dto.getDt_nasc());
+        entity.setDtNasc(dto.getDtNasc());
         entity.setFone(dto.getFone());
         entity.setEmail(dto.getEmail());
-        entity.setUser_type(dto.getUser_type());
-        entity.setcryptography_password(dto.getcryptography_password());
-
-        // 2. O BO chama o DAO passando a Entity
+        entity.setUserType(dto.getUserType());
+        entity.setCryptographyPassword(dto.getCryptographyPassword());
+        System.out.println("PASSWORD: " + entity.getCryptographyPassword());
+        //BO chama o DAO passando a Entity
         userDAO.persist(entity);
 
-        // 3. O BO registra a auditoria (Requisito 6)
+        //BO registra a auditoria
         //registrarAuditoria("Cadastro", entity.getEmail());
     }
 
@@ -69,4 +59,8 @@ public class UserBO implements IUserBO{
     public void deleteUser(Long id) {
         userDAO.delete(getUserById(id));
     }
+
+//    public boolean login(UserLoginDTO){
+//
+//    }
 }
