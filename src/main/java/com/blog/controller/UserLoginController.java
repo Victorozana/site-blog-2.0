@@ -23,11 +23,10 @@ public class    UserLoginController {
     }
 
     @Path("/auth")
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(UserLoginDTO user){
-        userBO.login(user);
-        return Response.status(200).entity(user).build();
+        return userBO.login(user);
     }
 
     @GET

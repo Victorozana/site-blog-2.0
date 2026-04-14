@@ -74,11 +74,11 @@ public class UserBO implements IUserBO{
         return Response.status(Response.Status.OK).entity("Excluido com sucesso!").build();
     }
 
-    public UserResponseDTO login(UserLoginDTO dto){
+    public Response login(UserLoginDTO dto){
         User entity = new User();
         entity = userDAO.getUserByEmail(dto.getEmail());
         if (validacaoLogin(entity, dto) == false){
-            return null;
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Dados inváliddos!").build();
         }
 
         UserResponseDTO userResponseDTO = new UserResponseDTO();
@@ -86,7 +86,7 @@ public class UserBO implements IUserBO{
         userResponseDTO.setName(entity.getName());
         userResponseDTO.setUserType(entity.getUserType());
 
-        return userResponseDTO;
+        return Response.status(Response.Status.ACCEPTED).entity("Logado com sucesso").build();
     }
 
     private boolean validacaoLogin(User user, UserLoginDTO dto){

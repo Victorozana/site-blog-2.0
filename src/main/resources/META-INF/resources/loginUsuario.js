@@ -1,55 +1,33 @@
-var url = "http://localhost:8080/login"
+var url = "http://localhost:8080/login/auth"
+
 const form = document.getElementById("formLogin")
 
-// O "async" aqui em cima permite o uso do "await" lá embaixo
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+// No seu arquivo loginUsuario.js
+form.addEventListener('submit', async function(e) { // Adicione 'async' aqui
+    e.preventDefault();
 
-    // 1. Captura os dados (Cuidado com o nome das variáveis!)
-    const userLoginDTO = {
+    const usuarioDTO = {
         email: document.getElementById("email").value,
-        cryptographyPassword: document.getElementById("cryptography_password").value,
+        cryptographyPassword: document.getElementById("password").value
     };
 
-    // 2. O try/catch PRECISA estar aqui dentro para o 'await' funcionar
     try {
-        const response = await enviarParaBackend(userLoginDTO);
+        // Espera a função logarUsuario terminar e trazer a resposta
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(usuarioDTO)
+        });
 
+        // AGORA o 'response' existe e o '.ok' vai funcionar!
         if (response.ok) {
-            alert("Usuário logado com sucesso!");
-            form.reset();
+            console.log("Login de sucesso!");
+            const data = await response.json();
+            // Redirecionar usuário ou salvar token
         } else {
-            const erro = await response.json();
-            console.error("Erro do servidor:", erro);
-            alert("Erro ao logar: " + (erro.details || "Verifique os dados."));
+            alert("Usuário ou senha inválidos");
         }
     } catch (error) {
-        console.error("Falha na conexão:", error);
-        alert("Erro de conexão. O servidor Quarkus está ligado?");
+        console.error("Erro na requisição:", error);
     }
 });
-
-async function enviarParaBackend(dadosDTO){
-    return await fetch("http://localhost:8080/login/auth", {
-        method: "GET",
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(dadosDTO)
-    });
-}
-
-function logarUsuario(usuario){
-    // requisição
-    fetch(url, {
-        method: "GET",
-        body: JSON.stringify(usuario)
-    }).then(function (response){
-        if (response.status === 200)
-            console.log("sucesso ao logar usuário")
-    }).then(function(data){
-        console.log(data);
-    }).catch(function (erro){
-        console.error("Erro ao enviar", erro);
-    });
-}

@@ -11,7 +11,7 @@ public interface IUserBO {
 
     Response saveUser(UserRegistrationDTO user);
 
-    Task<Response> login(UserLoginDTO user);
+    Response login(UserLoginDTO user);
 
     //void updateUser(User user);
 

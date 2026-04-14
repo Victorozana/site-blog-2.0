@@ -16,10 +16,6 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public User getUserByEmail(String email) {
-        var query = "SELECT * " +
-                    "FROM users " +
-                    "WHERE email = :email;";
-
-        return userDAO.find(query, Map.of("email", email)).firstResult();
+        return find("email", email).firstResult();
     }
 }
