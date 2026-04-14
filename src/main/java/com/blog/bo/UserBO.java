@@ -1,22 +1,34 @@
 package com.blog.bo;
 
-import com.blog.dao.IUserDAO;
 import com.blog.dao.UserDAO;
 import com.blog.model.dto.UserLoginDTO;
 import com.blog.model.dto.UserRegistrationDTO;
+import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
-import jakarta.enterprise.context.ApplicationScoped;
+import io.vertx.core.net.impl.pool.Task;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Response;
 
-@ApplicationScoped
+import java.util.Objects;
+
+//@SessionScoped escopo por sessão banco de dados, mantido no servidor
+//(geralmente usado em multiplos servidores (microsservicos))
+
+//@RequestScoped criado por requisição na dúvida use esse
+
+//@Dependent CUIDADO!!
+
+//criados e matidos por todo o ciclo de vida da aplicação
+//(sempre o mesmo objeto) CUIDADO!! você tem apenas um
+//objeto quando essa anotação é usada
+//@ApplicationScoped
+
+@RequestScoped
 public class UserBO implements IUserBO{
     @Inject
-    IUserDAO userDAO;
-
-    public UserBO(){
-        this.userDAO = new UserDAO();
-    }
+    UserDAO userDAO;
 
     @Override
     public User getUserById(Long id) {
@@ -25,7 +37,7 @@ public class UserBO implements IUserBO{
 
     @Override
     @Transactional
-    public void saveUser(UserRegistrationDTO dto) {
+    public Response saveUser(UserRegistrationDTO dto) {
         User entity = new User();
         entity.setName(dto.getName());
         entity.setDtNasc(dto.getDtNasc());
@@ -39,6 +51,7 @@ public class UserBO implements IUserBO{
 
         //BO registra a auditoria
         //registrarAuditoria("Cadastro", entity.getEmail());
+        return Response.status(Response.Status.CREATED).entity(entity).build();
     }
 
 //    @Override
@@ -56,11 +69,30 @@ public class UserBO implements IUserBO{
 //    }
 
     @Override
-    public void deleteUser(Long id) {
+    public Response deleteUser(Long id) {
         userDAO.delete(getUserById(id));
+        return Response.status(Response.Status.OK).entity("Excluido com sucesso!").build();
     }
 
-//    public boolean login(UserLoginDTO){
-//
-//    }
+    public UserResponseDTO login(UserLoginDTO dto){
+        User entity = new User();
+        entity = userDAO.getUserByEmail(dto.getEmail());
+        if (validacaoLogin(entity, dto) == false){
+            return null;
+        }
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setEmail(entity.getEmail());
+        userResponseDTO.setName(entity.getName());
+        userResponseDTO.setUserType(entity.getUserType());
+
+        return userResponseDTO;
+    }
+
+    private boolean validacaoLogin(User user, UserLoginDTO dto){
+        if (user == null || dto == null){
+            return false;
+        }
+        return Objects.equals(user.getEmail(), dto.getEmail()) && Objects.equals(user.getCryptographyPassword(), dto.getCryptographyPassword());
+    }
 }

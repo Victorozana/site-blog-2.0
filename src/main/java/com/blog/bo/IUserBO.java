@@ -1,14 +1,19 @@
 package com.blog.bo;
 
+import com.blog.model.dto.UserLoginDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.entity.User;
+import io.vertx.core.net.impl.pool.Task;
+import jakarta.ws.rs.core.Response;
 
 public interface IUserBO {
     User getUserById(Long id);
 
-    void saveUser(UserRegistrationDTO user);
+    Response saveUser(UserRegistrationDTO user);
+
+    Task<Response> login(UserLoginDTO user);
 
     //void updateUser(User user);
 
-    void deleteUser(Long id);
+    Response deleteUser(Long id);
 }

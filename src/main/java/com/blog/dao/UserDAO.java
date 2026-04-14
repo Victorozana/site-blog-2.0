@@ -3,18 +3,23 @@ package com.blog.dao;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.entity.User;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.QueryParam;
 
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class UserDAO implements IUserDAO {
-    private IUserDAO userDAO;
+    @Inject
+    IUserDAO userDAO;
 
-    public User getUserById(Long id) {
-        return userDAO.findById(id);
-    }
+    @Override
+    public User getUserByEmail(String email) {
+        var query = "SELECT * " +
+                    "FROM users " +
+                    "WHERE email = :email;";
 
-    public void deleteUser(Long id) {
-        userDAO.delete(getUserById(id));
+        return userDAO.find(query, Map.of("email", email)).firstResult();
     }
 }

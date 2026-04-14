@@ -1,37 +1,27 @@
-let url = "http://localhost:8080/cadastro"
-
-// function voltarParaTelaLogin() {
-// // aqui volta para a tela de login
-// }
-
-const form = document.getElementById("formCadastro")
+var url = "http://localhost:8080/login"
+const form = document.getElementById("formLogin")
 
 // O "async" aqui em cima permite o uso do "await" lá embaixo
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     // 1. Captura os dados (Cuidado com o nome das variáveis!)
-    const userRegistrationDTO = {
-        name: document.getElementById("name").value,
-        dtNasc: document.getElementById("dt_nasc").value,
-        fone: document.getElementById("fone").value,
+    const userLoginDTO = {
         email: document.getElementById("email").value,
         cryptographyPassword: document.getElementById("cryptography_password").value,
-        userType: document.getElementById("user_type").value
     };
 
     // 2. O try/catch PRECISA estar aqui dentro para o 'await' funcionar
     try {
-        // Corrigi o erro de digitação: era userResgistrationDTO, agora é userRegistrationDTO
-        const response = await enviarParaBackend(userRegistrationDTO);
+        const response = await enviarParaBackend(userLoginDTO);
 
         if (response.ok) {
-            alert("Usuário cadastrado com sucesso!");
+            alert("Usuário logado com sucesso!");
             form.reset();
         } else {
             const erro = await response.json();
             console.error("Erro do servidor:", erro);
-            alert("Erro ao cadastrar: " + (erro.details || "Verifique os dados."));
+            alert("Erro ao logar: " + (erro.details || "Verifique os dados."));
         }
     } catch (error) {
         console.error("Falha na conexão:", error);
@@ -40,8 +30,8 @@ form.addEventListener("submit", async (event) => {
 });
 
 async function enviarParaBackend(dadosDTO){
-    return await fetch("http://localhost:8080/cadastro", {
-        method: "POST",
+    return await fetch("http://localhost:8080/login/auth", {
+        method: "GET",
         headers: {
             "Content-type": "application/json"
         },
@@ -49,22 +39,17 @@ async function enviarParaBackend(dadosDTO){
     });
 }
 
-function clicBtnSalvar(Objeto){
-
-}
-
-function registrarUsuario(usuario){
+function logarUsuario(usuario){
     // requisição
     fetch(url, {
-        method: "POST",
+        method: "GET",
         body: JSON.stringify(usuario)
     }).then(function (response){
         if (response.status === 200)
-            console.log("sucesso ao criar usuário")
+            console.log("sucesso ao logar usuário")
     }).then(function(data){
         console.log(data);
     }).catch(function (erro){
         console.error("Erro ao enviar", erro);
     });
 }
-
