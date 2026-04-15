@@ -8,7 +8,7 @@ form.addEventListener('submit', async function(e) { // Adicione 'async' aqui
 
     const usuarioDTO = {
         email: document.getElementById("email").value,
-        cryptographyPassword: document.getElementById("password").value
+        cryptographyPassword: document.getElementById("cryptography_password").value
     };
 
     try {
@@ -21,8 +21,8 @@ form.addEventListener('submit', async function(e) { // Adicione 'async' aqui
 
         // AGORA o 'response' existe e o '.ok' vai funcionar!
         if (response.ok) {
-            console.log("Login de sucesso!");
-            const data = await response.json();
+            const data = await response.text();
+            console.log("Mensagem do servidor: ", data);
             // Redirecionar usuário ou salvar token
         } else {
             alert("Usuário ou senha inválidos");

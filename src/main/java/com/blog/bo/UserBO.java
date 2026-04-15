@@ -45,6 +45,7 @@ public class UserBO implements IUserBO{
         entity.setEmail(dto.getEmail());
         entity.setUserType(dto.getUserType());
         entity.setCryptographyPassword(dto.getCryptographyPassword());
+        System.out.println("dt nasc: " + dto.getDtNasc());
         System.out.println("PASSWORD: " + entity.getCryptographyPassword());
         //BO chama o DAO passando a Entity
         userDAO.persist(entity);
