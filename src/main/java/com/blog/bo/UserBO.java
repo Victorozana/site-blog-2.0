@@ -1,11 +1,10 @@
 package com.blog.bo;
 
-import com.blog.dao.UserDAO;
+import com.blog.dao.IUserDAO;
 import com.blog.model.dto.UserLoginDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
-import io.vertx.core.net.impl.pool.Task;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,7 +27,7 @@ import java.util.Objects;
 @RequestScoped
 public class UserBO implements IUserBO{
     @Inject
-    UserDAO userDAO;
+    IUserDAO userDAO;
 
     @Override
     public User getUserById(Long id) {
@@ -40,13 +39,13 @@ public class UserBO implements IUserBO{
     public Response saveUser(UserRegistrationDTO dto) {
         User entity = new User();
         entity.setName(dto.getName());
+        entity.setLastname(dto.getLastname());
         entity.setDtNasc(dto.getDtNasc());
         entity.setFone(dto.getFone());
         entity.setEmail(dto.getEmail());
         entity.setUserType(dto.getUserType());
         entity.setCryptographyPassword(dto.getCryptographyPassword());
-        System.out.println("dt nasc: " + dto.getDtNasc());
-        System.out.println("PASSWORD: " + entity.getCryptographyPassword());
+        System.out.println("sobrenome: "+ dto.getLastname());
         //BO chama o DAO passando a Entity
         userDAO.persist(entity);
 

@@ -10,11 +10,20 @@ import java.util.UUID;
 
 public class UserRegistrationDTO {
     private String name;
+    private String lastname;
     private LocalDate dtNasc;
     private String fone;
     private String email;
     private String cryptographyPassword;
     private UserType userType;
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
     public String getName() {
         return name;

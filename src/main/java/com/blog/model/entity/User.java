@@ -4,6 +4,7 @@ import com.blog.model.UserType;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_users")
@@ -13,6 +14,8 @@ public class User extends PanacheEntityBase{
     private Integer id;
     @Column(nullable = false)
     private String name;
+    @Column (nullable = false)
+    private String lastname;
     @Column(nullable = false, name = "dt_nasc")
     private LocalDate dtNasc;
     @Column(nullable = false, length = 20)
@@ -23,6 +26,31 @@ public class User extends PanacheEntityBase{
     private String cryptographyPassword;
     @Column(nullable = false, name = "user_type")
     private UserType userType;
+    @Column(nullable = false, name = "update_dateTime")
+    private LocalDateTime updateDateTime;
+    @Column(nullable = false, name = "created_dateTime")
+    private LocalDateTime createdDateTime;
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setUpdateDateTime(LocalDateTime updateDateTime) {
+        this.updateDateTime = LocalDateTime.now();
+    }
+
+    public LocalDateTime getUpdateDateTime() {
+        return updateDateTime;
+    }
+
+
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
+    }
 
     public Integer getId() {
         return id;
@@ -74,5 +102,11 @@ public class User extends PanacheEntityBase{
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    @PrePersist
+    private void dateRegister() {
+        this.createdDateTime = LocalDateTime.now();
+        this.updateDateTime = LocalDateTime.now();
     }
 }

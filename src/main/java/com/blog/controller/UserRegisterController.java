@@ -1,6 +1,6 @@
 package com.blog.controller;
 
-import com.blog.bo.UserBO;
+import com.blog.bo.IUserBO;
 import com.blog.model.dto.UserRegistrationDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -10,13 +10,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import static java.util.Objects.requireNonNull;
 
-@Path("/cadastro")
-public class UserCadastroController {
+@Path("/register/user")
+public class UserRegisterController {
     @Inject
-    UserBO userBO;
+    IUserBO userBO;
     private final Template page;
 
-    public UserCadastroController(Template cadastroUsuario) {
+    public UserRegisterController(Template cadastroUsuario) {
         this.page = requireNonNull(cadastroUsuario, "page is required");
     }
 
@@ -24,8 +24,7 @@ public class UserCadastroController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response cadastrar(UserRegistrationDTO user){
-        userBO.saveUser(user);
-        return Response.status(201).entity(user).build();
+        return userBO.saveUser(user);
     }
 
     @GET

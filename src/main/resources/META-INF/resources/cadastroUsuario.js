@@ -13,6 +13,7 @@ form.addEventListener("submit", async (event) => {
     // 1. Captura os dados (Cuidado com o nome das variáveis!)
     const userRegistrationDTO = {
         name: document.getElementById("name").value,
+        lastname: document.getElementById("lastname").value,
         dtNasc: document.getElementById("dt_nasc").value,
         fone: document.getElementById("fone").value,
         email: document.getElementById("email").value,
