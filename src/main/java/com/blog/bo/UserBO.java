@@ -10,6 +10,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 //@SessionScoped escopo por sessão banco de dados, mantido no servidor
@@ -87,6 +89,23 @@ public class UserBO implements IUserBO{
         userResponseDTO.setUserType(entity.getUserType());
 
         return Response.status(Response.Status.ACCEPTED).entity("Logado com sucesso").build();
+    }
+
+    @Override
+    public List<UserResponseDTO> listAll() {
+        List<User> users = userDAO.findAll().list();
+        List<UserResponseDTO> userResponseDTOS = new ArrayList<>();
+        for (User user : users) {
+            for(UserResponseDTO userResponseDTO : userResponseDTOS){
+                UserResponseDTO userResponseDTO1 = new UserResponseDTO();
+                userResponseDTO.setEmail(user.getEmail());
+                userResponseDTO.setName(user.getName());
+                userResponseDTO.setUserType(user.getUserType());
+                userResponseDTO.setId(user.getId());
+                userResponseDTOS.add(userResponseDTO1);
+            }
+        }
+        return userResponseDTOS;
     }
 
     private boolean validacaoLogin(User user, UserLoginDTO dto){

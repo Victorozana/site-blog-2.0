@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class User extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable = false)
     private String name;
     @Column (nullable = false)
@@ -52,7 +52,7 @@ public class User extends PanacheEntityBase{
         return createdDateTime;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

@@ -4,8 +4,10 @@ import com.blog.dao.IBlogDAO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.dto.BlogSummaryDTO;
 import com.blog.model.entity.Blog;
+import com.blog.model.entity.User;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
@@ -15,14 +17,22 @@ import java.util.List;
 public class BlogBO implements IBlogBO{
     @Inject
     IBlogDAO blogDAO;
+    @Inject
+    UserBO userBO;
 
     @Override
+    @Transactional
     public Response createBlog(BlogRegistrationDTO dto) {
         Blog blog = new Blog();
+        User user = new User();
+        user = userBO.getUserById(dto.getuserId());
 
+        blog.setUser(user);
         blog.setCategory(dto.getCategory());
         blog.setSubtitle(dto.getTitle());
         blog.setDescription(dto.getDescription());
+        blog.setTitle(dto.getTitle());
+
 
         blogDAO.persist(blog);
         return Response.status(Response.Status.CREATED).entity(blog).build();
