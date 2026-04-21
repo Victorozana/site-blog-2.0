@@ -3,6 +3,7 @@ package com.blog.controller;
 import com.blog.bo.IBlogBO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -20,6 +21,7 @@ public class BlogRegisterController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     public Response register(BlogRegistrationDTO dto){
         return blogBO.createBlog(dto);
     }

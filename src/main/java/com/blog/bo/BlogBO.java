@@ -1,6 +1,7 @@
 package com.blog.bo;
 
 import com.blog.dao.IBlogDAO;
+import com.blog.model.dto.BlogPrincipalDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.dto.BlogSummaryDTO;
 import com.blog.model.entity.Blog;
@@ -56,5 +57,19 @@ public class BlogBO implements IBlogBO{
                 }
         }
         return dtos;
+    }
+
+    @Override
+    public BlogPrincipalDTO findBlogById(Long id) {
+        Blog blog = new Blog();
+        blog = blogDAO.findById(id);
+        BlogPrincipalDTO dto = new BlogPrincipalDTO();
+
+        dto.setDescription(blog.getDescription());
+        dto.setLocalDateTime(blog.getLocalDateTime());
+        dto.setTitle(blog.getTitle());
+        dto.setUserName(blog.getUser().getName());
+
+        return dto;
     }
 }

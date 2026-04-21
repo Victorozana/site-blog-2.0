@@ -21,6 +21,7 @@ public class Blog {
     private String description;
     @Column(nullable = false)
     private Category category;
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime localDateTime;
 
     public Long getId() {

@@ -20,8 +20,8 @@ public class UserRegisterController {
     IUserBO userBO;
     private final Template page;
 
-    public UserRegisterController(Template cadastroUsuario) {
-        this.page = requireNonNull(cadastroUsuario, "page is required");
+    public UserRegisterController(Template registerUser) {
+        this.page = requireNonNull(registerUser, "page is required");
     }
 
     @POST

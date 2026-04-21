@@ -3,7 +3,7 @@
 
     /* Definindo a paleta de cores pastéis e variáveis para fácil ajuste */
     :root {
-        --verde-bebe: #99EBC0; /* Pastel Green */
+        --verde-bebe: #00ff77; /* Pastel Green */
         --azul-bebe: #A7DCF2;  /* Pastel Blue */
         --preto-suave: #333;
         --borda-vidro: rgba(255, 255, 255, 0.3);

@@ -1,6 +1,7 @@
 package com.blog.bo;
 
 
+import com.blog.model.dto.BlogPrincipalDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.dto.BlogSummaryDTO;
 import com.blog.model.entity.Blog;
@@ -14,4 +15,6 @@ public interface IBlogBO{
     Response deleteBlog(Long id);
 
     List<BlogSummaryDTO> blogList();
+
+    BlogPrincipalDTO findBlogById(Long id);
 }

@@ -1,4 +1,4 @@
-let url = "http://localhost:8080/cadastro"
+let url = "http://localhost:8080/register/user"
 
 // function voltarParaTelaLogin() {
 // // aqui volta para a tela de login
@@ -41,7 +41,7 @@ form.addEventListener("submit", async (event) => {
 });
 
 async function enviarParaBackend(dadosDTO){
-    return await fetch("http://localhost:8080/cadastro", {
+    return await fetch("http://localhost:8080/register/user", {
         method: "POST",
         headers: {
             "Content-type": "application/json"
