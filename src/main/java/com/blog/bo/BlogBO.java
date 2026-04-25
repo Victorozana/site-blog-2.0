@@ -34,9 +34,10 @@ public class BlogBO implements IBlogBO{
         blog.setDescription(dto.getDescription());
         blog.setTitle(dto.getTitle());
 
+        System.out.println("description");
 
         blogDAO.persist(blog);
-        return Response.status(Response.Status.CREATED).entity(blog).build();
+    return Response.status(Response.Status.CREATED).entity(blog).build();
     }
 
     @Override
