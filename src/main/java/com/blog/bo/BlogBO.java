@@ -30,7 +30,7 @@ public class BlogBO implements IBlogBO{
 
         blog.setUser(user);
         blog.setCategory(dto.getCategory());
-        blog.setSubtitle(dto.getTitle());
+        blog.setSubtitle(dto.getSubtitle());
         blog.setDescription(dto.getDescription());
         blog.setTitle(dto.getTitle());
 
@@ -69,6 +69,7 @@ public class BlogBO implements IBlogBO{
         dto.setDescription(blog.getDescription());
         dto.setLocalDateTime(blog.getLocalDateTime());
         dto.setTitle(blog.getTitle());
+        dto.setSubtitle(blog.getSubtitle());
         dto.setUserName(blog.getUser().getName());
 
         return dto;
