@@ -46,18 +46,17 @@ public class BlogBO implements IBlogBO{
         return Response.status(Response.Status.OK).entity("Deletado com sucesso").build();    }
 
     @Override
-    public List<BlogSummaryDTO> blogList() {
-        List<Blog> blogs = blogDAO.listAll();
-        List<BlogSummaryDTO> dtos = new ArrayList<>();
-        for (Blog blog : blogs) {
-                for (BlogSummaryDTO dto : dtos){
-                    dto.setCategory(blog.getCategory());
-                    dto.setSubtitle(blog.getSubtitle());
-                    dto.setTitle(blog.getTitle());
-                    dto.setUser(blog.getUser());
-                }
-        }
-        return dtos;
+    public List<Blog> blogList() {
+        //        List<BlogSummaryDTO> dtos = new ArrayList<>();
+//        for (Blog blog : blogs) {
+//                for (BlogSummaryDTO dto : dtos){
+//                    dto.setCategory(blog.getCategory());
+//                    dto.setSubtitle(blog.getSubtitle());
+//                    dto.setTitle(blog.getTitle());
+//                    dto.setUser(blog.getUser());
+//                }
+//        }
+        return blogDAO.listAll();
     }
 
     @Override

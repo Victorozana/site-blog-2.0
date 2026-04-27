@@ -92,20 +92,8 @@ public class UserBO implements IUserBO{
     }
 
     @Override
-    public List<UserResponseDTO> listAll() {
-        List<User> users = userDAO.findAll().list();
-        List<UserResponseDTO> userResponseDTOS = new ArrayList<>();
-        for (User user : users) {
-            for(UserResponseDTO userResponseDTO : userResponseDTOS){
-                UserResponseDTO userResponseDTO1 = new UserResponseDTO();
-                userResponseDTO.setEmail(user.getEmail());
-                userResponseDTO.setName(user.getName());
-                userResponseDTO.setUserType(user.getUserType());
-                userResponseDTO.setId(user.getId());
-                userResponseDTOS.add(userResponseDTO1);
-            }
-        }
-        return userResponseDTOS;
+    public List<User> listAll() {
+        return userDAO.listAll();
     }
 
     private boolean validacaoLogin(User user, UserLoginDTO dto){

@@ -3,6 +3,7 @@ package com.blog.controller;
 import com.blog.bo.IUserBO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.dto.UserResponseDTO;
+import com.blog.model.entity.User;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
@@ -33,8 +34,8 @@ public class UserRegisterController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserResponseDTO> listar(){
-        return userBO.listAll();    
+    public List<User> listar(){
+        return userBO.listAll();
     }
 
     @GET

@@ -18,7 +18,7 @@ public interface IUserBO {
 
     //void updateUser(User user);
 
-    List<UserResponseDTO> listAll();
+    List<User> listAll();
 
     Response deleteUser(Long id);
 }
