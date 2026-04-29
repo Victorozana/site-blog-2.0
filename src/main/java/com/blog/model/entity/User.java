@@ -1,12 +1,21 @@
 package com.blog.model.entity;
 
 import com.blog.model.UserType;
+import com.blog.model.dto.UserLoginDTO;
+import com.blog.model.dto.UserRegistrationDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_users")
 public class User extends PanacheEntityBase{
     @Id
@@ -30,6 +39,20 @@ public class User extends PanacheEntityBase{
     private LocalDateTime updateDateTime;
     @Column(nullable = false, name = "created_dateTime")
     private LocalDateTime createdDateTime;
+
+    public User(UserRegistrationDTO dto){
+        this.name = dto.getName();
+        this.lastname = dto.getLastname();
+        this.dtNasc = dto.getDtNasc();
+        this.fone = dto.getFone();
+        this.email = dto.getEmail();
+        this.cryptographyPassword = dto.getCryptographyPassword();
+    }
+
+    public User(UserLoginDTO dto){
+        this.email = dto.getEmail();
+        this.cryptographyPassword = dto.getCryptographyPassword();
+    }
 
     public String getLastname() {
         return lastname;

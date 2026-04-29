@@ -2,8 +2,6 @@ package com.blog.controller;
 
 import com.blog.bo.UserBO;
 import com.blog.model.dto.UserLoginDTO;
-import com.blog.model.dto.UserRegistrationDTO;
-import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;

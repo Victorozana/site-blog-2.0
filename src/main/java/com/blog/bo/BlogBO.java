@@ -3,15 +3,12 @@ package com.blog.bo;
 import com.blog.dao.IBlogDAO;
 import com.blog.model.dto.BlogPrincipalDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
-import com.blog.model.dto.BlogSummaryDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.User;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped

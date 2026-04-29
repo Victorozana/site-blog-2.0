@@ -39,20 +39,23 @@ public class UserBO implements IUserBO{
     @Override
     @Transactional
     public Response saveUser(UserRegistrationDTO dto) {
-        User entity = new User();
-        entity.setName(dto.getName());
-        entity.setLastname(dto.getLastname());
-        entity.setDtNasc(dto.getDtNasc());
-        entity.setFone(dto.getFone());
-        entity.setEmail(dto.getEmail());
-        entity.setUserType(dto.getUserType());
-        entity.setCryptographyPassword(dto.getCryptographyPassword());
-        System.out.println("sobrenome: "+ dto.getLastname());
-        //BO chama o DAO passando a Entity
+        User entity = User.builder()
+                .name(dto.getName())
+                .lastname(dto.getLastname())
+                .email(dto.getEmail())
+                .cryptographyPassword(dto.getCryptographyPassword())
+                .userType(dto.getUserType())
+                .fone(dto.getFone())
+                .dtNasc(dto.getDtNasc())
+                .build();
+
         userDAO.persist(entity);
+
+        UserResponseDTO responseDTO = UserResponseDTO.builder();
 
         //BO registra a auditoria
         //registrarAuditoria("Cadastro", entity.getEmail());
+
         return Response.status(Response.Status.CREATED).entity(entity).build();
     }
 
@@ -79,7 +82,7 @@ public class UserBO implements IUserBO{
     public Response login(UserLoginDTO dto){
         User entity = new User();
         entity = userDAO.getUserByEmail(dto.getEmail());
-        if (validacaoLogin(entity, dto) == false){
+        if (!validacaoLogin(entity, dto)){
             return Response.status(Response.Status.UNAUTHORIZED).entity("Dados inváliddos!").build();
         }
 
