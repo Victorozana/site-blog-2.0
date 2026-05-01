@@ -51,7 +51,7 @@ public class UserBO implements IUserBO{
 
         userDAO.persist(entity);
 
-        UserResponseDTO responseDTO = UserResponseDTO.builder();
+        //   UserResponseDTO responseDTO = UserResponseDTO.builder();
 
         //BO registra a auditoria
         //registrarAuditoria("Cadastro", entity.getEmail());

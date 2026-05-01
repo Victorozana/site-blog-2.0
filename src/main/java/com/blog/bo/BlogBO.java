@@ -23,7 +23,7 @@ public class BlogBO implements IBlogBO{
     public Response createBlog(BlogRegistrationDTO dto) {
         Blog blog = new Blog();
         User user = new User();
-        user = userBO.getUserById(dto.getuserId());
+        user = userBO.getUserById(dto.getUserId());
 
         blog.setUser(user);
         blog.setCategory(dto.getCategory());

@@ -7,6 +7,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_users")
@@ -23,7 +25,8 @@ public class User extends PanacheEntityBase{
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column (nullable = false)
+    @Column (nullable = false
+    )
     private String lastname;
     @Column(nullable = false, name = "dt_nasc")
     private LocalDate dtNasc;
@@ -54,10 +57,6 @@ public class User extends PanacheEntityBase{
         this.cryptographyPassword = dto.getCryptographyPassword();
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
@@ -66,61 +65,26 @@ public class User extends PanacheEntityBase{
         this.updateDateTime = LocalDateTime.now();
     }
 
-    public LocalDateTime getUpdateDateTime() {
-        return updateDateTime;
-    }
-
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public LocalDate getDtNasc() {
-        return dtNasc;
-    }
 
     public void setDtNasc(LocalDate dtNasc) {
         this.dtNasc = dtNasc;
     }
 
-    public String getFone() {
-        return fone;
-    }
 
     public void setFone(String fone) {
         this.fone = fone;
-    }
-
-    public String getCryptographyPassword() {
-        return cryptographyPassword;
     }
 
     public void setCryptographyPassword(String cryptographyPassword) {
         this.cryptographyPassword = cryptographyPassword;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public UserType getUserType() {
-        return userType;
     }
 
     public void setUserType(UserType userType) {
