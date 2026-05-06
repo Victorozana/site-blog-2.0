@@ -1,15 +1,34 @@
-/* 1. CONFIGURAÇÕES GLOBAIS (O que nunca muda) */
+/* 1. CONFIGURAÇÕES GLOBAIS E IMPORTAÇÃO */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
+/* Adicione isso logo no início do global.css, antes do :root */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 :root {
-    /* Suas cores padrão guardadas em variáveis */
+    /* Suas cores originais */
     --verde-bebe: #99EBC0;
     --azul-bebe: #A7DCF2;
     --preto-suave: #333;
     --borda-vidro: rgba(255, 255, 255, 0.3);
-    --sombra-suave: 0 15px 35px rgba(0,0,0,0.1);
+
+    /* SOBRESCREVENDO O BOOTSTRAP:
+       Agora, qualquer componente .btn-primary ou .text-primary do Bootstrap
+       usará automaticamente o seu Verde Bebê. */
+    --bs-primary: var(--verde-bebe);
+    --bs-primary-rgb: 153, 235, 192;
+
+    --bs-secondary: var(--azul-bebe);
+    --bs-secondary-rgb: 167, 220, 242;
+
+    --bs-body-font-family: 'Poppins', sans-serif;
+    --bs-body-color: var(--preto-suave);
 }
 
+/* No seu global.css, mude o body para isso: */
 body {
     background: linear-gradient(135deg, var(--azul-bebe) 0%, var(--verde-bebe) 100%);
     font-family: 'Poppins', sans-serif;
@@ -17,74 +36,138 @@ body {
     color: var(--preto-suave);
     margin: 0;
     min-height: 100vh;
+    /* Removido o display: flex daqui! */
+}
+
+/* Crie esta classe para usar APENAS nas telas de Login/Cadastro */
+.layout-centralizado {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* 2. O EFEITO GLASSMORPHISM (Classe reutilizável) */
-/* Em vez de usar apenas no ID, criamos uma classe .glass-card */
 .glass-card {
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border-radius: 20px;
     border: 1px solid var(--borda-vidro);
-    box-shadow: var(--sombra-suave);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     padding: 35px;
-    width: 90%;
-    max-width: 460px;
-    box-sizing: border-box;
+
+    /* A MÁGICA ESTÁ AQUI: */
+    width: 100%;
+    max-width: 500px;    /* Não deixa o formulário esticar mais que isso */
+    margin: 40px auto;   /* Centraliza horizontalmente na página */
+}
+
+.glass-card--wide {
+    max-width: 100%;
+}
+
+/* 4. SOBRESCREVENDO COMPONENTES ESPECÍFICOS DO BOOTSTRAP */
+/* Para garantir que o botão do Bootstrap siga o seu estilo Builder/Clean */
+.btn-primary {
+    --bs-btn-color: #444; /* Cor do texto no botão */
+    --bs-btn-bg: var(--verde-bebe);
+    --bs-btn-border-color: var(--verde-bebe);
+    --bs-btn-hover-bg: #85D7B1;
+    --bs-btn-hover-border-color: #85D7B1;
+    --bs-btn-font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 12px;
+    transition: all 0.3s ease;
 }
 
 /* 3. ELEMENTOS DE FORMULÁRIO PADRONIZADOS */
+
 .form-label {
+
     font-weight: 600;
+
     font-size: 20px;
+
     display: block;
+
     margin-bottom: 12px;
+
     text-align: center;
+
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+
 }
 
+/* 2. Ajuste dos inputs para não ficarem gigantes internamente */
 .form-control, select {
     width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    color: var(--preto-suave);
-    transition: all 0.3s ease;
+    max-width: 100%; /* Garante que respeitem o limite do glass-card */
+    box-sizing: border-box;
 }
 
+
+
 .form-control:focus {
+
     outline: none;
+
     border-color: var(--azul-bebe);
+
     background: rgba(255, 255, 255, 0.8);
+
 }
 
 /* 4. O BOTÃO PADRÃO DO SISTEMA */
+
 .btn-main {
-    max-width: 2000px;
+
+    max-width: 100%;
+
     width: 100%;
+
     padding: 15px;
+
     background-color: var(--verde-bebe) !important;
+
     border: none;
+
     border-radius: 12px;
+
     color: #444;
+
     font-size: 20px;
+
     font-weight: 700;
+
     text-transform: uppercase;
+
     letter-spacing: 1px;
+
     cursor: pointer;
+
     transition: all 0.3s ease;
+
     box-shadow: 0 5px 15px rgba(153, 235, 192, 0.4);
+
 }
 
+
+
 .btn-main:hover {
+
     background-color: #85D7B1 !important;
+
     transform: translateY(-2px);
+
     box-shadow: 0 8px 20px rgba(153, 235, 192, 0.6);
+
 }
+
+/* Garanta que o page-center esteja assim no final do arquivo */
+.page-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px; /* Dá um respiro para o celular não colar o card na borda */
+}
+
