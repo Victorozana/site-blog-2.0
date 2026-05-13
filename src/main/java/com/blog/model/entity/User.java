@@ -5,10 +5,7 @@ import com.blog.model.dto.UserLoginDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,17 +13,18 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_users")
 public class User extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column (nullable = false
-    )
+    @Column (nullable = false)
     private String lastname;
     @Column(nullable = false, name = "dt_nasc")
     private LocalDate dtNasc;
@@ -41,6 +39,7 @@ public class User extends PanacheEntityBase{
     @Column(nullable = false, name = "update_dateTime")
     private LocalDateTime updateDateTime;
     @Column(nullable = false, name = "created_dateTime")
+    @Setter(AccessLevel.NONE)
     private LocalDateTime createdDateTime;
 
     public User(UserRegistrationDTO dto){
@@ -57,39 +56,6 @@ public class User extends PanacheEntityBase{
         this.cryptographyPassword = dto.getCryptographyPassword();
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public void setUpdateDateTime(LocalDateTime updateDateTime) {
-        this.updateDateTime = LocalDateTime.now();
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public void setDtNasc(LocalDate dtNasc) {
-        this.dtNasc = dtNasc;
-    }
-
-
-    public void setFone(String fone) {
-        this.fone = fone;
-    }
-
-    public void setCryptographyPassword(String cryptographyPassword) {
-        this.cryptographyPassword = cryptographyPassword;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
 
     @PrePersist
     private void dateRegister() {

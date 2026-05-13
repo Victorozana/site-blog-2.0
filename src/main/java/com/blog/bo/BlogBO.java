@@ -5,10 +5,13 @@ import com.blog.model.dto.BlogPrincipalDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.User;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
@@ -38,23 +41,11 @@ public class BlogBO implements IBlogBO{
     }
 
     @Override
+    @Transactional
     public Response deleteBlog(Long id) {
         blogDAO.deleteById(id);
         return Response.status(Response.Status.OK).entity("Deletado com sucesso").build();    }
 
-    @Override
-    public List<Blog> blogList() {
-        //        List<BlogSummaryDTO> dtos = new ArrayList<>();
-//        for (Blog blog : blogs) {
-//                for (BlogSummaryDTO dto : dtos){
-//                    dto.setCategory(blog.getCategory());
-//                    dto.setSubtitle(blog.getSubtitle());
-//                    dto.setTitle(blog.getTitle());
-//                    dto.setUser(blog.getUser());
-//                }
-//        }
-        return blogDAO.listAll();
-    }
 
     @Override
     public BlogPrincipalDTO findBlogById(Long id) {
@@ -66,8 +57,25 @@ public class BlogBO implements IBlogBO{
         dto.setLocalDateTime(blog.getLocalDateTime());
         dto.setTitle(blog.getTitle());
         dto.setSubtitle(blog.getSubtitle());
-        dto.setUserName(blog.getUser().getName());
 
         return dto;
+    }
+
+    @Override
+    public List<BlogPrincipalDTO> blogList(int page, int size) {
+        List<Blog> blogs = blogDAO.find("order by localDateTime desc").page(Page.of(page, size)).list();
+        List<BlogPrincipalDTO> dtos = new ArrayList<>();
+
+        for (Blog blog : blogs){
+            BlogPrincipalDTO dto = new BlogPrincipalDTO();
+            dto.setTitle(blog.getTitle());
+            dto.setSubtitle(blog.getSubtitle());
+            dto.setDescription(blog.getDescription());
+            dto.setLocalDateTime(blog.getLocalDateTime());
+
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 }

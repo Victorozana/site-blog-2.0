@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BlogPrincipalDTO {
-    private String userName;
     private String title;
     private String subtitle;
     private String description;

@@ -6,10 +6,7 @@ import com.blog.model.entity.Blog;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import javax.xml.transform.Templates;
@@ -22,17 +19,20 @@ public class BlogPrincipalController {
     @Inject
     IBlogBO blogBO;
 
-    private final Template page;
+    private final Template template;
 
     public BlogPrincipalController(Template mainScreen) {
-        this.page = requireNonNull(mainScreen, "page is required");
+        this.template = requireNonNull(mainScreen, "page is required");
     }
 
 
     @GET
+    @Path("/posts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Blog> list(){
-        return blogBO.blogList();
+    public List<BlogPrincipalDTO> list(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size){
+        return blogBO.blogList(page, size);
     }
 
     @GET
@@ -44,5 +44,5 @@ public class BlogPrincipalController {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance page_load(){return page.instance();}
+    public TemplateInstance page_load(){return template.instance();}
 }

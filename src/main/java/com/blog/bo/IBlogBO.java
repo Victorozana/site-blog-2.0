@@ -14,7 +14,7 @@ public interface IBlogBO{
 
     Response deleteBlog(Long id);
 
-    List<Blog> blogList();
-
     BlogPrincipalDTO findBlogById(Long id);
+
+    List<BlogPrincipalDTO> blogList(int page, int size);
 }
