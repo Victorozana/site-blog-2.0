@@ -9,6 +9,32 @@ const btnAnterior = document.querySelector('#btnAnterior');
 const btnProximo = document.querySelector('#btnProximo');
 const textoPagina = document.querySelector('#infoPagina');
 
+// Função para formatar data em DD/MM/AAAA
+function formatarData(dataString) {
+    if (!dataString) return '';
+    
+    // Se for ISO (YYYY-MM-DDTHH:MM:SS)
+    const date = new Date(dataString);
+    if (!isNaN(date)) {
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = date.getFullYear();
+        return `Postado dia ${dia}/${mes}/${ano}`;
+    }
+    
+    // Se for string custom, tenta parsear manualmente
+    return dataString;
+}
+
+// Função para ordenar posts por data (mais recente primeiro)
+function ordenarPorData(posts) {
+    return posts.sort((a, b) => {
+        const dataA = new Date(a.localDateTime || a.createdAt || 0);
+        const dataB = new Date(b.localDateTime || b.createdAt || 0);
+        return dataB - dataA; // Decrescente (mais recente primeiro)
+    });
+}
+
 async function carregarPosts() {
     try {
         // 1. Montagem da URL (Contrato de API)
@@ -18,12 +44,15 @@ async function carregarPosts() {
 
         if (!response.ok) throw new Error("Falha na comunicação com o servidor");
 
-        const posts = await response.json();
+        let posts = await response.json();
 
-        // 2. Renderização
+        // 2. Ordenar por data (mais recente primeiro)
+        posts = ordenarPorData(posts);
+
+        // 3. Renderização
         renderizarCards(posts);
 
-        // 3. Atualização da Interface (Botões)
+        // 4. Atualização da Interface (Botões)
         atualizarControles(posts.length);
 
     } catch (error) {
@@ -46,10 +75,9 @@ function renderizarCards(listaDePosts) {
         const clone = templateCard.content.cloneNode(true);
 
         // 3. Preenche as lacunas com os dados do DTO
-        clone.querySelector('.post-titulo').textContent = post.title;
-        clone.querySelector('.post-sub')
-        clone.querySelector('.post-data').textContent = post.localDateTime;
-        clone.querySelector('.post-resumo').textContent = post.subtitle;
+        clone.querySelector('.post-title').textContent = post.title;
+        clone.querySelector('.post-date').textContent = formatarData(post.localDateTime);
+        clone.querySelector('.post-subtitle').textContent = post.subtitle;
         clone.querySelector('.post-link').href = `/blog/post/${post.id}`;
 
         // 4. Pendura o card pronto na tela

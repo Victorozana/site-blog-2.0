@@ -19,13 +19,6 @@
 </header>
 
 <main class="container my-5">
-    <div class="glass-card w-100 mb-5">
-        <h1 class="display-3 fw-bold">Post em Destaque</h1>
-        <p class="lead">Este conteúdo é a vitrine principal do seu sistema.</p>
-        <hr class="my-4">
-        <p id="blogDestaque">Mantenha um ID aqui caso queira preenchê-lo dinamicamente depois.</p>
-    </div>
-
     <div id="listaBlogs" class="row g-4">
     </div>
 
@@ -41,18 +34,17 @@
 </footer>
 
 <template id="blog-card-template">
-    <div class="col-md-6 col-lg-4">
+    <div class="col-12">
         <div class="glass-card h-100">
-            <h3 class="post-titulo fw-bold" id="title">Título do Post</h3>
-            <h3 class="h3" id="subtitle">Subtitulo do Post</h3>
-            <small class="text-muted post-data" id="created-at">01/01/2026</small>
-            <p class="post-resumo mt-2" id="description">Breve descrição do que o usuário vai ler...</p>
+            <h3 class="post-titulo fw-bold post-title">Título do Post</h3>
+            <small class="text-muted post-data post-date">01/01/2026</small>
+            <p class="post-resumo mt-2 post-subtitle">Breve descrição do que o usuário vai ler...</p>
             <a href="#" class="btn btn-sm btn-primary post-link">Ler mais</a>
         </div>
     </div>
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/main.js"></script>
+<script src="/js/mainScreen.js"></script>
 </body>
 </html>
