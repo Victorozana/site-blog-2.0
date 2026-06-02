@@ -50,10 +50,6 @@ async function enviarParaBackend(dadosDTO){
     });
 }
 
-function clicBtnSalvar(Objeto){
-
-}
-
 function registrarUsuario(usuario){
     // requisição
     fetch(url, {

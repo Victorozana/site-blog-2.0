@@ -39,15 +39,15 @@ async function carregarPosts() {
     try {
         // 1. Montagem da URL (Contrato de API)
         const url = `/api/posts?page=${paginaAtual}&size=${tamanhoPagina}`;
-        console.log("🔵 [home.js] Chamando API:", url);
+        console.log("[home.js] Chamando API:", url);
 
         const response = await fetch(url);
-        console.log("🔵 [home.js] Response status:", response.status);
+        console.log("[home.js] Response status:", response.status);
 
         if (!response.ok) throw new Error("Falha na comunicação com o servidor");
 
         let posts = await response.json();
-        console.log("🔵 [home.js] Posts recebidos:", posts);
+        console.log("[home.js] Posts recebidos:", posts);
 
         // 2. Ordenar por data (mais recente primeiro)
         posts = ordenarPorData(posts);
@@ -59,7 +59,7 @@ async function carregarPosts() {
         atualizarControles(posts.length);
 
     } catch (error) {
-        console.error("❌ [home.js] Erro técnico:", error);
+        console.error("[home.js] Erro técnico:", error);
         containerLista.innerHTML = `<p class="text-danger text-center">Erro ao carregar o conteúdo. Tente novamente mais tarde.</p>`;
     }
 }
