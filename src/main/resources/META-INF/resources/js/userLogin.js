@@ -2,7 +2,7 @@ var url = "http://localhost:8080/login/auth"
 
 const form = document.getElementById("formLogin")
 
-// No seu arquivo loginUsuario.js
+// No seu arquivo userLogin.js
 form.addEventListener('submit', async function(e) { // Adicione 'async' aqui
     e.preventDefault();
 

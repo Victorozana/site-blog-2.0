@@ -21,8 +21,8 @@ public class UserRegisterController {
     IUserBO userBO;
     private final Template page;
 
-    public UserRegisterController(Template registerUser) {
-        this.page = requireNonNull(registerUser, "page is required");
+    public UserRegisterController(Template userRegister) {
+        this.page = requireNonNull(userRegister, "page is required");
     }
 
     @POST

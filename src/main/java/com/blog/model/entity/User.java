@@ -1,6 +1,6 @@
 package com.blog.model.entity;
 
-import com.blog.model.UserType;
+import com.blog.model.category.UserType;
 import com.blog.model.dto.UserLoginDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;

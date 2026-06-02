@@ -171,3 +171,26 @@ body {
     padding: 20px; /* Dá um respiro para o celular não colar o card na borda */
 }
 
+/* Layout para a lista de posts: aumentar largura máxima dos cards e centralizá-los */
+#listaBlogs {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#listaBlogs .col-12 {
+    flex: none;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#listaBlogs .glass-card {
+    width: 100%;
+    max-width: 1000px; /* aumenta largura máxima dos cards */
+    padding: 2.5rem; /* mantém espaçamento interno */
+}
+

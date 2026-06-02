@@ -1,14 +1,10 @@
 package com.blog.model.dto;
 
-import com.blog.model.UserType;
-import jakarta.json.bind.annotation.JsonbProperty;
+import com.blog.model.category.UserType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.UUID;
 
 @Setter
 @Getter

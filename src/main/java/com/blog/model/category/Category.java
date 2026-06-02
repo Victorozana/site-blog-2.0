@@ -1,4 +1,4 @@
-package com.blog.model;
+package com.blog.model.category;
 
 public enum Category {
     mistery, selfhelp, advices;

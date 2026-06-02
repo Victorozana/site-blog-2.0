@@ -1,6 +1,6 @@
 package com.blog.model.dto;
 
-import com.blog.model.UserType;
+import com.blog.model.category.UserType;
 import lombok.Getter;
 import lombok.Setter;
 

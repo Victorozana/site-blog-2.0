@@ -20,8 +20,8 @@ public class    UserLoginController {
     UserBO userBO;
     private final Template page;
 
-    public UserLoginController(Template loginUsuario) {
-        this.page = requireNonNull(loginUsuario, "page is required");
+    public UserLoginController(Template userLogin) {
+        this.page = requireNonNull(userLogin, "page is required");
     }
 
     @Path("/auth")

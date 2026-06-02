@@ -1,7 +1,8 @@
 package com.blog.model.entity;
 
-import com.blog.model.Category;
-import com.blog.model.dto.BlogPrincipalDTO;
+import com.blog.model.category.Category;
+import com.blog.model.dto.BlogScreenDTO;
+import com.blog.model.dto.MainScreenDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,11 +34,18 @@ public class Blog {
     @Setter(AccessLevel.NONE)
     private LocalDateTime localDateTime;
 
-    public Blog(BlogPrincipalDTO dto){
+    public Blog(MainScreenDTO dto){
+        this.id = dto.getId();
         this.description = dto.getDescription();
         this.subtitle = dto.getSubtitle();
         this.title = dto.getTitle();
         this.localDateTime = dto.getLocalDateTime();
+    }
+
+    public Blog(BlogScreenDTO dto){
+        this.title = dto.getTitle();
+        this.subtitle = dto.getSubtitle();
+        this.description = dto.getDescription();
     }
 
     @PrePersist

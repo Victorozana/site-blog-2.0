@@ -1,10 +1,9 @@
 package com.blog.bo;
 
 
-import com.blog.model.dto.BlogPrincipalDTO;
+import com.blog.model.dto.BlogScreenDTO;
+import com.blog.model.dto.MainScreenDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
-import com.blog.model.dto.BlogSummaryDTO;
-import com.blog.model.entity.Blog;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public interface IBlogBO{
 
     Response deleteBlog(Long id);
 
-    BlogPrincipalDTO findBlogById(Long id);
+    BlogScreenDTO findBlogById(Long id);
 
-    List<BlogPrincipalDTO> blogList(int page, int size);
+    List<MainScreenDTO> blogList(int page, int size);
 }
