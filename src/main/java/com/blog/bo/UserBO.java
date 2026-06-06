@@ -1,18 +1,23 @@
 package com.blog.bo;
 
 import com.blog.dao.IUserDAO;
-import com.blog.model.dto.UserLoginDTO;
+import com.blog.exception.BusinessRuleException;
+import com.blog.model.dto.LoginRequestDTO;
+import com.blog.model.dto.LoginResponseDTO;
 import com.blog.model.dto.UserRegistrationDTO;
-import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import io.smallrye.jwt.build.Jwt;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Arrays;
+
 import java.util.List;
-import java.util.Objects;
 
 //@SessionScoped escopo por sessão banco de dados, mantido no servidor
 //(geralmente usado em multiplos servidores (microsservicos))
@@ -39,19 +44,29 @@ public class UserBO implements IUserBO{
     @Override
     @Transactional
     public Response saveUser(UserRegistrationDTO dto) {
+        User existingUser = userDAO.getUserByEmail(dto.getEmail());
+
+        if (existingUser != null){
+            throw new BusinessRuleException("This email already exists!");
+        }
+
+        String passwordBefore = dto.getPassword();
+
+        String passwordSecurity = BCrypt.withDefaults().hashToString(12, passwordBefore.toCharArray());
+
         User entity = User.builder()
                 .name(dto.getName())
                 .lastname(dto.getLastname())
                 .email(dto.getEmail())
-                .cryptographyPassword(dto.getCryptographyPassword())
+                .cryptographyPassword(passwordSecurity)
                 .userType(dto.getUserType())
                 .fone(dto.getFone())
                 .dtNasc(dto.getDtNasc())
                 .build();
 
-        userDAO.persist(entity);
 
-        //   UserResponseDTO responseDTO = UserResponseDTO.builder();
+
+        userDAO.persist(entity);
 
         //BO registra a auditoria
         //registrarAuditoria("Cadastro", entity.getEmail());
@@ -79,19 +94,27 @@ public class UserBO implements IUserBO{
         return Response.status(Response.Status.OK).entity("Excluido com sucesso!").build();
     }
 
-    public Response login(UserLoginDTO dto){
+    public LoginResponseDTO login(LoginRequestDTO dto){
         User entity = new User();
+
+        //looking for user with email
         entity = userDAO.getUserByEmail(dto.getEmail());
-        if (!validacaoLogin(entity, dto)){
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Dados inváliddos!").build();
+
+        //validation with Bcrypt
+        if (entity == null || !validation(entity, dto)){
+            throw new BusinessRuleException("Invalid credentials!");
         }
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setEmail(entity.getEmail());
-        userResponseDTO.setName(entity.getName());
-        userResponseDTO.setUserType(entity.getUserType());
+        String token = Jwt.issuer("http://localhost:8080")
+                .upn(entity.getEmail())
+                .groups(new HashSet<>(Arrays.asList("USER", entity.getUserType().name())))
+                .claim("idUser", entity.getId())
+                .claim("name", entity.getName())
+                .claim("userType", entity.getUserType().name())
+                .expiresIn(Duration.ofDays(15))
+                .sign();
 
-        return Response.status(Response.Status.ACCEPTED).entity("Logado com sucesso").build();
+        return new LoginResponseDTO(token, entity.getName(), entity.getId(), entity.getUserType().name());
     }
 
     @Override
@@ -99,10 +122,14 @@ public class UserBO implements IUserBO{
         return userDAO.listAll();
     }
 
-    private boolean validacaoLogin(User user, UserLoginDTO dto){
-        if (user == null || dto == null){
-            return false;
+    private boolean validation(User user, LoginRequestDTO dto){
+        String salvePassword = user.getCryptographyPassword();
+
+        BCrypt.Result result = BCrypt.verifyer().verify(dto.getPassword().toCharArray(), salvePassword);
+
+        if (result.verified){
+            return true;
         }
-        return Objects.equals(user.getEmail(), dto.getEmail()) && Objects.equals(user.getCryptographyPassword(), dto.getCryptographyPassword());
+        return false;
     }
 }

@@ -15,7 +15,7 @@
     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
         <a href="/" class="text-decoration-none fs-4 fw-bold text-dark">BLOG DO VICTOR</a>
         <div class="d-flex gap-2">
-            <a href="/register/blog" class="btn btn-primary">+ Criar Post</a>
+            <a id="btnCreatePost" href="/register/blog" class="btn btn-primary">+ Criar Post</a>
             <a href="/register/user" class="btn btn-outline-dark">Sign up</a>
         </div>
     </div>
@@ -55,6 +55,11 @@
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/permissionGuard.js"></script>
 <script src="/js/home.js"></script>
+<script>
+    // Esconder botão "Criar Post" para leitores
+    checkPermissionAndHide('#btnCreatePost', 'writer');
+</script>
 </body>
 </html>

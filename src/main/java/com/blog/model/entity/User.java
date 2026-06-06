@@ -1,7 +1,7 @@
 package com.blog.model.entity;
 
 import com.blog.model.category.UserType;
-import com.blog.model.dto.UserLoginDTO;
+import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -48,12 +48,12 @@ public class User extends PanacheEntityBase{
         this.dtNasc = dto.getDtNasc();
         this.fone = dto.getFone();
         this.email = dto.getEmail();
-        this.cryptographyPassword = dto.getCryptographyPassword();
+        this.cryptographyPassword = dto.getPassword();
     }
 
-    public User(UserLoginDTO dto){
+    public User(LoginRequestDTO dto){
         this.email = dto.getEmail();
-        this.cryptographyPassword = dto.getCryptographyPassword();
+        this.cryptographyPassword = dto.getPassword();
     }
 
 

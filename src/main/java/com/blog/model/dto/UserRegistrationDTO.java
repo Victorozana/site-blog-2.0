@@ -14,6 +14,6 @@ public class UserRegistrationDTO {
     private LocalDate dtNasc;
     private String fone;
     private String email;
-    private String cryptographyPassword;
+    private String password;
     private UserType userType;
 }
