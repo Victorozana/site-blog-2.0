@@ -1,33 +1,44 @@
-var url = "http://localhost:8080/login/auth"
+const formLogin = document.getElementById("formLogin");
 
-const form = document.getElementById("formLogin")
+async function login(event){
+    event.preventDefault();
 
-// No seu arquivo userLogin.js
-form.addEventListener('submit', async function(e) { // Adicione 'async' aqui
-    e.preventDefault();
-
-    const usuarioDTO = {
-        email: document.getElementById("email").value,
-        cryptographyPassword: document.getElementById("cryptography_password").value
-    };
+    const typedEmail = document.querySelector("#email").value;
+    const typedPassword = document.querySelector("#password").value;
 
     try {
-        // Espera a função logarUsuario terminar e trazer a resposta
-        const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(usuarioDTO)
+        const response = await fetch("/login/auth", {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email: typedEmail, password: typedPassword})
         });
 
-        // AGORA o 'response' existe e o '.ok' vai funcionar!
-        if (response.ok) {
-            const data = await response.text();
-            console.log("Mensagem do servidor: ", data);
-            // Redirecionar usuário ou salvar token
-        } else {
-            alert("Usuário ou senha inválidos");
+        if (!response.ok){
+            throw new Error("Invalid Credentials!");
         }
-    } catch (error) {
-        console.error("Erro na requisição:", error);
+
+        const data = await response.json();
+        // set cookie for authGuard to detect logged user (2 hours)
+        if (data && data.name) {
+            document.cookie = `userName=${encodeURIComponent(data.name)}; path=/; max-age=${60*60*2}`;
+        }
+
+        // store token and userType in localStorage
+        if (data && data.token) {
+            localStorage.setItem('token', data.token);
+        }
+
+        if (data && data.userType) {
+            localStorage.setItem('userType', data.userType);
+        }
+
+        console.log("chegou no auth")
+
+        window.location.href = "/";
     }
-});
+    catch (error) {
+        alert(error.message);
+    }
+}
+
+formLogin.addEventListener("submit", login);
