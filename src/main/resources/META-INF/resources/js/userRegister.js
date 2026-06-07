@@ -17,7 +17,7 @@ form.addEventListener("submit", async (event) => {
         dtNasc: document.getElementById("dt_nasc").value,
         fone: document.getElementById("fone").value,
         email: document.getElementById("email").value,
-        cryptographyPassword: document.getElementById("cryptography_password").value,
+        password: document.getElementById("password").value,
         userType: document.getElementById("user_type").value
     };
 
@@ -64,4 +64,3 @@ function registrarUsuario(usuario){
         console.error("Erro ao enviar", erro);
     });
 }
-
