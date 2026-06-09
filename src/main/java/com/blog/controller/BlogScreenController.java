@@ -1,14 +1,10 @@
 package com.blog.controller;
 
-import com.blog.bo.BlogBO;
 import com.blog.bo.IBlogBO;
 import com.blog.model.dto.BlogScreenDTO;
-import com.blog.model.dto.MainScreenDTO;
-import com.blog.security.RequireRole;
-import com.blog.model.category.UserType;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
-import jakarta.inject.Inject;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
@@ -26,7 +22,6 @@ public class BlogScreenController {
     }
 
     @GET
-    @RequireRole({UserType.writer, UserType.reader})
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance page_load(){
         return template.instance();
@@ -34,8 +29,8 @@ public class BlogScreenController {
 
     @GET
     @Path("/data")
-    @RequireRole({UserType.writer, UserType.reader})
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER"})
     public BlogScreenDTO blog(@QueryParam("id") Long id){
         return blogBO.findBlogById(id);
     }

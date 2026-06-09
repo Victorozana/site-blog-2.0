@@ -107,10 +107,9 @@ public class UserBO implements IUserBO{
 
         String token = Jwt.issuer("http://localhost:8080")
                 .upn(entity.getEmail())
-                .groups(new HashSet<>(Arrays.asList("USER", entity.getUserType().name())))
+                .groups(new HashSet<>(List.of(entity.getUserType().name())))
                 .claim("idUser", entity.getId())
                 .claim("name", entity.getName())
-                .claim("userType", entity.getUserType().name())
                 .expiresIn(Duration.ofDays(15))
                 .sign();
 

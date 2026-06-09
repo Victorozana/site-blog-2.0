@@ -34,34 +34,25 @@ public class    UserLoginController {
     public Response login(LoginRequestDTO credentials){
         LoginResponseDTO response = userBO.login(credentials);
 
-        NewCookie jwtCookie = new NewCookie.Builder("token")
+        // 1. O Cookie de Segurança (Cego para o JS)
+        NewCookie jwtCookie = new NewCookie.Builder("meu_token_jwt")
                 .value(response.getToken())
-                .path("/")
-                .maxAge(15 * 24 * 60 * 60)
-                .httpOnly(true)
-                // .secure(true) descomentar quando for para produção
-                .build();
+                .path("/").maxAge(15 * 24 * 60 * 60).httpOnly(true).build();
 
-        NewCookie userCookie = new NewCookie.Builder("userName")
+        // 2. Os Cookies de Interface (Para o JS ler)
+        NewCookie nameCookie = new NewCookie.Builder("userName")
                 .value(response.getName())
-                .path("/")
-                .maxAge(15 * 24 * 60 * 60)
-                .httpOnly(false)
-                .build();
+                .path("/").maxAge(15 * 24 * 60 * 60).httpOnly(false).build();
+
+        NewCookie roleCookie = new NewCookie.Builder("userType")
+                .value(response.getUserType()) // Certifique-se de retornar o tipo de usuário no DTO
+                .path("/").maxAge(15 * 24 * 60 * 60).httpOnly(false).build();
 
         return Response.ok(response)
-                .cookie(jwtCookie)
-                .cookie(userCookie)
+                .cookie(jwtCookie).cookie(nameCookie).cookie(roleCookie)
                 .build();
     }
 
-//
-//    @GET
-//    @Path("/users")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public List<User> findAll(){
-//        return userBO.listAll();
-//    }
 
     @GET
     @Produces(MediaType.TEXT_HTML)

@@ -1,5 +1,3 @@
-console.log("=== O JavaScript foi carregado com sucesso! ===");
-
 // 1. CAPTURA DO ID DA URL (A mala que veio da Home)
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
@@ -33,8 +31,11 @@ async function carregarPost(){
     }
 
     try {
-        const url = `/blog/data?id=${id}`;
-        const response = await fetch(url);
+        const response = await fetch(`/blog/data?id=${id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
 
         if(!response.ok) throw new Error("Falha na comunicação com o servidor");
 

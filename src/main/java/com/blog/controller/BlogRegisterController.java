@@ -1,13 +1,11 @@
 package com.blog.controller;
 
 import com.blog.bo.IBlogBO;
-import com.blog.model.category.UserType;
 import com.blog.model.dto.BlogRegistrationDTO;
-import com.blog.security.RequireRole;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -26,19 +24,16 @@ public class BlogRegisterController {
     }
 
     @GET
-    @RequireRole(UserType.writer)
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance page_load(){
         return page.instance();
     }
 
     @POST
-    @RequireRole(UserType.writer)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("WRITER")
     public Response register(BlogRegistrationDTO dto){
         return blogBO.createBlog(dto);
     }
-
-
 }
