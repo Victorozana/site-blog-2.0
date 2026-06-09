@@ -35,7 +35,7 @@ Notes: Tests use Maven Surefire. Integration tests (if added) will run with Fail
 
 ## Key conventions and patterns (repository-specific)
 
-- Templates vs API: Controllers return HTML via `@Produces(TEXT_HTML)` and expose JSON endpoints separately (e.g., `/api/posts`, `/blog/data`). Keep template-rendering and JSON endpoints separated.
+- Templates vs API: Controllers return HTML via `@Produces(TEXT_HTML)` and expose JSON endpoints separately (e.g., `/home/posts`, `/blog/data`). Keep template-rendering and JSON endpoints separated.
 - Naming: classes use suffixes: Controller, BO, DAO, DTO, and entity classes under `model.entity`.
 - BO responsibilities: validation, transaction boundaries (`@Transactional`), building Response objects, and calling DAOs — controllers should remain thin.
 - DAO pattern: Concrete DAO classes implement an interface and extend `PanacheRepository<T>` for convenient queries (e.g., `find("email", email).firstResult()`).

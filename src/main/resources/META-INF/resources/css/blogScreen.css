@@ -48,6 +48,7 @@
     max-width: 900px; /* limitar largura de leitura para conforto */
     margin: 1.5rem auto 0 auto;
     text-align: left;
+    white-space: pre-wrap;
 }
 
 .post-article .post-conteudo p {

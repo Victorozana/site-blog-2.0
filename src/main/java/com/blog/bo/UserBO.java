@@ -5,6 +5,7 @@ import com.blog.exception.BusinessRuleException;
 import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.LoginResponseDTO;
 import com.blog.model.dto.UserRegistrationDTO;
+import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -43,7 +44,7 @@ public class UserBO implements IUserBO{
 
     @Override
     @Transactional
-    public Response saveUser(UserRegistrationDTO dto) {
+    public UserResponseDTO saveUser(UserRegistrationDTO dto) {
         User existingUser = userDAO.getUserByEmail(dto.getEmail());
 
         if (existingUser != null){
@@ -64,14 +65,9 @@ public class UserBO implements IUserBO{
                 .dtNasc(dto.getDtNasc())
                 .build();
 
-
-
         userDAO.persist(entity);
 
-        //BO registra a auditoria
-        //registrarAuditoria("Cadastro", entity.getEmail());
-
-        return Response.status(Response.Status.CREATED).entity(entity).build();
+        return new UserResponseDTO(entity.getId(), entity.getName(), entity.getEmail(), entity.getUserType());
     }
 
 //    @Override
@@ -89,9 +85,8 @@ public class UserBO implements IUserBO{
 //    }
 
     @Override
-    public Response deleteUser(Long id) {
+    public void deleteUser(Long id) {
         userDAO.delete(getUserById(id));
-        return Response.status(Response.Status.OK).entity("Excluido com sucesso!").build();
     }
 
     public LoginResponseDTO login(LoginRequestDTO dto){
@@ -126,9 +121,6 @@ public class UserBO implements IUserBO{
 
         BCrypt.Result result = BCrypt.verifyer().verify(dto.getPassword().toCharArray(), salvePassword);
 
-        if (result.verified){
-            return true;
-        }
-        return false;
+        return result.verified;
     }
 }

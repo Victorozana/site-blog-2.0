@@ -53,7 +53,8 @@ function renderizarPost(post){
     postSubtitle.textContent = post.subtitle;
     postAuthor.textContent = " — Autor: " + post.author;
     postDate.textContent = formatarData(post.localDateTime);
-    postDescription.innerHTML = post.description;
+    const descricaoOriginal = post.description;
+    document.querySelector('#post-description').innerHTML = descricaoOriginal.replace(/\n/g, '<br>');
 }
 
 // 6. GATILHO DE SUCESSO

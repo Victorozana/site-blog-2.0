@@ -1,6 +1,7 @@
 package com.blog.bo;
 
 
+import com.blog.model.dto.BlogResponseDTO;
 import com.blog.model.dto.BlogScreenDTO;
 import com.blog.model.dto.MainScreenDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
@@ -9,9 +10,9 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 public interface IBlogBO{
-    Response createBlog(BlogRegistrationDTO dto);
+    BlogResponseDTO createBlog(BlogRegistrationDTO dto, Long idAuthor);
 
-    Response deleteBlog(Long id);
+    void deleteBlog(Long id);
 
     BlogScreenDTO findBlogById(Long id);
 

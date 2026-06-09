@@ -1,6 +1,7 @@
 package com.blog.bo;
 
 import com.blog.dao.IBlogDAO;
+import com.blog.model.dto.BlogResponseDTO;
 import com.blog.model.dto.BlogScreenDTO;
 import com.blog.model.dto.MainScreenDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
@@ -24,10 +25,9 @@ public class BlogBO implements IBlogBO{
 
     @Override
     @Transactional
-    public Response createBlog(BlogRegistrationDTO dto) {
+    public BlogResponseDTO createBlog(BlogRegistrationDTO dto, Long idAuthor) {
+        User user = userBO.getUserById(idAuthor);
         Blog blog = new Blog();
-        User user = new User();
-        user = userBO.getUserById(dto.getUserId());
 
         blog.setUser(user);
         blog.setCategory(dto.getCategory());
@@ -35,17 +35,16 @@ public class BlogBO implements IBlogBO{
         blog.setDescription(dto.getDescription());
         blog.setTitle(dto.getTitle());
 
-        System.out.println("description");
-
         blogDAO.persist(blog);
-    return Response.status(Response.Status.CREATED).entity(blog).build();
+
+        return new BlogResponseDTO(blog.getId(), blog.getUser(), blog.getTitle(), blog.getSubtitle(), blog.getDescription(), blog.getCategory(), blog.getLocalDateTime());
     }
 
     @Override
     @Transactional
-    public Response deleteBlog(Long id) {
+    public void deleteBlog(Long id) {
         blogDAO.deleteById(id);
-        return Response.status(Response.Status.OK).entity("Deletado com sucesso").build();    }
+    }
 
 
     @Override

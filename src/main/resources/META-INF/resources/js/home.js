@@ -38,7 +38,7 @@ function ordenarPorData(posts) {
 async function carregarPosts() {
     try {
         // 1. Montagem da URL (Contrato de API)
-        const url = `/api/posts?page=${paginaAtual}&size=${tamanhoPagina}`;
+        const url = `/home/posts?page=${paginaAtual}&size=${tamanhoPagina}`;
         console.log("[home.js] Chamando API:", url);
 
         const response = await fetch(url);

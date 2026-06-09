@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,6 +17,8 @@ import static java.util.Objects.requireNonNull;
 public class BlogRegisterController {
     @Inject
     IBlogBO blogBO;
+    @Inject
+    JsonWebToken jwt;
 
     private final Template page;
 
@@ -34,6 +37,14 @@ public class BlogRegisterController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("WRITER")
     public Response register(BlogRegistrationDTO dto){
-        return blogBO.createBlog(dto);
+        // 1. Pegamos o objeto genérico do JSON, seja ele qual for (Parsson, Jackson, etc)
+        Object claimIdUser = jwt.getClaim("idUser");
+
+        // 2. Convertemos para texto e parseamos nativamente para Long (A Blindagem)
+        Long idAuthor = Long.parseLong(claimIdUser.toString());
+
+        blogBO.createBlog(dto, idAuthor);
+
+        return Response.ok("{\"message\": \"Success!\"}").build();
     }
 }

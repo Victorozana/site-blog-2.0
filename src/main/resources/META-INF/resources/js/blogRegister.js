@@ -20,22 +20,17 @@ formBlogRegister.addEventListener('submit', async (event) => {
         mostrarMensagem('Por favor, preencha o título!', 'danger');
         return;
     }
-    if (!subtitle) {
-        mostrarMensagem('Por favor, preencha o subtítulo!', 'danger');
-        return;
-    }
     if (!category) {
         mostrarMensagem('Por favor, selecione uma categoria!', 'danger');
         return;
     }
     if (!description || description.length < 20) {
-        mostrarMensagem('A descrição deve ter pelo menos 20 caracteres!', 'danger');
+        mostrarMensagem('O conteúdo deve ter pelo menos 20 caracteres!', 'danger');
         return;
     }
 
     // 4. PREPARAR DADOS PARA ENVIO
     const blogData = {
-        userId: getUserIdFromToken(),
         title: title,
         subtitle: subtitle,
         category: category,
@@ -49,7 +44,9 @@ formBlogRegister.addEventListener('submit', async (event) => {
 
         const response = await fetch('/register/blog', {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: {
+                'Content-Type': 'application/json'
+            },
             credentials: 'include',
             body: JSON.stringify(blogData)
         });

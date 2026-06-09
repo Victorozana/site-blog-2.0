@@ -27,23 +27,22 @@ public class HomeController {
      * Carrega a página principal
      */
     @GET
-
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance index(){
         return template.instance();
     }
 
     /**
-     * GET /api/posts retorna JSON com a lista de posts
+     * GET /home/posts retorna JSON com a lista de posts
      * Chamado pelo JavaScript para carregar os dados
      */
     @GET
-    @Path("/api/posts")
+    @Path("/home/posts")
     @Produces(MediaType.APPLICATION_JSON)
     public List<MainScreenDTO> list(
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size){
-        System.out.println("📌 [HomeController] GET /api/posts chamado com page=" + page + ", size=" + size);
+        System.out.println("📌 [HomeController] GET /home/posts chamado com page=" + page + ", size=" + size);
         List<MainScreenDTO> result = blogBO.blogList(page, size);
         System.out.println("📌 [HomeController] Retornando " + result.size() + " posts");
         return result;

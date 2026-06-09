@@ -3,6 +3,7 @@ package com.blog.bo;
 import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.LoginResponseDTO;
 import com.blog.model.dto.UserRegistrationDTO;
+import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
 import jakarta.ws.rs.core.Response;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface IUserBO {
     User getUserById(Long id);
 
-    Response saveUser(UserRegistrationDTO user);
+    UserResponseDTO saveUser(UserRegistrationDTO user);
 
     LoginResponseDTO login(LoginRequestDTO user);
 
@@ -19,5 +20,5 @@ public interface IUserBO {
 
     List<User> listAll();
 
-    Response deleteUser(Long id);
+    void deleteUser(Long id);
 }

@@ -28,14 +28,9 @@ public class UserRegisterController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response cadastrar(UserRegistrationDTO user){
-        return userBO.saveUser(user);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<User> listar(){
-        return userBO.listAll();
+    public Response saveUser(UserRegistrationDTO user){
+        UserResponseDTO dto = userBO.saveUser(user);
+        return Response.ok(dto).build();
     }
 
     @GET

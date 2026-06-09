@@ -8,11 +8,7 @@
     <link rel="stylesheet" href="/css/global.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="/js/security.js"></script>
-    <script src="/js/home.js" defer></script>
-    <script>
-        // Esconder botão "Criar Post" para leitores
-        checkPermissionAndHide('#btnCreatePost', 'WRITER');
-    </script>
+    <script src="/js/home.js"defer></script>
 </head>
 <body>
 <header class="container py-4">
@@ -53,5 +49,9 @@
         </div>
     </div>
 </template>
+<script>
+    // Esconder botão "Criar Post" para leitores
+    checkPermissionAndHide('#btnCreatePost', 'WRITER');
+</script>
 </body>
 </html>
