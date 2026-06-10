@@ -111,5 +111,20 @@ btnProximo.addEventListener('click', () => {
     carregarPosts();
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const labelUsuario = document.querySelector('#userName');
+
+    if (labelUsuario) {
+        // Reaproveita a função de leitura que existe no security.js
+        const nomeDoUsuario = readCookie('userName');
+
+        if (nomeDoUsuario) {
+            labelUsuario.textContent = `Olá, ${nomeDoUsuario}!`;
+        } else {
+            labelUsuario.textContent = 'Olá, usuário!';
+        }
+    }
+});
+
 // GATILHO INICIAL (Quando o sistema liga)
 document.addEventListener('DOMContentLoaded', carregarPosts);

@@ -26,9 +26,9 @@ public class Blog {
     @Column(nullable = false)
     private String title;
     private String subtitle;
-    @Column(nullable = false)
-    private String description;
     @Column(columnDefinition = "TEXT", nullable = false)
+    private String description;
+    @Column(nullable = false)
     private Category category;
     @Column(name = "created_at", nullable = false)
     @Setter(AccessLevel.NONE)
