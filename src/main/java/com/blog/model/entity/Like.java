@@ -9,12 +9,19 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "likes")
+@Table(name = "likes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "blog_id"})
+})
 public class Like {
     @Id
-    @JoinColumn(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @Id
-    @JoinColumn(name = "blog_id")
+
+    @ManyToOne
+    @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
 }

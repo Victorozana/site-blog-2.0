@@ -1,0 +1,10 @@
+package com.blog.dao;
+
+import com.blog.model.entity.Like;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class LikeDAO implements ILikeDAO, PanacheRepository<Like> {
+
+}

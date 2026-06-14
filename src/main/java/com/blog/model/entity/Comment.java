@@ -1,9 +1,6 @@
 package com.blog.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -12,12 +9,22 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "comments")
+@Table(name = "comments", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "blog_id"})
+})
 public class Comment {
     @Id
-    private String idUser;
-    @Id
-    private String idBlog;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "blog_id", nullable = false)
+    private Blog blog;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 }
