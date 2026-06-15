@@ -2,6 +2,7 @@ package com.blog.controller;
 
 import com.blog.bo.IBlogBO;
 import com.blog.model.dto.BlogRegistrationDTO;
+import com.blog.model.dto.BlogResponseDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.RolesAllowed;
@@ -43,8 +44,8 @@ public class BlogRegisterController {
         // 2. Convertemos para texto e parseamos nativamente para Long (A Blindagem)
         Long idAuthor = Long.parseLong(claimIdUser.toString());
 
-        blogBO.createBlog(dto, idAuthor);
+        BlogResponseDTO responseDTO = blogBO.createBlog(dto, idAuthor);
 
-        return Response.ok("{\"message\": \"Success!\"}").build();
+        return Response.ok(Response.Status.CREATED).entity(responseDTO).build();
     }
 }

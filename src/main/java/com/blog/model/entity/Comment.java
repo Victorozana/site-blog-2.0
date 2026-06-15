@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "comments", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "blog_id"})
+        @UniqueConstraint(columnNames = {"user_ id", "blog_id"})
 })
 public class Comment {
     @Id
@@ -18,7 +18,7 @@ public class Comment {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_ id", nullable = false)
     private User user;
 
     @ManyToOne
