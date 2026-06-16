@@ -3,7 +3,6 @@ package com.blog.bo;
 import com.blog.dao.BlogDAO;
 import com.blog.dao.ILikeDAO;
 import com.blog.dao.UserDAO;
-import com.blog.model.dto.LikeResponseDTO;
 import com.blog.model.entity.Like;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;

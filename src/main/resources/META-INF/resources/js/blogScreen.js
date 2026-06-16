@@ -57,6 +57,101 @@ function renderizarPost(post){
     document.querySelector('#post-description').innerHTML = descricaoOriginal.replace(/\n/g, '<br>');
 }
 
-// 6. GATILHO DE SUCESSO
-document.addEventListener('DOMContentLoaded', carregarPost);
+// 6. INTERAÇÃO: likes e comentários
+const btnLike = document.getElementById('btnLike');
+const likeCountEl = document.getElementById('likeCount');
+const btnToggleComments = document.getElementById('btnToggleComments');
+const commentsSection = document.getElementById('comments');
+const commentsList = document.getElementById('comments-list');
+const commentForm = document.getElementById('comment-form');
+const commentText = document.getElementById('commentText');
+const btnSendComment = document.getElementById('btnSendComment');
+
+let likesCount = 0;
+
+async function fetchLikes(){
+    try{
+        const res = await fetch(`/blogs/${id}/likes`, { method: 'GET', credentials: 'include' });
+        if (res.ok){
+            const data = await res.json(); // assume { count: number, likedByMe: boolean }
+            likesCount = data.count || 0;
+            likeCountEl.textContent = likesCount;
+            if (data.likedByMe) btnLike.setAttribute('aria-pressed', 'true');
+        }
+    }catch(e){ console.warn('Erro ao buscar likes', e); }
+}
+
+async function fetchComments(){
+    try{
+        const res = await fetch(`/blogs/${id}/comments`, { method: 'GET', credentials: 'include' });
+        if (res.ok){
+            const data = await res.json(); // assume array of { id, idUser, comment, createdAt }
+            renderComments(data);
+        }
+    }catch(e){ console.warn('Erro ao buscar comentários', e); }
+}
+
+function renderComments(list){
+    commentsList.innerHTML = '';
+    if (!Array.isArray(list) || list.length === 0) {
+        commentsList.innerHTML = '<div class="text-muted">Seja o primeiro a comentar.</div>';
+        return;
+    }
+    list.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'list-group-item';
+        div.innerHTML = `<div class="fw-semibold">Usuário ${c.idUser}</div><div class="comment-text">${escapeHtml(c.comment)}</div><small class="text-muted">${formatarData(c.createdAt)}</small>`;
+        commentsList.appendChild(div);
+    });
+}
+
+function escapeHtml(unsafe){ return unsafe.replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]; }); }
+
+btnToggleComments?.addEventListener('click', () => {
+    commentsSection.classList.toggle('d-none');
+    if (!commentsSection.classList.contains('d-none')) fetchComments();
+});
+
+btnLike?.addEventListener('click', async () => {
+    try{
+        const res = await fetch(`/blogs/${id}/likes`, { method: 'POST', credentials: 'include' });
+        if (res.ok){
+            // increment UI — backend garante unicidade
+            likesCount += 1;
+            likeCountEl.textContent = likesCount;
+            btnLike.setAttribute('aria-pressed', 'true');
+        } else if (res.status === 409) {
+            // already liked — maybe toggle not allowed: show message
+            console.info('Já curtiu este post');
+        }
+    }catch(e){ console.warn('Erro ao enviar like', e); }
+});
+
+commentForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = commentText.value.trim();
+    if (!text) return;
+
+    try{
+        const res = await fetch(`/blogs/${id}/comment`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ comment: text })
+        });
+        if (res.ok){
+            commentText.value = '';
+            // refresh list
+            fetchComments();
+        } else {
+            console.warn('Falha ao enviar comentário');
+        }
+    }catch(e){ console.warn('Erro', e); }
+});
+
+// Reaplica carregamento inicial
+document.addEventListener('DOMContentLoaded', () => {
+    carregarPost();
+    fetchLikes();
+});
 

@@ -7,15 +7,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/blogRegister.css">
+    <link rel="stylesheet" href="/css/options-menu.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="/js/security.js"></script>
+    <script src="/js/options-menu.js" defer></script>
     <script src="/js/blogRegister.js" defer></script>
 </head>
 <body>
 <header class="container py-4">
     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
         <a href="/" class="text-decoration-none fs-4 fw-bold text-dark">BLOG DO VICTOR</a>
-        <a href="/" class="btn btn-outline-dark">Voltar</a>
+        <div class="d-flex gap-2 align-items-center">
+            <a href="/" class="btn btn-outline-dark">Voltar</a>
+        </div>
+        <div class="options-menu" aria-hidden="true">
+          <button class="options-toggle" aria-expanded="false" aria-haspopup="true" aria-label="Mais opções">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" focusable="false">
+              <circle cx="5" cy="12" r="2"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+              <circle cx="19" cy="12" r="2"></circle>
+            </svg>
+          </button>
+          <div class="options-dropdown" role="menu" hidden>
+            <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
+            <a href="/perfil" role="menuitem">Perfil</a>
+            <a href="/config" role="menuitem">Configurações</a>
+            <button type="button" role="menuitem" id="logout-btn">Sair</button>
+          </div>
+        </div>
     </div>
 </header>
 <main class="container my-5">
