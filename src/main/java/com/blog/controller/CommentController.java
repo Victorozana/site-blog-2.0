@@ -1,27 +1,32 @@
 package com.blog.controller;
 
 import com.blog.bo.ICommentBO;
-import com.blog.model.dto.CommentResponseDTO;
+import com.blog.model.dto.CommentRequestDTO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Path("/blogs")
 public class CommentController {
     @Inject
     ICommentBO commentBO;
+    @Inject
+    JsonWebToken jwt;
 
     @POST
-    @Path("/{blogId}/comment")
-    public Response register(@PathParam("blogId") Long blogId, @Context SecurityContext securityContext){
-        String user = securityContext.getUserPrincipal().getName();
-        Long userId = Long.valueOf(user);
+    @Path("/{blogId}/comments") // Dica: No padrão REST, usamos o plural (comments)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response register(@PathParam("blogId") Long blogId, CommentRequestDTO request) {
+        Object claim = jwt.getClaim("idUser");
+        Long userId = Long.valueOf(claim.toString());
 
-        commentBO.create(userId, blogId);
+        // Passa os IDs e o texto extraído do DTO para o Business Object
+        commentBO.create(userId, blogId, request);
 
-        return Response.ok(Response.Status.CREATED).build();
+        // Forma correta de retornar um Status 201 (Created) no Quarkus
+        return Response.status(Response.Status.CREATED).build();
     }
 }
