@@ -1,6 +1,6 @@
 package com.blog.controller;
 
-import com.blog.bo.IBlogBO;
+import com.blog.bo.BlogBO;
 import com.blog.model.dto.MainScreenDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 @Path("/")
 public class HomeController {
     @Inject
-    IBlogBO blogBO;
+    BlogBO blogBO;
     private final Template template;
 
     public HomeController(Template home) {
@@ -48,4 +48,3 @@ public class HomeController {
         return result;
     }
 }
-

@@ -2,9 +2,9 @@ package com.blog.dao;
 
 import com.blog.model.entity.Comment;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
-@RequestScoped
-public class CommentDAO implements ICommentDAO, PanacheRepository<Comment> {
+@ApplicationScoped
+public class CommentDAO implements PanacheRepository<Comment> {
 
 }

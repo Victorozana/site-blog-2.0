@@ -1,30 +1,32 @@
 package com.blog.bo;
 
 import com.blog.dao.BlogDAO;
-import com.blog.dao.ILikeDAO;
+import com.blog.dao.LikeDAO;
 import com.blog.dao.UserDAO;
+import com.blog.model.dto.LikeResponseDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.Like;
 import com.blog.model.entity.User;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
-@RequestScoped
-public class LikeBO implements ILikeBO{
+@ApplicationScoped
+public class LikeBO {
     @Inject
-    ILikeDAO dao;
+    LikeDAO dao;
     @Inject
     BlogDAO blogDAO;
     @Inject
     UserDAO userDAO;
+    @Inject
+    LikeDAO likeDAO;
 
-    @Override
     @Transactional
     public void create(Long userId, Long blogId) {
-// 1. Busca as entidades reais gerenciadas pelo Hibernate
+        // 1. Busca as entidades reais gerenciadas pelo Hibernate
         User user = userDAO.findById(userId);
         Blog blog = blogDAO.findById(blogId);
 
@@ -42,8 +44,29 @@ public class LikeBO implements ILikeBO{
         dao.persist(like);
     }
 
-    @Override
-    public void remove(Long idLike) {
-        dao.delete(dao.findById(idLike));
+    @Transactional
+    public void remove(Long userId, Long blogId) {
+        long deletedCount = likeDAO.delete("user.id = ?1 and blog.id = ?2", userId, blogId);
+    }
+
+    public LikeResponseDTO list(Long blogId, Long currentUserId) {
+
+        // 1. Conta o total de curtidas daquele post
+        long total = likeDAO.count("blog.id", blogId);
+
+        boolean hasLiked = false;
+
+        // 2. Verifica se O usuário atual curtiu (só faz a query se houver um usuário logado)
+        if (currentUserId != null) {
+            // Retorna a contagem (0 ou 1) combinando o post e o usuário
+            long userLikeCount = likeDAO.count("blog.id = ?1 and user.id = ?2", blogId, currentUserId);
+            hasLiked = userLikeCount > 0;
+        }
+
+        // 3. Monta e devolve o DTO
+        return  LikeResponseDTO.builder()
+                .totalLikes(total)
+                .userLiked(hasLiked)
+                .build();
     }
 }

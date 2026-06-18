@@ -1,14 +1,14 @@
 package com.blog.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CommentResponseDTO {
     private Long id;
-    private Long idUser;
-    private Long idBlog;
+    private String comment;
+    private String author;
 }

@@ -1,6 +1,6 @@
 package com.blog.controller;
 
-import com.blog.bo.IBlogBO;
+import com.blog.bo.BlogBO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.dto.BlogResponseDTO;
 import io.quarkus.qute.Template;
@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 @Path("/register/blog")
 public class BlogRegisterController {
     @Inject
-    IBlogBO blogBO;
+    BlogBO blogBO;
     @Inject
     JsonWebToken jwt;
 

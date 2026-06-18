@@ -7,5 +7,5 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
-public class BlogDAO implements IBlogDAO, PanacheRepository<Blog>{
+public class BlogDAO implements PanacheRepository<Blog>{
 }

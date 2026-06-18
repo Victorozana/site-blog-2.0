@@ -1,6 +1,6 @@
 package com.blog.bo;
 
-import com.blog.dao.IBlogDAO;
+import com.blog.dao.BlogDAO;
 import com.blog.model.dto.BlogResponseDTO;
 import com.blog.model.dto.BlogScreenDTO;
 import com.blog.model.dto.MainScreenDTO;
@@ -8,22 +8,20 @@ import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.User;
 import io.quarkus.panache.common.Page;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequestScoped
-public class BlogBO implements IBlogBO{
+@ApplicationScoped
+public class BlogBO {
     @Inject
-    IBlogDAO blogDAO;
+    BlogDAO blogDAO;
     @Inject
     UserBO userBO;
 
-    @Override
     @Transactional
     public BlogResponseDTO createBlog(BlogRegistrationDTO dto, Long idAuthor) {
         User user = userBO.getUserById(idAuthor);
@@ -40,14 +38,11 @@ public class BlogBO implements IBlogBO{
         return new BlogResponseDTO(blog.getId(), blog.getUser(), blog.getTitle(), blog.getSubtitle(), blog.getDescription(), blog.getCategory(), blog.getLocalDateTime());
     }
 
-    @Override
     @Transactional
     public void deleteBlog(Long id) {
         blogDAO.deleteById(id);
     }
 
-
-    @Override
     public BlogScreenDTO findBlogById(Long id) {
         Blog blog = blogDAO.findById(id);
         BlogScreenDTO dto = new BlogScreenDTO();
@@ -65,7 +60,6 @@ public class BlogBO implements IBlogBO{
         return dto;
     }
 
-    @Override
     public List<MainScreenDTO> blogList(int page, int size) {
         List<Blog> blogs = blogDAO.find("order by localDateTime desc").page(Page.of(page, size)).list();
         List<MainScreenDTO> dtos = new ArrayList<>();

@@ -41,6 +41,9 @@ public class User extends PanacheEntityBase{
     @Column(nullable = false, name = "created_dateTime")
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdDateTime;
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
+    private String bio;
 
     public User(UserRegistrationDTO dto){
         this.name = dto.getName();

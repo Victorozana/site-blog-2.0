@@ -10,9 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "comments", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_ id", "blog_id"})
-})
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

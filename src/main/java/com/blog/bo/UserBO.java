@@ -1,22 +1,22 @@
 package com.blog.bo;
 
-import com.blog.dao.IUserDAO;
+import com.blog.dao.UserDAO;
 import com.blog.exception.BusinessRuleException;
 import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.LoginResponseDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Response;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import io.smallrye.jwt.build.Jwt;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 import java.time.Duration;
 import java.util.HashSet;
-import java.util.Arrays;
 
 import java.util.List;
 
@@ -32,17 +32,15 @@ import java.util.List;
 //objeto quando essa anotação é usada
 //@ApplicationScoped
 
-@RequestScoped
-public class UserBO implements IUserBO{
+@ApplicationScoped
+public class UserBO {
     @Inject
-    IUserDAO userDAO;
+    UserDAO userDAO;
 
-    @Override
     public User getUserById(Long id) {
         return userDAO.findById(id);
     }
 
-    @Override
     @Transactional
     public UserResponseDTO saveUser(UserRegistrationDTO dto) {
         User existingUser = userDAO.getUserByEmail(dto.getEmail());
@@ -70,7 +68,6 @@ public class UserBO implements IUserBO{
         return new UserResponseDTO(entity.getId(), entity.getName(), entity.getEmail(), entity.getUserType());
     }
 
-//    @Override
 //    public void updateUser(User user) {
 //        var query = "UPDATE USER" +
 //                " SET USERNAME = :username " +
@@ -84,7 +81,6 @@ public class UserBO implements IUserBO{
 //        userDAO.update(query, id);
 //    }
 
-    @Override
     public void deleteUser(Long id) {
         userDAO.delete(getUserById(id));
     }
@@ -111,7 +107,6 @@ public class UserBO implements IUserBO{
         return new LoginResponseDTO(token, entity.getName(), entity.getId(), entity.getUserType().name());
     }
 
-    @Override
     public List<User> listAll() {
         return userDAO.listAll();
     }
@@ -122,5 +117,21 @@ public class UserBO implements IUserBO{
         BCrypt.Result result = BCrypt.verifyer().verify(dto.getPassword().toCharArray(), salvePassword);
 
         return result.verified;
+    }
+
+    @Transactional
+    public void updateProfilePicture(Long userId, String imageUrl) {
+        // 1. Busca o usuário no banco
+        User user = userDAO.findById(userId);
+
+        if (user == null) {
+            throw new WebApplicationException("Usuário não encontrado", Response.Status.NOT_FOUND);
+        }
+
+        // 2. Atualiza apenas a foto
+        user.setProfilePictureUrl(imageUrl);
+
+        // 3. Persiste a alteração
+        userDAO.persist(user);
     }
 }

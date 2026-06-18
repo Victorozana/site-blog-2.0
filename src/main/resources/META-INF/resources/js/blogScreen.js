@@ -74,9 +74,9 @@ async function fetchLikes(){
         const res = await fetch(`/blogs/${id}/likes`, { method: 'GET', credentials: 'include' });
         if (res.ok){
             const data = await res.json(); // assume { count: number, likedByMe: boolean }
-            likesCount = data.count || 0;
+            likesCount = data.totalLikes || 0;
             likeCountEl.textContent = likesCount;
-            if (data.likedByMe) btnLike.setAttribute('aria-pressed', 'true');
+            if (data.userLiked) btnLike.setAttribute('aria-pressed', 'true');
         }
     }catch(e){ console.warn('Erro ao buscar likes', e); }
 }
@@ -100,7 +100,7 @@ function renderComments(list){
     list.forEach(c => {
         const div = document.createElement('div');
         div.className = 'list-group-item';
-        div.innerHTML = `<div class="fw-semibold">Usuário ${c.idUser}</div><div class="comment-text">${escapeHtml(c.comment)}</div><small class="text-muted">${formatarData(c.createdAt)}</small>`;
+        div.innerHTML = `<div class="fw-semibold">${c.author}</div><div class="comment-text">${escapeHtml(c.comment)}</div><small class="text-muted">${formatarData(c.createdAt)}</small>`;
         commentsList.appendChild(div);
     });
 }
@@ -113,18 +113,37 @@ btnToggleComments?.addEventListener('click', () => {
 });
 
 btnLike?.addEventListener('click', async () => {
-    try{
-        const res = await fetch(`/blogs/${id}/likes`, { method: 'POST', credentials: 'include' });
-        if (res.ok){
-            // increment UI — backend garante unicidade
-            likesCount += 1;
+    // Verifica visualmente se o botão já está marcado como curtido
+    const isLiked = btnLike.getAttribute('aria-pressed') === 'true';
+
+    // Se já curtiu, a intenção é DELETAR. Se não curtiu, a intenção é CRIAR (POST)
+    const metodoHttp = isLiked ? 'DELETE' : 'POST';
+
+    try {
+        const res = await fetch(`/blogs/${id}/like`, {
+            method: metodoHttp,
+            credentials: 'include'
+        });
+
+        if (res.ok) { // Status 201 (Created) ou 204 (No Content)
+            if (isLiked) {
+                // Removeu o like
+                likesCount -= 1;
+                btnLike.setAttribute('aria-pressed', 'false');
+                btnLike.classList.remove('text-danger'); // Exemplo: remove a cor vermelha
+            } else {
+                // Deu o like
+                likesCount += 1;
+                btnLike.setAttribute('aria-pressed', 'true');
+                btnLike.classList.add('text-danger'); // Exemplo: pinta de vermelho
+            }
+
+            // Atualiza o número na tela
             likeCountEl.textContent = likesCount;
-            btnLike.setAttribute('aria-pressed', 'true');
-        } else if (res.status === 409) {
-            // already liked — maybe toggle not allowed: show message
-            console.info('Já curtiu este post');
         }
-    }catch(e){ console.warn('Erro ao enviar like', e); }
+    } catch(e) {
+        console.warn('Erro ao processar a curtida', e);
+    }
 });
 
 commentForm?.addEventListener('submit', async (e) => {
