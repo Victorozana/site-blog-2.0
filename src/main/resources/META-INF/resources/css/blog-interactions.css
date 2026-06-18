@@ -1,0 +1,36 @@
+/* Estilos para botões de like e seção de comentários */
+.post-actions .btn-like {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  min-height: 48px;
+  font-size: 16px;
+}
+.post-actions .like-icon {
+  font-size: 20px;
+  color: #dc3545; /* vermelho coração */
+  line-height: 1;
+}
+
+/* Comentários */
+#comments-list .list-group-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+#comments-list .list-group-item .comment-text { white-space: pre-wrap; }
+
+/* Formulario */
+#comment-form textarea { min-width: 240px; max-width: 100%; }
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .post-actions { flex-direction: column; align-items: stretch; }
+  .post-actions .btn-like { width: 100%; justify-content: center; }
+  #comment-form { flex-direction: column; }
+  #comment-form button { width: 100%; }
+}
