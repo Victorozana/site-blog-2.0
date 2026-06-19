@@ -14,38 +14,49 @@
     <script src="/js/profile.js" defer></script>
 </head>
 <body>
-  <div class="profile-container">
-    <h1>Perfil</h1>
-    <form id="profileForm" onsubmit="return false;">
-      <div class="field">
-        <label for="name">Nome</label>
-        <input type="text" id="name" placeholder="Nome completo" />
-      </div>
-      <div class="field">
-        <label for="email">Email</label>
-        <input type="email" id="email" required />
-      </div>
-      <div class="field">
-        <label for="bio">Bio (opcional)</label>
-        <textarea id="bio" rows="4" placeholder="Uma breve biografia"></textarea>
-      </div>
+<header class="container py-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+        <a href="/" class="text-decoration-none fs-4 fw-bold text-dark">BLOG DO VICTOR</a>
+        <a href="/" class="btn btn-outline-dark">Voltar</a>
+    </div>
+</header>
 
-      <div class="photos-section">
-        <h3>Fotos</h3>
-        <div id="photoList" class="photo-list" aria-live="polite"></div>
-        <div class="photo-controls">
-          <input type="file" id="photoInput" accept="image/*" multiple />
-        </div>
-      </div>
+<main class="container my-5">
+    <div class="glass-card mx-auto" style="max-width: 760px;">
+        <h2 class="mb-4">Meu Perfil</h2>
 
-      <div class="actions">
-        <button id="saveBtn" type="button">Salvar</button>
-        <button id="clearBtn" type="button">Remover todas</button>
-      </div>
-    </form>
+        <form id="profileForm">
+            <div class="mb-3">
+                <label for="name" class="form-label fw-bold">Nome</label>
+                <input type="text" class="form-control" id="name" placeholder="Nome completo" />
+            </div>
 
-    <div id="result" class="result"></div>
-  </div>
-  <script src="/META-INF/resources/js/profile.js"></script>
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Email</label>
+                <input type="email" class="form-control" id="email" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="bio" class="form-label fw-bold">Bio (opcional)</label>
+                <textarea class="form-control" id="bio" rows="4" placeholder="Uma breve biografia"></textarea>
+            </div>
+
+            <div class="photos-section mt-4">
+                <h5 class="fw-bold">Fotos</h5>
+                <div id="photoList" class="photo-list mb-3" aria-live="polite"></div>
+                <div class="photo-controls">
+                    <input class="form-control" type="file" id="photoInput" accept="image/*" multiple />
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button id="saveBtn" type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <button id="clearBtn" type="button" class="btn btn-outline-danger">Remover todas as fotos</button>
+            </div>
+        </form>
+
+        <div id="result" class="result-box d-none"></div>
+    </div>
+</main>
 </body>
 </html>

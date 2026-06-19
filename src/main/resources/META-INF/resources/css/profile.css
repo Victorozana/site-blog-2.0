@@ -1,19 +1,73 @@
-* { box-sizing: border-box; font-family: Arial, sans-serif; }
-body { background:#f5f6fa; margin:0; padding:20px; }
-.profile-container { max-width:760px; margin:20px auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.06); }
-h1 { margin-top:0; }
-.field { margin-bottom:12px; }
-.field label { display:block; font-weight:600; margin-bottom:6px; }
-input[type="text"], input[type="email"], textarea { width:100%; padding:8px 10px; border:1px solid #dfe4ee; border-radius:4px; }
-.photos-section { margin:18px 0; }
-.photo-list { display:flex; gap:10px; flex-wrap:wrap; }
-.photo-item { width:120px; height:120px; position:relative; border:1px solid #e1e6f0; border-radius:6px; overflow:hidden; background:#fafbff; display:flex; align-items:center; justify-content:center; }
-.photo-item img { max-width:100%; max-height:100%; object-fit:cover; display:block; }
-.photo-item button.remove { position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:3px; padding:4px 6px; cursor:pointer; }
-.photo-controls { margin-top:8px; }
-.actions { margin-top:14px; display:flex; gap:8px; }
-button { padding:8px 12px; border-radius:6px; border:1px solid #2d74ff; background:#2d74ff; color:#fff; cursor:pointer; }
-button[disabled] { opacity:0.6; cursor:default; }
-button.secondary { background:#fff; color:#2d74ff; }
-.result { margin-top:16px; padding:12px; background:#f2f6ff; border:1px solid #dbe9ff; border-radius:6px; font-family:monospace; white-space:pre-wrap; max-height:240px; overflow:auto; }
-@media (max-width:520px){ .photo-item{width:92px;height:92px} }
+/* profileScreen.css
+   Apenas regras exclusivas do Perfil. 
+   O layout principal é gerenciado pelo Bootstrap e pelo global.css.
+*/
+
+.photos-section {
+    margin: 1.5rem 0;
+}
+
+.photo-list {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.photo-item {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    border: 1px solid #e1e6f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fafbff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* O botão de remover a foto */
+.photo-item button.remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.photo-item button.remove:hover {
+    background: rgba(220, 53, 69, 0.9); /* Vermelho do Bootstrap ao passar o mouse */
+}
+
+/* O terminal de resultados (se for usar) */
+.result-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 520px) {
+    .photo-item {
+        width: 92px;
+        height: 92px;
+    }
+}
