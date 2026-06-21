@@ -22,7 +22,8 @@ public class ImageStorageBO {
             }
 
             // Gera um nome único para evitar que uma foto substitua outra com o mesmo nome
-            String uniqueFileName = UUID.randomUUID().toString() + "-" + file.fileName();
+            String safeFileName = file.fileName().replaceAll("[^a-zA-Z0-9._-]", "-");
+            String uniqueFileName = UUID.randomUUID().toString() + "-" + safeFileName;
             Path targetPath = uploadDirectory.resolve(uniqueFileName);
 
             // Move o arquivo temporário do Quarkus para a nossa pasta final

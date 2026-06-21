@@ -7,7 +7,15 @@ const postTitle = document.querySelector('#post-title');
 const postSubtitle = document.querySelector('#post-subtitle');
 const postDate = document.querySelector('#post-data');
 const postAuthorLink = document.querySelector('#post-author-link');
+const postAuthorName = document.querySelector('#post-author-name');
+const postAuthorAvatar = document.querySelector('#post-author-avatar');
 const postDescription = document.querySelector('#post-description');
+
+function normalizeImageUrl(url) {
+    if (!url) return '/img/avatar-placeholder.svg';
+    if (url.startsWith('/uploads/images/')) return url.replace('/uploads/images/', '/user/uploads/images/');
+    return url;
+}
 
 // 3. FUNÇÃO UTILITÁRIA DE DATA
 function formatarData(dataString) {
@@ -54,7 +62,9 @@ async function carregarPost(){
 function renderizarPost(post){
     postTitle.textContent = post.title || 'Post sem título';
     postSubtitle.textContent = post.subtitle || '';
-    postAuthorLink.textContent = post.author || 'Autor desconhecido';
+    postAuthorName.textContent = post.author || 'Autor desconhecido';
+    postAuthorAvatar.src = normalizeImageUrl(post.authorProfilePictureUrl);
+    postAuthorAvatar.alt = `Foto de ${post.author || 'autor'}`;
     postAuthorLink.href = post.authorId ? `/profile?id=${post.authorId}` : '#';
     postDate.textContent = formatarData(post.localDateTime);
     postDescription.textContent = post.description || '';
@@ -117,12 +127,30 @@ function renderComments(list){
     list.forEach(c => {
         const div = document.createElement('div');
         div.className = 'list-group-item';
-        div.innerHTML = `<div class="fw-semibold">${escapeHtml(c.author || 'Usuário')}</div><div class="comment-text">${escapeHtml(c.comment || '')}</div><small class="text-muted">${formatarData(c.createdAt)}</small>`;
+
+        const avatar = document.createElement('img');
+        avatar.className = 'comment-avatar';
+        avatar.src = normalizeImageUrl(c.authorProfilePictureUrl);
+        avatar.alt = `Foto de ${c.author || 'usuário'}`;
+
+        const content = document.createElement('div');
+        content.className = 'comment-content';
+
+        const author = document.createElement('div');
+        author.className = 'fw-semibold';
+        author.textContent = c.author || 'Usuário';
+
+        const text = document.createElement('div');
+        text.className = 'comment-text';
+        text.textContent = c.comment || '';
+
+        content.appendChild(author);
+        content.appendChild(text);
+        div.appendChild(avatar);
+        div.appendChild(content);
         commentsList.appendChild(div);
     });
 }
-
-function escapeHtml(unsafe){ return String(unsafe).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]; }); }
 
 btnToggleComments?.addEventListener('click', () => {
     commentsSection.classList.toggle('d-none');

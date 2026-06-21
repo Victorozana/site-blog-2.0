@@ -2,6 +2,7 @@ package com.blog.controller;
 
 import com.blog.bo.LikeBO;
 import com.blog.model.dto.LikeResponseDTO;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,6 +19,7 @@ public class LikeController {
     @POST
     @Path("/{blogId}/like")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public Response register(@PathParam("blogId") Long blogId){
         Long userId = currentUserId();
 
@@ -31,6 +33,7 @@ public class LikeController {
     @GET
     @Path("/{blogId}/likes")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public Response listSummary(@PathParam("blogId") Long blogId) {
 
         Long userId = null;
@@ -55,6 +58,7 @@ public class LikeController {
     @DELETE
     @Path("/{blogId}/like")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public Response remove(@PathParam("blogId") Long blogId){
         Long userId = currentUserId();
 

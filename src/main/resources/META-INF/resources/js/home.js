@@ -9,6 +9,12 @@ const btnAnterior = document.querySelector('#btnAnterior');
 const btnProximo = document.querySelector('#btnProximo');
 const textoPagina = document.querySelector('#infoPagina');
 
+function normalizeImageUrl(url) {
+    if (!url) return '/img/avatar-placeholder.svg';
+    if (url.startsWith('/uploads/images/')) return url.replace('/uploads/images/', '/user/uploads/images/');
+    return url;
+}
+
 // Função para formatar data em DD/MM/AAAA
 function formatarData(dataString) {
     if (!dataString) return '';
@@ -66,6 +72,15 @@ function renderizarCards(listaDePosts) {
         clone.querySelector('.post-date').textContent = formatarData(post.localDateTime);
         clone.querySelector('.post-subtitle').textContent = post.subtitle || 'Sem resumo disponível.';
         clone.querySelector('.post-link').href = `/blog/?id=${post.id}`;
+
+        const authorLink = clone.querySelector('.post-author-row');
+        const authorAvatar = clone.querySelector('.post-author-avatar');
+        const authorName = clone.querySelector('.post-author-name');
+
+        authorLink.href = post.authorId ? `/profile?id=${post.authorId}` : '#';
+        authorAvatar.src = normalizeImageUrl(post.authorProfilePictureUrl);
+        authorAvatar.alt = `Foto de ${post.author || 'autor'}`;
+        authorName.textContent = post.author || 'Autor';
 
         containerLista.appendChild(clone);
     });

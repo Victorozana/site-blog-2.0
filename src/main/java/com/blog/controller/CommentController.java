@@ -3,6 +3,7 @@ package com.blog.controller;
 import com.blog.bo.CommentBO;
 import com.blog.model.dto.CommentRequestDTO;
 import com.blog.model.dto.CommentResponseDTO;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -22,6 +23,7 @@ public class CommentController {
     @Path("/{blogId}/comment") // Dica: No padrão REST, usamos o plural (comments)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public Response register(@PathParam("blogId") Long blogId, CommentRequestDTO request) {
         Object claim = jwt.getClaim("idUser");
         Long userId = Long.valueOf(claim.toString());
@@ -36,6 +38,7 @@ public class CommentController {
     @GET
     @Path("/{blogId}/comments")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public List<CommentResponseDTO> list(@PathParam("blogId") Long blogId){
         return commentBO.list(blogId);
     }

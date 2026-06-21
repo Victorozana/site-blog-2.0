@@ -29,6 +29,7 @@ public class BlogRegisterController {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @RolesAllowed({"WRITER", "ADMIN"})
     public TemplateInstance page_load(){
         return page.instance();
     }
@@ -36,7 +37,7 @@ public class BlogRegisterController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("WRITER")
+    @RolesAllowed({"WRITER", "ADMIN"})
     public Response register(BlogRegistrationDTO dto){
         // 1. Pegamos o objeto genérico do JSON, seja ele qual for (Parsson, Jackson, etc)
         Object claimIdUser = jwt.getClaim("idUser");

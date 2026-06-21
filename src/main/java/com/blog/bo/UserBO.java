@@ -2,6 +2,8 @@ package com.blog.bo;
 
 import com.blog.dao.UserDAO;
 import com.blog.exception.BusinessRuleException;
+import com.blog.model.category.UserType;
+import com.blog.model.dto.AdminUserDTO;
 import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.LoginResponseDTO;
 import com.blog.model.dto.UserProfileDTO;
@@ -38,6 +40,8 @@ import java.util.List;
 public class UserBO {
     @Inject
     UserDAO userDAO;
+    @Inject
+    AuditLogBO auditLogBO;
 
     public User getUserById(Long id) {
         return userDAO.findById(id);
@@ -45,6 +49,14 @@ public class UserBO {
 
     @Transactional
     public UserResponseDTO saveUser(UserRegistrationDTO dto) {
+        if (dto.getUserType() == UserType.ADMIN) {
+            throw new BusinessRuleException("Administradores não podem ser criados pelo cadastro público.");
+        }
+
+        if (dto.getUserType() == null) {
+            dto.setUserType(UserType.READER);
+        }
+
         User existingUser = userDAO.getUserByEmail(dto.getEmail());
 
         if (existingUser != null){
@@ -66,6 +78,7 @@ public class UserBO {
                 .build();
 
         userDAO.persist(entity);
+        auditLogBO.log("USER_REGISTERED", entity, "Novo usuário cadastrado pelo formulário público.");
 
         return new UserResponseDTO(entity.getId(), entity.getName(), entity.getEmail(), entity.getUserType());
     }
@@ -95,6 +108,7 @@ public class UserBO {
 
         //validation with Bcrypt
         if (entity == null || !validation(entity, dto)){
+            auditLogBO.log("LOGIN_FAILED", null, dto.getEmail(), null, "Tentativa de login com credenciais inválidas.");
             throw new BusinessRuleException("Invalid credentials!");
         }
 
@@ -106,11 +120,29 @@ public class UserBO {
                 .expiresIn(Duration.ofDays(15))
                 .sign();
 
+        auditLogBO.log("LOGIN_SUCCESS", entity, "Login realizado com sucesso.");
+
         return new LoginResponseDTO(token, entity.getName(), entity.getId(), entity.getUserType().name());
     }
 
     public List<User> listAll() {
         return userDAO.listAll();
+    }
+
+    public List<AdminUserDTO> listUsersForAdmin() {
+        return userDAO.find("order by createdDateTime desc")
+                .list()
+                .stream()
+                .map(user -> new AdminUserDTO(
+                        user.getId(),
+                        toFullName(user),
+                        user.getEmail(),
+                        user.getUserType(),
+                        user.getBio(),
+                        user.getProfilePictureUrl(),
+                        user.getCreatedDateTime()
+                ))
+                .toList();
     }
 
     public UserProfileDTO getPublicProfile(Long userId) {
@@ -139,6 +171,7 @@ public class UserBO {
         user.setBio(bio == null ? null : bio.trim());
 
         userDAO.persist(user);
+        auditLogBO.log("PROFILE_BIO_UPDATED", user, "Bio do perfil atualizada.");
 
         return toProfileDTO(user);
     }
@@ -152,7 +185,7 @@ public class UserBO {
     }
 
     @Transactional
-    public void updateProfilePicture(Long userId, String imageUrl) {
+    public UserProfileDTO updateProfilePicture(Long userId, String imageUrl) {
         // 1. Busca o usuário no banco
         User user = userDAO.findById(userId);
 
@@ -165,20 +198,25 @@ public class UserBO {
 
         // 3. Persiste a alteração
         userDAO.persist(user);
+        auditLogBO.log("PROFILE_PICTURE_UPDATED", user, "Foto de perfil atualizada.");
+
+        return toProfileDTO(user);
     }
 
     private UserProfileDTO toProfileDTO(User user) {
-        String fullName = user.getName();
-
-        if (user.getLastname() != null && !user.getLastname().isBlank()) {
-            fullName = user.getName() + " " + user.getLastname();
-        }
-
         return new UserProfileDTO(
                 user.getId(),
-                fullName,
+                toFullName(user),
                 user.getBio(),
                 user.getProfilePictureUrl()
         );
+    }
+
+    private String toFullName(User user) {
+        if (user.getLastname() == null || user.getLastname().isBlank()) {
+            return user.getName();
+        }
+
+        return user.getName() + " " + user.getLastname();
     }
 }

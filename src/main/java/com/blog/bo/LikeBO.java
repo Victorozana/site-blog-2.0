@@ -23,6 +23,8 @@ public class LikeBO {
     UserDAO userDAO;
     @Inject
     LikeDAO likeDAO;
+    @Inject
+    AuditLogBO auditLogBO;
 
     @Transactional
     public void create(Long userId, Long blogId) {
@@ -48,11 +50,17 @@ public class LikeBO {
 
         // 4. Persiste no banco de dados
         dao.persist(like);
+        auditLogBO.log("POST_LIKED", user, "Like no post " + blog.getId() + ".");
     }
 
     @Transactional
     public void remove(Long userId, Long blogId) {
-        likeDAO.delete("user.id = ?1 and blog.id = ?2", userId, blogId);
+        User user = userDAO.findById(userId);
+        long deletedCount = likeDAO.delete("user.id = ?1 and blog.id = ?2", userId, blogId);
+
+        if (deletedCount > 0) {
+            auditLogBO.log("POST_UNLIKED", user, "Like removido do post " + blogId + ".");
+        }
     }
 
     public LikeResponseDTO list(Long blogId, Long currentUserId) {

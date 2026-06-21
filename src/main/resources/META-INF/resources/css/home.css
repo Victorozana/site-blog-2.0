@@ -67,6 +67,33 @@
     line-height: 1.25;
 }
 
+.post-author-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    color: var(--azul-texto);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.post-author-row:hover {
+    color: #174155;
+    text-decoration: underline;
+}
+
+.post-author-avatar {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #eef6f9;
+    box-shadow: 0 6px 14px rgba(36, 90, 114, 0.14);
+    object-fit: cover;
+}
+
 .post-data {
     display: inline-flex;
     align-items: center;

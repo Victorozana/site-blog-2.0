@@ -16,6 +16,9 @@
 
 /* Comentários */
 #comments-list .list-group-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   background: #fff;
   border: 1px solid #e9ecef;
   border-radius: 8px;
@@ -23,6 +26,21 @@
   margin-bottom: 8px;
 }
 #comments-list .list-group-item .comment-text { white-space: pre-wrap; }
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #eef6f9;
+  object-fit: cover;
+  box-shadow: 0 6px 14px rgba(36, 90, 114, 0.12);
+}
+
+.comment-content {
+  min-width: 0;
+}
 
 /* Formulario */
 #comment-form textarea { min-width: 240px; max-width: 100%; }

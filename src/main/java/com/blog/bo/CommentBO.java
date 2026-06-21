@@ -23,6 +23,8 @@ public class CommentBO {
     BlogDAO blogDAO;
     @Inject
     UserDAO userDAO;
+    @Inject
+    AuditLogBO auditLogBO;
 
     @Transactional
     public void create(Long userId, Long blogId, CommentRequestDTO dto) {
@@ -36,14 +38,20 @@ public class CommentBO {
         Comment entity = Comment.builder()
                 .user(user)
                 .blog(blog)
-                .comment(dto.getComment())
+                .comment(dto.getComment().trim())
                 .build();
 
         commentDAO.persist(entity);
+        auditLogBO.log("COMMENT_CREATED", user, "Comentário criado no post " + blog.getId() + ".");
     }
 
     public void remove(Long commentId) {
-        commentDAO.delete(commentDAO.findById(commentId));
+        Comment comment = commentDAO.findById(commentId);
+
+        if (comment != null) {
+            auditLogBO.log("COMMENT_DELETED", comment.getUser(), "Comentário removido do post " + comment.getBlog().getId() + ".");
+            commentDAO.delete(comment);
+        }
     }
 
     public List<CommentResponseDTO> list(Long blogId) {
@@ -52,9 +60,18 @@ public class CommentBO {
                     return CommentResponseDTO.builder()
                             .id(comment.getId())
                             .comment(comment.getComment()) // ou getComment(), dependendo de como está na sua entidade
-                            .author(comment.getUser() != null ? comment.getUser().getName() : "Anônimo")
+                            .author(comment.getUser() != null ? authorName(comment.getUser()) : "Anônimo")
+                            .authorProfilePictureUrl(comment.getUser() != null ? comment.getUser().getProfilePictureUrl() : null)
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String authorName(User user) {
+        if (user.getLastname() == null || user.getLastname().isBlank()) {
+            return user.getName();
+        }
+
+        return user.getName() + " " + user.getLastname();
     }
 }

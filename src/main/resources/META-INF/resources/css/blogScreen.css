@@ -31,16 +31,26 @@
 }
 
 .post-article .post-author {
-    font-weight: 600;
-}
-
-.post-article .post-author a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     color: var(--azul-texto);
+    font-weight: 600;
     text-decoration: none;
 }
 
-.post-article .post-author a:hover {
+.post-article .post-author:hover {
     text-decoration: underline;
+}
+
+.post-author-avatar {
+    width: 34px;
+    height: 34px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #eef6f9;
+    box-shadow: 0 6px 14px rgba(36, 90, 114, 0.14);
+    object-fit: cover;
 }
 
 .post-article .post-description {

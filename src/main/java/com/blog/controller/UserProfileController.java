@@ -1,6 +1,7 @@
 package com.blog.controller;
 
 import java.io.File;
+import java.nio.file.Files;
 import com.blog.bo.ImageStorageBO;
 import com.blog.bo.UserBO;
 import com.blog.model.dto.UserProfileDTO;
@@ -37,7 +38,7 @@ public class UserProfileController {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @RolesAllowed({"WRITER","READER"})
+    @RolesAllowed({"WRITER","READER","ADMIN"})
     public TemplateInstance page(){
         return template.instance();
     }
@@ -45,7 +46,7 @@ public class UserProfileController {
     @GET
     @Path("/me")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"WRITER","READER"})
+    @RolesAllowed({"WRITER","READER","ADMIN"})
     public UserProfileDTO me() {
         Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
         return userBO.getPublicProfile(userId);
@@ -55,7 +56,7 @@ public class UserProfileController {
     @Path("/profile")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"WRITER","READER"})
+    @RolesAllowed({"WRITER","READER","ADMIN"})
     public UserProfileDTO updateProfile(UserProfileUpdateDTO dto) {
         Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
         return userBO.updateProfile(userId, dto);
@@ -64,8 +65,9 @@ public class UserProfileController {
     @PATCH // PATCH é o verbo REST correto quando atualizamos apenas um campo de um recurso
     @Path("/profile-picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @RolesAllowed({"WRITER","READER"})
-    public Response uploadProfilePicture(@RestForm("file") FileUpload file) {
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER","READER","ADMIN"})
+    public UserProfileDTO uploadProfilePicture(@RestForm("file") FileUpload file) {
 
         // 1. Descobre quem é o usuário baseado no token da requisição
         Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
@@ -74,15 +76,11 @@ public class UserProfileController {
         String savedImageUrl = imageStorageBO.save(file);
 
         // 3. Atualiza o banco de dados
-        userBO.updateProfilePicture(userId, savedImageUrl);
-
-        // Retorna sucesso
-        return Response.noContent().build();
+        return userBO.updateProfilePicture(userId, savedImageUrl);
     }
 
     @GET
     @Path("/uploads/images/{fileName}")
-    @Produces("image/jpeg") // O navegador vai entender que o retorno é uma imagem
     public Response getImage(@PathParam("fileName") String fileName) {
 
         // Vai até a pasta onde o LocalStorageService salvou as fotos
@@ -92,7 +90,17 @@ public class UserProfileController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // O JAX-RS/Quarkus é inteligente o suficiente para pegar o objeto File e enviar os bytes pela rede automaticamente
-        return Response.ok(file).build();
+        try {
+            String contentType = Files.probeContentType(file.toPath());
+
+            if (contentType == null || !contentType.startsWith("image/")) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+
+            return Response.ok(file, contentType).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
     }
 }
+

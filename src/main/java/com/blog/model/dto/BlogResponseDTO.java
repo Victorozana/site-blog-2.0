@@ -1,7 +1,6 @@
 package com.blog.model.dto;
 
 import com.blog.model.category.Category;
-import com.blog.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BlogResponseDTO {
     private Long id;
-    private User user;
+    private Long authorId;
+    private String author;
     private String title;
     private String subtitle;
     private String description;

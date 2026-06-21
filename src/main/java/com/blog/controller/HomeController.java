@@ -4,6 +4,7 @@ import com.blog.bo.BlogBO;
 import com.blog.model.dto.MainScreenDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -28,6 +29,7 @@ public class HomeController {
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public TemplateInstance index(){
         return template.instance();
     }
@@ -39,6 +41,7 @@ public class HomeController {
     @GET
     @Path("/home/posts")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public List<MainScreenDTO> list(
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size){

@@ -19,9 +19,6 @@
     <div class="container py-3">
     <div class="site-nav">
         <a href="/" class="brand-link">Blog do Victor</a>
-        <div class="d-flex gap-2 align-items-center">
-            <a href="/register/user" class="btn btn-outline-dark">Sign up</a>
-        </div>
         <div class="options-menu">
           <button class="options-toggle" aria-expanded="false" aria-haspopup="true" aria-label="Mais opções">
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" focusable="false">
@@ -33,7 +30,7 @@
           <div class="options-dropdown" role="menu" hidden>
             <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
             <a href="/user" role="menuitem">Perfil</a>
-            <a href="/config" role="menuitem">Configurações</a>
+            <a href="/admin" role="menuitem" id="menuAdmin">Configurações</a>
             <button type="button" role="menuitem" id="logout-btn">Sair</button>
           </div>
         </div>
@@ -47,7 +44,10 @@
             <h2 id="post-subtitle" class="post-subtitle">Subtítulo ou resumo curto do post</h2>
             <div class="post-meta mt-3">
                 <small id="post-data" class="post-data">01/01/2026</small>
-                <small class="post-author">Autor: <a id="post-author-link" href="#">Victor Oliveira</a></small>
+                <a class="post-author" id="post-author-link" href="#">
+                    <img id="post-author-avatar" class="post-author-avatar" src="/img/avatar-placeholder.svg" alt="">
+                    <span id="post-author-name">Victor Oliveira</span>
+                </a>
             </div>
         </header>
 

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class BlogScreenDTO {
     private Long authorId;
     private String author;
+    private String authorProfilePictureUrl;
     private LocalDateTime localDateTime;
     private String title;
     private String subtitle;

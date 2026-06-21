@@ -11,4 +11,5 @@ public class CommentResponseDTO {
     private Long id;
     private String comment;
     private String author;
+    private String authorProfilePictureUrl;
 }

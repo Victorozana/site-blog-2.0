@@ -9,6 +9,7 @@ const previewName = document.querySelector('#profilePreviewName');
 const previewBio = document.querySelector('#profilePreviewBio');
 
 let selectedPhoto = null;
+let temporaryPreviewUrl = null;
 
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
@@ -27,17 +28,20 @@ function showMessage(text, type = 'info') {
     message.className = `profile-message profile-message--${type}`;
 }
 
+function applyProfile(profile) {
+    previewName.textContent = profile.name || 'Seu nome';
+    bioInput.value = profile.bio || '';
+    previewImage.src = normalizeImageUrl(profile.profilePictureUrl);
+    updateBioPreview();
+}
+
 async function loadProfile() {
     try {
         const response = await fetch('/user/me', { credentials: 'include' });
 
         if (!response.ok) throw new Error('Não foi possível carregar seu perfil.');
 
-        const profile = await response.json();
-        previewName.textContent = profile.name || 'Seu nome';
-        bioInput.value = profile.bio || '';
-        previewImage.src = normalizeImageUrl(profile.profilePictureUrl);
-        updateBioPreview();
+        applyProfile(await response.json());
     } catch (error) {
         showMessage(error.message, 'error');
     }
@@ -56,6 +60,8 @@ async function uploadPhoto() {
     });
 
     if (!response.ok) throw new Error('Não foi possível salvar a foto.');
+
+    return response.json();
 }
 
 async function saveProfile(event) {
@@ -65,7 +71,7 @@ async function saveProfile(event) {
     showMessage('Salvando alterações...');
 
     try {
-        await uploadPhoto();
+        const photoProfile = await uploadPhoto();
 
         const response = await fetch('/user/profile', {
             method: 'PATCH',
@@ -78,7 +84,12 @@ async function saveProfile(event) {
 
         selectedPhoto = null;
         photoInput.value = '';
-        await loadProfile();
+        applyProfile(await response.json());
+
+        if (photoProfile) {
+            previewImage.src = normalizeImageUrl(photoProfile.profilePictureUrl);
+        }
+
         showMessage('Perfil atualizado com sucesso.', 'success');
     } catch (error) {
         showMessage(error.message, 'error');
@@ -93,7 +104,12 @@ photoInput.addEventListener('change', () => {
     selectedPhoto = file || null;
 
     if (selectedPhoto) {
-        previewImage.src = URL.createObjectURL(selectedPhoto);
+        if (temporaryPreviewUrl) {
+            URL.revokeObjectURL(temporaryPreviewUrl);
+        }
+
+        temporaryPreviewUrl = URL.createObjectURL(selectedPhoto);
+        previewImage.src = temporaryPreviewUrl;
     }
 });
 

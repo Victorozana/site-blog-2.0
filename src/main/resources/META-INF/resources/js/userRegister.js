@@ -1,5 +1,3 @@
-let url = "http://localhost:8080/register/user"
-
 // Máscara para data (dd/mm/yyyy)
 function maskDate(input) {
     let value = input.value.replace(/\D/g, '');

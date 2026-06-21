@@ -1,5 +1,5 @@
 package com.blog.model.category;
 
 public enum UserType {
-    WRITER, READER;
+    WRITER, READER, ADMIN;
 }

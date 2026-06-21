@@ -32,7 +32,7 @@
                 <div class="options-dropdown" role="menu" hidden>
                     <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
                     <a href="/user" role="menuitem">Perfil</a>
-                    <a href="/config" role="menuitem">Configurações</a>
+                    <a href="/admin" role="menuitem" id="menuAdmin">Configurações</a>
                     <button type="button" role="menuitem" id="logout-btn">Sair</button>
                 </div>
             </div>
@@ -62,6 +62,10 @@
 <template id="blog-card-template">
     <article class="post-card">
         <div>
+            <a class="post-author-row" href="#">
+                <img class="post-author-avatar" src="/img/avatar-placeholder.svg" alt="">
+                <span class="post-author-name">Autor</span>
+            </a>
             <h3 class="post-titulo fw-bold post-title">Título do Post</h3>
             <small class="text-muted post-data post-date">01/01/2026</small>
             <p class="post-resumo mt-2 post-subtitle">Breve descrição do que o usuário vai ler...</p>

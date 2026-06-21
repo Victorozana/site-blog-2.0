@@ -23,6 +23,7 @@ public class BlogScreenController {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public TemplateInstance page_load(){
         return template.instance();
     }
@@ -30,7 +31,7 @@ public class BlogScreenController {
     @GET
     @Path("/data")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"WRITER", "READER"})
+    @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public BlogScreenDTO blog(@QueryParam("id") Long id){
         return blogBO.findBlogById(id);
     }

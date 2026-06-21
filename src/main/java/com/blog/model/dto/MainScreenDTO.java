@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 @Setter
 public class MainScreenDTO {
     private Long id;
+    private Long authorId;
     private String author;
+    private String authorProfilePictureUrl;
     private String title;
     private String subtitle;
     private String description;

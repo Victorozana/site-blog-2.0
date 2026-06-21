@@ -1,9 +1,9 @@
 package com.blog.controller;
 
 import com.blog.bo.UserBO;
+import com.blog.bo.AuditLogBO;
 import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.LoginResponseDTO;
-import com.blog.model.entity.User;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
@@ -11,9 +11,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestResponse;
-
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,6 +20,10 @@ import static java.util.Objects.requireNonNull;
 public class    UserLoginController {
     @Inject
     UserBO userBO;
+    @Inject
+    AuditLogBO auditLogBO;
+    @Inject
+    JsonWebToken jwt;
     private final Template page;
 
     public UserLoginController(Template userLogin) {
@@ -63,6 +66,23 @@ public class    UserLoginController {
     @POST
     @Path("/logout")
     public Response logout() {
+        try {
+            Object claimId = jwt.getClaim("idUser");
+            Object claimName = jwt.getClaim("name");
+
+            if (claimId != null) {
+                auditLogBO.log(
+                        "LOGOUT",
+                        Long.valueOf(claimId.toString()),
+                        claimName != null ? claimName.toString() : null,
+                        null,
+                        "Usuário saiu do sistema."
+                );
+            }
+        } catch (Exception e) {
+            // Se o token já estiver inválido, apenas limpa os cookies.
+        }
+
         NewCookie jwtCookie = new NewCookie.Builder("meu_token_jwt")
                 .value("")
                 .path("/")

@@ -55,11 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Hide "+ Criar Post" for unauthorized users if the helper exists
-    if (typeof checkPermissionAndHide === 'function') {
-      try {
-        checkPermissionAndHide('#menuCreatePost', 'WRITER');
-      } catch (e) { /* noop */ }
+    const userRole = typeof readCookie === 'function' ? readCookie('userType') : null;
+    const createPostItem = menu.querySelector('#menuCreatePost');
+    const adminItem = menu.querySelector('#menuAdmin');
+
+    if (createPostItem && !['WRITER', 'ADMIN'].includes(userRole)) {
+      createPostItem.style.display = 'none';
+    }
+
+    if (adminItem && userRole !== 'ADMIN') {
+      adminItem.style.display = 'none';
     }
   });
 });

@@ -21,6 +21,8 @@ public class BlogBO {
     BlogDAO blogDAO;
     @Inject
     UserBO userBO;
+    @Inject
+    AuditLogBO auditLogBO;
 
     @Transactional
     public BlogResponseDTO createBlog(BlogRegistrationDTO dto, Long idAuthor) {
@@ -34,13 +36,28 @@ public class BlogBO {
         blog.setTitle(dto.getTitle());
 
         blogDAO.persist(blog);
+        auditLogBO.log("BLOG_CREATED", user, "Post criado: " + blog.getTitle());
 
-        return new BlogResponseDTO(blog.getId(), blog.getUser(), blog.getTitle(), blog.getSubtitle(), blog.getDescription(), blog.getCategory(), blog.getLocalDateTime());
+        return new BlogResponseDTO(
+                blog.getId(),
+                user.getId(),
+                authorName(user),
+                blog.getTitle(),
+                blog.getSubtitle(),
+                blog.getDescription(),
+                blog.getCategory(),
+                blog.getLocalDateTime()
+        );
     }
 
     @Transactional
     public void deleteBlog(Long id) {
-        blogDAO.deleteById(id);
+        Blog blog = blogDAO.findById(id);
+
+        if (blog != null) {
+            auditLogBO.log("BLOG_DELETED", blog.getUser(), "Post removido: " + blog.getTitle());
+            blogDAO.delete(blog);
+        }
     }
 
     public BlogScreenDTO findBlogById(Long id) {
@@ -50,7 +67,8 @@ public class BlogBO {
         System.out.println(blog.getTitle());
 
         dto.setAuthorId(blog.getUser().getId());
-        dto.setAuthor(blog.getUser().getName());
+        dto.setAuthor(authorName(blog.getUser()));
+        dto.setAuthorProfilePictureUrl(blog.getUser().getProfilePictureUrl());
         dto.setDescription(blog.getDescription());
         dto.setTitle(blog.getTitle());
         dto.setSubtitle(blog.getSubtitle());
@@ -67,7 +85,9 @@ public class BlogBO {
 
         for (Blog blog : blogs){
             MainScreenDTO dto = new MainScreenDTO();
-            dto.setAuthor(blog.getUser().getName());
+            dto.setAuthorId(blog.getUser().getId());
+            dto.setAuthor(authorName(blog.getUser()));
+            dto.setAuthorProfilePictureUrl(blog.getUser().getProfilePictureUrl());
             dto.setId(blog.getId());
             dto.setTitle(blog.getTitle());
             dto.setSubtitle(blog.getSubtitle());
@@ -78,5 +98,13 @@ public class BlogBO {
         }
 
         return dtos;
+    }
+
+    private String authorName(User user) {
+        if (user.getLastname() == null || user.getLastname().isBlank()) {
+            return user.getName();
+        }
+
+        return user.getName() + " " + user.getLastname();
     }
 }
