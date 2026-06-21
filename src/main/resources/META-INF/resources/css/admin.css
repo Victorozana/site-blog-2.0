@@ -1,0 +1,115 @@
+.admin-intro {
+    max-width: 1120px;
+    margin: 0 auto 1.5rem;
+}
+
+.admin-intro h1 {
+    margin: 0;
+    color: #1f2f36;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+}
+
+.admin-intro p:last-child {
+    max-width: 680px;
+    margin: 0.7rem 0 0;
+    color: var(--texto-muted);
+}
+
+.admin-actions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.admin-panel {
+    padding: clamp(1rem, 3vw, 1.4rem);
+    border: 1px solid rgba(36, 90, 114, 0.1);
+    border-radius: 8px;
+    background: var(--superficie-forte);
+    box-shadow: var(--sombra-card);
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.panel-heading h2 {
+    margin: 0;
+    color: #1f2f36;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.admin-counter,
+.role-badge {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(167, 220, 242, 0.34);
+    color: #31596b;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.audit-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.audit-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem;
+    border: 1px solid rgba(36, 90, 114, 0.1);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.audit-item strong {
+    color: #1f2f36;
+}
+
+.audit-item p {
+    margin: 0.25rem 0;
+    color: #4c5d65;
+}
+
+.audit-item small,
+.audit-item time {
+    color: var(--texto-muted);
+    font-size: 0.84rem;
+}
+
+.audit-item time {
+    flex: 0 0 auto;
+    text-align: right;
+}
+
+@media (max-width: 640px) {
+    .admin-actions,
+    .panel-heading,
+    .audit-item {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .audit-item time {
+        text-align: left;
+    }
+}

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administração</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/security.js"></script>
+    <script src="/js/admin.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+    <div class="container py-3">
+        <div class="site-nav">
+            <a href="/" class="brand-link">Blog do Victor</a>
+            <div class="admin-actions">
+                <a href="/" class="btn btn-outline-dark">Voltar</a>
+                <button type="button" class="btn btn-outline-danger" id="logoutAdmin">Sair</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container my-5">
+    <section class="admin-intro">
+        <p class="section-kicker">Área administrativa</p>
+        <h1>Configurações do sistema</h1>
+        <p>Controle perfis cadastrados e acompanhe as ações auditadas no sistema.</p>
+    </section>
+
+    <section class="admin-grid">
+        <article class="admin-panel">
+            <div class="panel-heading">
+                <h2>Perfis Criados</h2>
+                <span id="usersCount" class="admin-counter">0</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Email</th>
+                        <th>Papel</th>
+                        <th>Criado em</th>
+                    </tr>
+                    </thead>
+                    <tbody id="usersTable"></tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="admin-panel">
+            <div class="panel-heading">
+                <h2>Auditoria Recente</h2>
+                <button type="button" id="refreshAudit" class="btn btn-sm btn-outline-secondary">Atualizar</button>
+            </div>
+            <div id="auditList" class="audit-list" aria-live="polite"></div>
+        </article>
+    </section>
+</main>
+</body>
+</html>
