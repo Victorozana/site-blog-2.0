@@ -28,9 +28,7 @@ public class ImageStorageBO {
             // Move o arquivo temporário do Quarkus para a nossa pasta final
             Files.copy(file.filePath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Retorna o caminho que o front-end vai usar para acessar a imagem
-            // (Ex: "/uploads/images/123e4567-foto.jpg")
-            return "/uploads/images/" + uniqueFileName;
+            return "/user/uploads/images/" + uniqueFileName;
 
         } catch (IOException e) {
             throw new RuntimeException("Erro ao salvar a imagem no servidor", e);

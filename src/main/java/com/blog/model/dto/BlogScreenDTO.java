@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BlogScreenDTO {
+    private Long authorId;
     private String author;
     private LocalDateTime localDateTime;
     private String title;

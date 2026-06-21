@@ -1,87 +1,83 @@
-/* Styles specific to the blog post reading screen (blogScreen.html) */
-
-/* Ensure the reading article uses a wider glass card and comfortable padding */
 .post-article.glass-card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(167, 220, 242, 0.15) 100%);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.6);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-    padding: 3rem;
-    width: 100%;
-    max-width: 1000px; /* leitura ampla e confortável */
-    margin: 0 auto;
+    max-width: 920px;
+    margin-top: 0;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    background: var(--superficie-forte);
 }
 
-/* Post header */
-.post-article .post-titulo {
-    font-size: 2.4rem;
-    line-height: 1.2;
-    margin-bottom: 0.25rem;
+.post-article .post-title {
+    margin: 0;
+    color: #1f2f36;
+    font-size: clamp(2rem, 5vw, 3.35rem);
+    font-weight: 700;
+    line-height: 1.08;
 }
 
-.post-article .post-subtitulo {
-    font-size: 1.25rem;
-    color: #666;
-    margin-top: 0.5rem;
+.post-article .post-subtitle {
+    max-width: 760px;
+    margin: 0.85rem 0 0;
+    color: #52636b;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
     font-weight: 500;
+    line-height: 1.55;
 }
 
 .post-article .post-meta {
-    margin-top: 0.75rem;
-    color: #666;
-    font-size: 0.95rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    color: var(--texto-muted);
+    font-size: 0.92rem;
 }
 
 .post-article .post-author {
-    display: inline-block;
-    margin-left: 0.75rem;
     font-weight: 600;
-    color: #555;
 }
 
-/* Main content */
-.post-article .post-conteudo {
-    font-size: 1.125rem;
+.post-article .post-author a {
+    color: var(--azul-texto);
+    text-decoration: none;
+}
+
+.post-article .post-author a:hover {
+    text-decoration: underline;
+}
+
+.post-article .post-description {
+    color: #223039;
+    font-size: clamp(1rem, 1.8vw, 1.12rem);
     line-height: 1.9;
-    color: #222;
-    max-width: 900px; /* limitar largura de leitura para conforto */
-    margin: 1.5rem auto 0 auto;
-    text-align: left;
     white-space: pre-wrap;
 }
 
-.post-article .post-conteudo p {
-    margin-bottom: 1rem;
+.post-actions {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(36, 90, 114, 0.1);
 }
 
-.post-article .post-conteudo img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 1rem auto;
+#comments {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(36, 90, 114, 0.1);
 }
 
-.post-article .post-conteudo blockquote {
-    margin: 1rem 0;
-    padding: 1rem 1.25rem;
-    background: rgba(0,0,0,0.03);
-    border-left: 4px solid var(--verde-bebe);
+.comment-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: start;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .post-article.glass-card {
-        padding: 1.5rem;
-        border-radius: 12px;
+@media (max-width: 640px) {
+    .post-article .post-meta {
+        display: block;
     }
 
-    .post-article .post-titulo {
-        font-size: 1.75rem;
+    .post-article .post-author {
+        display: block;
+        margin-top: 0.2rem;
     }
 
-    .post-article .post-conteudo {
-        padding: 0 1rem;
-        max-width: 100%;
+    .comment-form {
+        grid-template-columns: 1fr;
     }
 }

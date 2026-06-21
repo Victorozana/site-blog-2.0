@@ -1,104 +1,102 @@
-// Mocked profile persistence using localStorage. Save all updatable fields every time 'Salvar' is pressed.
-const STORAGE_KEY = 'mockProfile';
+const profileForm = document.querySelector('#profileForm');
+const photoInput = document.querySelector('#photoInput');
+const bioInput = document.querySelector('#bio');
+const bioCount = document.querySelector('#bioCount');
+const saveBtn = document.querySelector('#saveBtn');
+const message = document.querySelector('#profileMessage');
+const previewImage = document.querySelector('#profilePreviewImage');
+const previewName = document.querySelector('#profilePreviewName');
+const previewBio = document.querySelector('#profilePreviewBio');
 
-function readMockProfile(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {} }catch(e){ return {} }
+let selectedPhoto = null;
+
+function normalizeImageUrl(url) {
+    if (!url) return '/img/avatar-placeholder.svg';
+    if (url.startsWith('/uploads/images/')) return url.replace('/uploads/images/', '/user/uploads/images/');
+    return url;
 }
 
-function writeMockProfile(profile){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+function updateBioPreview() {
+    const bio = bioInput.value.trim();
+    bioCount.textContent = bioInput.value.length;
+    previewBio.textContent = bio || 'Sua bio aparecerá aqui.';
 }
 
-// UI helpers
-const el = id => document.getElementById(id);
-let photos = []; // array of data URLs
-
-function renderPhotos(){
-  const list = el('photoList');
-  list.innerHTML = '';
-  photos.forEach((src, idx) => {
-    const div = document.createElement('div');
-    div.className = 'photo-item';
-    const img = document.createElement('img'); img.src = src; div.appendChild(img);
-    const btn = document.createElement('button'); btn.className = 'remove'; btn.textContent = '×';
-    btn.title = 'Remover foto';
-    btn.addEventListener('click', ()=>{ removePhoto(idx) });
-    div.appendChild(btn);
-    list.appendChild(div);
-  });
-  if(photos.length===0){ list.textContent = 'Nenhuma foto adicionada.' }
+function showMessage(text, type = 'info') {
+    message.textContent = text;
+    message.className = `profile-message profile-message--${type}`;
 }
 
-function removePhoto(index){ photos.splice(index,1); renderPhotos(); }
+async function loadProfile() {
+    try {
+        const response = await fetch('/user/me', { credentials: 'include' });
 
-function addFiles(files){
-  const arr = Array.from(files);
-  if(arr.length===0) return;
-  arr.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => { photos.push(e.target.result); renderPhotos(); };
-    reader.readAsDataURL(file);
-  });
+        if (!response.ok) throw new Error('Não foi possível carregar seu perfil.');
+
+        const profile = await response.json();
+        previewName.textContent = profile.name || 'Seu nome';
+        bioInput.value = profile.bio || '';
+        previewImage.src = normalizeImageUrl(profile.profilePictureUrl);
+        updateBioPreview();
+    } catch (error) {
+        showMessage(error.message, 'error');
+    }
 }
 
-function loadForm(){
-  const data = readMockProfile();
-  el('name').value = data.name || '';
-  el('email').value = data.email || '';
-  el('bio').value = data.bio || '';
-  photos = (data.photos && Array.isArray(data.photos)) ? data.photos.slice() : [];
-  renderPhotos();
-  showResult('Dados carregados (mock).');
+async function uploadPhoto() {
+    if (!selectedPhoto) return;
+
+    const formData = new FormData();
+    formData.append('file', selectedPhoto);
+
+    const response = await fetch('/user/profile-picture', {
+        method: 'PATCH',
+        credentials: 'include',
+        body: formData
+    });
+
+    if (!response.ok) throw new Error('Não foi possível salvar a foto.');
 }
 
-function showResult(msg){ el('result').textContent = typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2); }
+async function saveProfile(event) {
+    event.preventDefault();
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Salvando...';
+    showMessage('Salvando alterações...');
 
-function collectForm(){
-  // Collect all updatable columns and always save them (even if unchanged)
-  return {
-    id: readMockProfile().id || generateId(),
-    name: el('name').value.trim(),
-    email: el('email').value.trim(),
-    bio: el('bio').value.trim(),
-    photos: photos.slice(),
-    updatedAt: new Date().toISOString()
-  };
+    try {
+        await uploadPhoto();
+
+        const response = await fetch('/user/profile', {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bio: bioInput.value.trim() })
+        });
+
+        if (!response.ok) throw new Error('Não foi possível salvar a bio.');
+
+        selectedPhoto = null;
+        photoInput.value = '';
+        await loadProfile();
+        showMessage('Perfil atualizado com sucesso.', 'success');
+    } catch (error) {
+        showMessage(error.message, 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Salvar perfil';
+    }
 }
 
-function generateId(){ // simple mock id
-  return 'u_' + Math.random().toString(36).slice(2,10);
-}
+photoInput.addEventListener('change', () => {
+    const [file] = photoInput.files;
+    selectedPhoto = file || null;
 
-function mockSave(profile){
-  // simulate network delay and always persist all fields
-  showResult('Salvando...');
-  return new Promise(resolve => setTimeout(()=>{
-    writeMockProfile(profile);
-    resolve(profile);
-  }, 700));
-}
-
-async function onSave(){
-  const profile = collectForm();
-  try{
-    const saved = await mockSave(profile);
-    showResult(saved);
-    // reflect saved state into form (id/update timestamp)
-    loadForm();
-  }catch(e){ showResult('Erro ao salvar: '+e.message) }
-}
-
-function onClear(){
-  photos = []; renderPhotos();
-  el('name').value=''; el('email').value=''; el('bio').value='';
-  localStorage.removeItem(STORAGE_KEY);
-  showResult('Dados locais removidos.');
-}
-
-// Init
-ndocument.addEventListener('DOMContentLoaded', ()=>{
-  el('photoInput').addEventListener('change', (e)=> addFiles(e.target.files));
-  el('saveBtn').addEventListener('click', onSave);
-  el('clearBtn').addEventListener('click', onClear);
-  loadForm();
+    if (selectedPhoto) {
+        previewImage.src = URL.createObjectURL(selectedPhoto);
+    }
 });
+
+bioInput.addEventListener('input', updateBioPreview);
+profileForm.addEventListener('submit', saveProfile);
+document.addEventListener('DOMContentLoaded', loadProfile);

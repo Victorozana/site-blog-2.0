@@ -49,6 +49,7 @@ public class BlogBO {
 
         System.out.println(blog.getTitle());
 
+        dto.setAuthorId(blog.getUser().getId());
         dto.setAuthor(blog.getUser().getName());
         dto.setDescription(blog.getDescription());
         dto.setTitle(blog.getTitle());

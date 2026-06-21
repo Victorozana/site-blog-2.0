@@ -15,13 +15,14 @@
     <script src="/js/blogScreen.js" defer></script>
 </head>
 <body>
-<header class="container py-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
-        <a href="/" class="text-decoration-none fs-4 fw-bold text-dark">BLOG DO VICTOR</a>
+<header class="site-header">
+    <div class="container py-3">
+    <div class="site-nav">
+        <a href="/" class="brand-link">Blog do Victor</a>
         <div class="d-flex gap-2 align-items-center">
             <a href="/register/user" class="btn btn-outline-dark">Sign up</a>
         </div>
-        <div class="options-menu" aria-hidden="true">
+        <div class="options-menu">
           <button class="options-toggle" aria-expanded="false" aria-haspopup="true" aria-label="Mais opções">
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" focusable="false">
               <circle cx="5" cy="12" r="2"></circle>
@@ -30,12 +31,13 @@
             </svg>
           </button>
           <div class="options-dropdown" role="menu" hidden>
-            <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">+ Criar Post</a>
-            <a href="/profile" role="menuitem">Perfil</a>
+            <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
+            <a href="/user" role="menuitem">Perfil</a>
             <a href="/config" role="menuitem">Configurações</a>
             <button type="button" role="menuitem" id="logout-btn">Sair</button>
           </div>
         </div>
+    </div>
     </div>
 </header>
 <main class="container my-5">
@@ -45,11 +47,11 @@
             <h2 id="post-subtitle" class="post-subtitle">Subtítulo ou resumo curto do post</h2>
             <div class="post-meta mt-3">
                 <small id="post-data" class="post-data">01/01/2026</small>
-                <small id="post-author" class="post-author"> — Autor: Victor Oliveira</small>
+                <small class="post-author">Autor: <a id="post-author-link" href="#">Victor Oliveira</a></small>
             </div>
         </header>
 
-        <section id="post-description" class="post-description mt-4">
+        <section id="post-description" class="post-description mt-4" aria-live="polite">
         </section>
 
         <div class="post-actions d-flex gap-3 mt-4 align-items-center">
@@ -57,14 +59,15 @@
                 <span class="like-icon">❤</span>
                 <span id="likeCount">0</span>
             </button>
-            <button id="btnToggleComments" class="btn btn-outline-secondary">Comentários</button>
+            <button id="btnToggleComments" class="btn btn-outline-secondary" aria-expanded="false" aria-controls="comments">Comentários</button>
         </div>
 
         <section id="comments" class="mt-4 d-none">
             <div id="comments-list" class="mb-3">
                 <!-- comentários serão renderizados aqui -->
             </div>
-            <form id="comment-form" class="d-flex gap-2" onsubmit="return false;">
+            <form id="comment-form" class="comment-form" onsubmit="return false;">
+                <label for="commentText" class="visually-hidden">Comentário</label>
                 <textarea id="commentText" class="form-control" rows="2" placeholder="Escreva um comentário..." required></textarea>
                 <button id="btnSendComment" class="btn btn-primary">Enviar</button>
             </form>

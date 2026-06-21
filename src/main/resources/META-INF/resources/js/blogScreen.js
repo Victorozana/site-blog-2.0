@@ -6,7 +6,7 @@ const id = urlParams.get('id');
 const postTitle = document.querySelector('#post-title');
 const postSubtitle = document.querySelector('#post-subtitle');
 const postDate = document.querySelector('#post-data');
-const postAuthor = document.querySelector('#post-author');
+const postAuthorLink = document.querySelector('#post-author-link');
 const postDescription = document.querySelector('#post-description');
 
 // 3. FUNÇÃO UTILITÁRIA DE DATA
@@ -24,9 +24,10 @@ function formatarData(dataString) {
 
 // 4. CHAMADA ASSÍNCRONA À API
 async function carregarPost(){
-    // Proteção cética: se não houver ID na URL, avisa no console e interrompe
     if (!id) {
         console.error("Nenhum ID de postagem foi fornecido na URL.");
+        postTitle.textContent = 'Post não encontrado';
+        postSubtitle.textContent = 'Abra um post a partir da página inicial.';
         return;
     }
 
@@ -44,17 +45,19 @@ async function carregarPost(){
         renderizarPost(post);
     } catch (error){
         console.error("Erro técnico:", error);
+        postTitle.textContent = 'Erro ao carregar o post';
+        postSubtitle.textContent = 'Tente novamente mais tarde.';
     }
 }
 
 // 5. INJEÇÃO DOS DADOS NA TELA
 function renderizarPost(post){
-    postTitle.textContent = post.title;
-    postSubtitle.textContent = post.subtitle;
-    postAuthor.textContent = " — Autor: " + post.author;
+    postTitle.textContent = post.title || 'Post sem título';
+    postSubtitle.textContent = post.subtitle || '';
+    postAuthorLink.textContent = post.author || 'Autor desconhecido';
+    postAuthorLink.href = post.authorId ? `/profile?id=${post.authorId}` : '#';
     postDate.textContent = formatarData(post.localDateTime);
-    const descricaoOriginal = post.description;
-    document.querySelector('#post-description').innerHTML = descricaoOriginal.replace(/\n/g, '<br>');
+    postDescription.textContent = post.description || '';
 }
 
 // 6. INTERAÇÃO: likes e comentários
@@ -69,14 +72,28 @@ const btnSendComment = document.getElementById('btnSendComment');
 
 let likesCount = 0;
 
+function renderLikeState(data) {
+    likesCount = data.totalLikes || 0;
+    likeCountEl.textContent = likesCount;
+    btnLike.setAttribute('aria-pressed', String(Boolean(data.userLiked)));
+    btnLike.classList.toggle('text-danger', Boolean(data.userLiked));
+}
+
+async function readErrorMessage(response) {
+    try {
+        const data = await response.json();
+        return data.error || data.message || 'Falha ao processar a curtida';
+    } catch (e) {
+        return 'Falha ao processar a curtida';
+    }
+}
+
 async function fetchLikes(){
     try{
         const res = await fetch(`/blogs/${id}/likes`, { method: 'GET', credentials: 'include' });
         if (res.ok){
-            const data = await res.json(); // assume { count: number, likedByMe: boolean }
-            likesCount = data.totalLikes || 0;
-            likeCountEl.textContent = likesCount;
-            if (data.userLiked) btnLike.setAttribute('aria-pressed', 'true');
+            const data = await res.json();
+            renderLikeState(data);
         }
     }catch(e){ console.warn('Erro ao buscar likes', e); }
 }
@@ -100,49 +117,43 @@ function renderComments(list){
     list.forEach(c => {
         const div = document.createElement('div');
         div.className = 'list-group-item';
-        div.innerHTML = `<div class="fw-semibold">${c.author}</div><div class="comment-text">${escapeHtml(c.comment)}</div><small class="text-muted">${formatarData(c.createdAt)}</small>`;
+        div.innerHTML = `<div class="fw-semibold">${escapeHtml(c.author || 'Usuário')}</div><div class="comment-text">${escapeHtml(c.comment || '')}</div><small class="text-muted">${formatarData(c.createdAt)}</small>`;
         commentsList.appendChild(div);
     });
 }
 
-function escapeHtml(unsafe){ return unsafe.replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]; }); }
+function escapeHtml(unsafe){ return String(unsafe).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]; }); }
 
 btnToggleComments?.addEventListener('click', () => {
     commentsSection.classList.toggle('d-none');
-    if (!commentsSection.classList.contains('d-none')) fetchComments();
+    const isOpen = !commentsSection.classList.contains('d-none');
+    btnToggleComments.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen) fetchComments();
 });
 
 btnLike?.addEventListener('click', async () => {
-    // Verifica visualmente se o botão já está marcado como curtido
     const isLiked = btnLike.getAttribute('aria-pressed') === 'true';
-
-    // Se já curtiu, a intenção é DELETAR. Se não curtiu, a intenção é CRIAR (POST)
     const metodoHttp = isLiked ? 'DELETE' : 'POST';
 
     try {
+        btnLike.disabled = true;
+
         const res = await fetch(`/blogs/${id}/like`, {
             method: metodoHttp,
             credentials: 'include'
         });
 
-        if (res.ok) { // Status 201 (Created) ou 204 (No Content)
-            if (isLiked) {
-                // Removeu o like
-                likesCount -= 1;
-                btnLike.setAttribute('aria-pressed', 'false');
-                btnLike.classList.remove('text-danger'); // Exemplo: remove a cor vermelha
-            } else {
-                // Deu o like
-                likesCount += 1;
-                btnLike.setAttribute('aria-pressed', 'true');
-                btnLike.classList.add('text-danger'); // Exemplo: pinta de vermelho
-            }
-
-            // Atualiza o número na tela
-            likeCountEl.textContent = likesCount;
+        if (!res.ok) {
+            throw new Error(await readErrorMessage(res));
         }
+
+        const data = await res.json();
+        renderLikeState(data);
     } catch(e) {
         console.warn('Erro ao processar a curtida', e);
+        fetchLikes();
+    } finally {
+        btnLike.disabled = false;
     }
 });
 

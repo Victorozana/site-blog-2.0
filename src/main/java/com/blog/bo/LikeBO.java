@@ -35,6 +35,12 @@ public class LikeBO {
             throw new WebApplicationException("Usuário ou Blog não encontrado", Response.Status.NOT_FOUND);
         }
 
+        long existingLike = likeDAO.count("user.id = ?1 and blog.id = ?2", userId, blogId);
+
+        if (existingLike > 0) {
+            return;
+        }
+
         // 3. Monta a entidade Like
         Like like = new Like();
         like.setUser(user); // Passa a entidade completa e gerenciada
@@ -46,7 +52,7 @@ public class LikeBO {
 
     @Transactional
     public void remove(Long userId, Long blogId) {
-        long deletedCount = likeDAO.delete("user.id = ?1 and blog.id = ?2", userId, blogId);
+        likeDAO.delete("user.id = ?1 and blog.id = ?2", userId, blogId);
     }
 
     public LikeResponseDTO list(Long blogId, Long currentUserId) {

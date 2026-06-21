@@ -4,6 +4,8 @@ import com.blog.dao.UserDAO;
 import com.blog.exception.BusinessRuleException;
 import com.blog.model.dto.LoginRequestDTO;
 import com.blog.model.dto.LoginResponseDTO;
+import com.blog.model.dto.UserProfileDTO;
+import com.blog.model.dto.UserProfileUpdateDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
@@ -111,6 +113,36 @@ public class UserBO {
         return userDAO.listAll();
     }
 
+    public UserProfileDTO getPublicProfile(Long userId) {
+        if (userId == null) {
+            throw new WebApplicationException("Usuário não informado", Response.Status.BAD_REQUEST);
+        }
+
+        User user = userDAO.findById(userId);
+
+        if (user == null) {
+            throw new WebApplicationException("Usuário não encontrado", Response.Status.NOT_FOUND);
+        }
+
+        return toProfileDTO(user);
+    }
+
+    @Transactional
+    public UserProfileDTO updateProfile(Long userId, UserProfileUpdateDTO dto) {
+        User user = userDAO.findById(userId);
+
+        if (user == null) {
+            throw new WebApplicationException("Usuário não encontrado", Response.Status.NOT_FOUND);
+        }
+
+        String bio = dto != null ? dto.getBio() : null;
+        user.setBio(bio == null ? null : bio.trim());
+
+        userDAO.persist(user);
+
+        return toProfileDTO(user);
+    }
+
     private boolean validation(User user, LoginRequestDTO dto){
         String salvePassword = user.getCryptographyPassword();
 
@@ -133,5 +165,20 @@ public class UserBO {
 
         // 3. Persiste a alteração
         userDAO.persist(user);
+    }
+
+    private UserProfileDTO toProfileDTO(User user) {
+        String fullName = user.getName();
+
+        if (user.getLastname() != null && !user.getLastname().isBlank()) {
+            fullName = user.getName() + " " + user.getLastname();
+        }
+
+        return new UserProfileDTO(
+                user.getId(),
+                fullName,
+                user.getBio(),
+                user.getProfilePictureUrl()
+        );
     }
 }

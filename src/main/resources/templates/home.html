@@ -6,6 +6,7 @@
     <title>Meu Blog | IFG</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/options-menu.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="/js/security.js"></script>
@@ -13,44 +14,45 @@
     <script src="/js/home.js" defer></script>
 </head>
 <body>
-<header class="container py-4">
-
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
-        <a href="/" class="text-decoration-none fs-4 fw-bold text-dark">BLOG DO VICTOR</a>
-        <div class="d-flex gap-2 align-items-center">
+<header class="site-header">
+    <div class="container py-3">
+        <div class="site-nav">
+            <a href="/" class="brand-link">Blog do Victor</a>
+            <div class="d-flex gap-2 align-items-center">
             <span class="fw-semibold text-dark" id="userName"></span>
-        </div>
-        <!-- floating options menu -->
-        <div class="options-menu" aria-hidden="true">
-          <button class="options-toggle" aria-expanded="false" aria-haspopup="true" aria-label="Mais opções">
-            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" focusable="false" aria-hidden="true">
-              <circle cx="5" cy="12" r="2"></circle>
-              <circle cx="12" cy="12" r="2"></circle>
-              <circle cx="19" cy="12" r="2"></circle>
-            </svg>
-          </button>
-          <div class="options-dropdown" role="menu" hidden>
-            <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">+ Criar Post</a>
-            <a href="/user" role="menuitem">Perfil</a>
-            <a href="/config" role="menuitem">Configurações</a>
-            <button type="button" role="menuitem" id="logout-btn">Sair</button>
-          </div>
+            </div>
+            <div class="options-menu">
+                <button class="options-toggle" aria-expanded="false" aria-haspopup="true" aria-label="Mais opções">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" focusable="false" aria-hidden="true">
+                        <circle cx="5" cy="12" r="2"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <circle cx="19" cy="12" r="2"></circle>
+                    </svg>
+                </button>
+                <div class="options-dropdown" role="menu" hidden>
+                    <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
+                    <a href="/user" role="menuitem">Perfil</a>
+                    <a href="/config" role="menuitem">Configurações</a>
+                    <button type="button" role="menuitem" id="logout-btn">Sair</button>
+                </div>
+            </div>
         </div>
     </div>
 </header>
 <main class="container my-5">
-    <section class="mb-5">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold text-dark" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Artigos Recentes</h2>
-            <p class="text-muted" style="font-size: 1.1rem;">Explore os últimos posts e reflexões</p>
+    <section class="page-intro">
+        <div>
+            <p class="section-kicker">Publicações</p>
+            <h1>Artigos Recentes</h1>
+            <p>Explore os últimos posts e reflexões.</p>
         </div>
     </section>
 
-    <div id="listaBlogs" class="row g-4">
+    <div id="listaBlogs" class="post-list" aria-live="polite">
     </div>
-    <nav class="d-flex justify-content-center mt-5 gap-3">
+    <nav class="pagination-bar" aria-label="Paginação de posts">
         <button id="btnAnterior" class="btn btn-secondary px-4" disabled>Anterior</button>
-        <span id="infoPagina" class="align-self-center fw-bold">Página 1</span>
+        <span id="infoPagina" class="page-indicator">Página 1</span>
         <button id="btnProximo" class="btn btn-secondary px-4">Próximo</button>
     </nav>
 </main>
@@ -58,14 +60,14 @@
     <p>&copy; 2026 Victor Oliveira - Projeto IFG.</p>
 </footer>
 <template id="blog-card-template">
-    <div class="col-12">
-        <div class="glass-card h-100">
+    <article class="post-card">
+        <div>
             <h3 class="post-titulo fw-bold post-title">Título do Post</h3>
             <small class="text-muted post-data post-date">01/01/2026</small>
             <p class="post-resumo mt-2 post-subtitle">Breve descrição do que o usuário vai ler...</p>
-            <a href="/blog" class="btn btn-sm btn-primary post-link">Ler mais</a>
         </div>
-    </div>
+        <a href="/blog" class="btn btn-sm btn-primary post-link">Ler mais</a>
+    </article>
 </template>
 </body>
 </html>

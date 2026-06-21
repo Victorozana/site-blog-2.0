@@ -1,147 +1,61 @@
-/* ============================================
-   ESTILOS DA TELA DE CRIAÇÃO DE POSTS
-   ============================================ */
+.form-panel {
+    margin-top: 0;
+}
 
-/* 1. TEXTAREA COM ALTURA ADEQUADA PARA DESCRIÇÃO */
 .form-textarea {
+    min-height: 220px;
     resize: vertical;
-    min-height: 200px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: rgba(255, 255, 255, 0.6);
-    transition: all 0.3s ease;
 }
 
-.form-textarea:focus {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: var(--azul-bebe);
-    box-shadow: 0 0 10px rgba(167, 220, 242, 0.3);
-}
-
-/* 2. ESTILO PARA O GLASS-CARD WIDE (ocupar mais espaço) */
-.glass-card--wide {
-    margin-bottom: 2rem;
-}
-
-/* 3. MELHORAR O SELECT (dropdown de categoria) */
-.form-select {
-    padding: 12px 15px !important;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: rgba(255, 255, 255, 0.6) !important;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-.form-select:focus {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border-color: var(--azul-bebe);
-    box-shadow: 0 0 10px rgba(167, 220, 242, 0.3);
-}
-
-/* 4. ESTILOS PARA INPUTS */
-.form-control {
-    padding: 12px 15px !important;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: rgba(255, 255, 255, 0.6);
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-.form-control:focus {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: var(--azul-bebe);
-    box-shadow: 0 0 10px rgba(167, 220, 242, 0.3);
-}
-
-/* 5. PLACEHOLDER COM ESTILO */
 .form-control::placeholder,
 .form-textarea::placeholder {
-    color: #999;
-    font-style: italic;
+    color: #819099;
 }
 
-/* 6. MENSAGEM DE FEEDBACK (sucesso/erro) */
+.form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
 .alert {
-    border-radius: 12px;
-    font-weight: 500;
-    animation: slideInUp 0.3s ease;
+    border-radius: 8px;
+    font-weight: 600;
+    animation: slideInUp 0.22s ease;
 }
 
 .alert-success {
-    background: rgba(153, 235, 192, 0.2);
-    border: 1px solid var(--verde-bebe);
-    color: #2d6d5d;
+    border-color: rgba(99, 201, 155, 0.55);
+    background: rgba(153, 235, 192, 0.25);
+    color: #24654d;
 }
 
 .alert-danger {
-    background: rgba(255, 107, 107, 0.2);
-    border: 1px solid #ff6b6b;
-    color: #d63031;
+    border-color: rgba(220, 53, 69, 0.35);
+    background: rgba(220, 53, 69, 0.12);
+    color: #9d2635;
 }
 
 .alert-info {
-    background: rgba(167, 220, 242, 0.2);
-    border: 1px solid var(--azul-bebe);
-    color: #0066cc;
+    border-color: rgba(36, 90, 114, 0.22);
+    background: rgba(167, 220, 242, 0.25);
+    color: #245a72;
 }
 
-/* 7. ANIMAÇÃO DE ENTRADA */
 @keyframes slideInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* 8. ESTILO DO BOTÃO OUTLINE */
-.btn-outline-secondary {
-    border-color: #999;
-    color: #333;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-secondary:hover {
-    background-color: #f0f0f0;
-    border-color: #666;
-    color: #333;
-}
-
-/* 9. RESPONSIVO PARA MOBILE */
-@media (max-width: 768px) {
-    .form-label {
-        font-size: 18px;
+@media (max-width: 640px) {
+    .form-actions {
+        grid-template-columns: 1fr;
     }
-
-    .form-control,
-    .form-select,
-    .form-textarea {
-        font-size: 16px;
-    }
-
-    .glass-card {
-        padding: 25px;
-    }
-
-    .d-flex.gap-2 {
-        flex-direction: column;
-    }
-
-    .d-flex.gap-2 > button {
-        width: 100%;
-    }
-}
-
-/* 10. TRANSIÇÃO SUAVE NO HEADER */
-header {
-    background: rgba(255, 255, 255, 0.2);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
 }

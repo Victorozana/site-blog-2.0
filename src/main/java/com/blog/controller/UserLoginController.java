@@ -59,4 +59,35 @@ public class    UserLoginController {
     public TemplateInstance page_load(){
         return page.instance();
     }
+
+    @POST
+    @Path("/logout")
+    public Response logout() {
+        NewCookie jwtCookie = new NewCookie.Builder("meu_token_jwt")
+                .value("")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .build();
+
+        NewCookie nameCookie = new NewCookie.Builder("userName")
+                .value("")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(false)
+                .build();
+
+        NewCookie roleCookie = new NewCookie.Builder("userType")
+                .value("")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(false)
+                .build();
+
+        return Response.noContent()
+                .cookie(jwtCookie)
+                .cookie(nameCookie)
+                .cookie(roleCookie)
+                .build();
+    }
 }

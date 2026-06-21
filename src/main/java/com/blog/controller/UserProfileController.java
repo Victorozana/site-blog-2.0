@@ -3,6 +3,8 @@ package com.blog.controller;
 import java.io.File;
 import com.blog.bo.ImageStorageBO;
 import com.blog.bo.UserBO;
+import com.blog.model.dto.UserProfileDTO;
+import com.blog.model.dto.UserProfileUpdateDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.RolesAllowed;
@@ -40,9 +42,29 @@ public class UserProfileController {
         return template.instance();
     }
 
+    @GET
+    @Path("/me")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER","READER"})
+    public UserProfileDTO me() {
+        Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
+        return userBO.getPublicProfile(userId);
+    }
+
+    @PATCH
+    @Path("/profile")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"WRITER","READER"})
+    public UserProfileDTO updateProfile(UserProfileUpdateDTO dto) {
+        Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
+        return userBO.updateProfile(userId, dto);
+    }
+
     @PATCH // PATCH é o verbo REST correto quando atualizamos apenas um campo de um recurso
     @Path("/profile-picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @RolesAllowed({"WRITER","READER"})
     public Response uploadProfilePicture(@RestForm("file") FileUpload file) {
 
         // 1. Descobre quem é o usuário baseado no token da requisição

@@ -33,5 +33,16 @@ function checkPermissionAndHide(buttonSelector, requiredRole) {
     }
 }
 
+async function logoutUser() {
+    try {
+        await fetch('/login/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+    } finally {
+        window.location.href = '/login';
+    }
+}
+
 // 4. Executa a proteção de tela imediatamente
 protectRoute();

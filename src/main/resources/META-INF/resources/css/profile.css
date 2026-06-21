@@ -1,73 +1,127 @@
-/* profileScreen.css
-   Apenas regras exclusivas do Perfil. 
-   O layout principal é gerenciado pelo Bootstrap e pelo global.css.
-*/
-
-.photos-section {
-    margin: 1.5rem 0;
+.profile-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    gap: 1.5rem;
+    align-items: start;
+    max-width: 1120px;
+    margin: 0 auto;
 }
 
-.photo-list {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.photo-item {
-    width: 120px;
-    height: 120px;
-    position: relative;
-    border: 1px solid #e1e6f0;
-    border-radius: 8px;
+.profile-card,
+.edit-panel {
     overflow: hidden;
-    background: #fafbff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 1px solid rgba(36, 90, 114, 0.1);
+    border-radius: 8px;
+    background: var(--superficie-forte);
+    box-shadow: var(--sombra-card);
 }
 
-.photo-item img {
-    max-width: 100%;
-    max-height: 100%;
+.profile-cover {
+    min-height: 190px;
+    background:
+        linear-gradient(135deg, rgba(99, 201, 155, 0.9), rgba(167, 220, 242, 0.9)),
+        linear-gradient(45deg, #dff7ec, #e5f5fb);
+}
+
+.profile-summary {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: end;
+    padding: 0 1.75rem 1.75rem;
+}
+
+.profile-avatar {
+    width: clamp(112px, 16vw, 148px);
+    height: clamp(112px, 16vw, 148px);
+    margin-top: -58px;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    background: #eef6f9;
+    box-shadow: 0 12px 28px rgba(36, 90, 114, 0.18);
     object-fit: cover;
-    display: block;
 }
 
-/* O botão de remover a foto */
-.photo-item button.remove {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+.profile-summary h1 {
+    margin: 0;
+    color: #1f2f36;
+    font-size: clamp(1.75rem, 4vw, 2.55rem);
+    font-weight: 700;
+    line-height: 1.1;
 }
 
-.photo-item button.remove:hover {
-    background: rgba(220, 53, 69, 0.9); /* Vermelho do Bootstrap ao passar o mouse */
-}
-
-/* O terminal de resultados (se for usar) */
-.result-box {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    font-family: monospace;
+.profile-bio {
+    max-width: 680px;
+    margin: 0.7rem 0 0;
+    color: #4c5d65;
+    font-size: 1.02rem;
+    line-height: 1.75;
     white-space: pre-wrap;
-    max-height: 240px;
-    overflow-y: auto;
 }
 
-/* Responsividade para telas menores */
-@media (max-width: 520px) {
-    .photo-item {
-        width: 92px;
-        height: 92px;
+.edit-panel {
+    padding: clamp(1.25rem, 3vw, 1.6rem);
+}
+
+.edit-panel h2 {
+    margin: 0;
+    color: #1f2f36;
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.panel-subtitle {
+    margin: 0.4rem 0 1.4rem;
+    color: var(--texto-muted);
+}
+
+.field-hint {
+    margin-top: 0.45rem;
+    color: var(--texto-muted);
+    font-size: 0.86rem;
+    text-align: right;
+}
+
+.profile-message {
+    min-height: 24px;
+    margin-top: 1rem;
+    color: var(--texto-muted);
+    font-weight: 600;
+}
+
+.profile-message--success {
+    color: #24654d;
+}
+
+.profile-message--error {
+    color: #9d2635;
+}
+
+.public-profile-card {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .profile-cover {
+        min-height: 140px;
+    }
+
+    .profile-summary {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+        padding: 0 1.1rem 1.35rem;
+    }
+
+    .profile-avatar {
+        width: 112px;
+        height: 112px;
+        margin-top: -48px;
     }
 }

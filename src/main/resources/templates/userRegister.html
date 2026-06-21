@@ -14,20 +14,20 @@
 
         <form id="formCadastro">
             <div class="mb-3">
-                <label class="form-label">Nome</label>
+                <label class="form-label" for="name">Nome</label>
                 <input type="text" class="form-control" id="name" autocomplete="given-name" required>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Sobrenome</label>
+                <label class="form-label" for="lastname">Sobrenome</label>
                 <input type="text" class="form-control" id="lastname" autocomplete="family-name" required>
             </div>
     <div class="mb-3">
-        <label class="form-label">Data Nascimento</label>
+        <label class="form-label" for="dt_nasc">Data Nascimento</label>
         <input type="text" class="form-control" id="dt_nasc" placeholder="DD/MM/YYYY" autocomplete="bday" required>
     </div>
     <div class="mb-3">
-        <label class="form-label">Telefone</label>
+        <label class="form-label" for="fone">Telefone</label>
         <input type="tel" class="form-control" id="fone" placeholder="(99)99999-2222" autocomplete="tel" required>
     </div>
     <div class="mb-3">
@@ -39,13 +39,13 @@
     </div>
     <div>
         <div class="mb-3">
-            <label class="form-label">Email</label>
-            <label for="email"></label><input type="email" class="form-control" id="email" aria-describedby="emailHelp" autocomplete="email" required>
+            <label class="form-label" for="email">Email</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" autocomplete="email" required>
         </div>
     </div>
     <div class="mb-3">
-        <label class="form-label">Senha</label>
-        <label for="password"></label><label for="password"></label><input type="password" class="form-control" id="password" autocomplete="new-password" required>
+        <label class="form-label" for="password">Senha</label>
+        <input type="password" class="form-control" id="password" autocomplete="new-password" required>
     </div>
     <button type="submit" class="btn-main" id="btnSalvar">Cadastrar</button>
 </form>

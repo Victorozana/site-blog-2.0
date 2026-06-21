@@ -17,13 +17,15 @@ public class LikeController {
 
     @POST
     @Path("/{blogId}/like")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response register(@PathParam("blogId") Long blogId){
-        Object claim = jwt.getClaim("idUser");
-        Long userId = Long.valueOf(claim.toString());
+        Long userId = currentUserId();
 
         likeBO.create(userId, blogId);
 
-        return Response.ok(Response.Status.CREATED).build();
+        LikeResponseDTO response = likeBO.list(blogId, userId);
+
+        return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
     @GET
@@ -52,24 +54,28 @@ public class LikeController {
 
     @DELETE
     @Path("/{blogId}/like")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response remove(@PathParam("blogId") Long blogId){
-        // 1. Extrai o ID do usuário do Token (garantindo que ele está logado)
-        Long userId = null;
-        try {
-            Object claim = jwt.getClaim("idUser");
-            if (claim != null) {
-                userId = Long.valueOf(claim.toString());
-            } else {
-                return Response.status(Response.Status.UNAUTHORIZED).build();
-            }
-        } catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
+        Long userId = currentUserId();
 
         // 2. Chama a regra de negócio para deletar
         likeBO.remove(userId, blogId);
 
-        // 3. Retorna 204 No Content (Padrão HTTP para uma exclusão bem-sucedida que não devolve corpo)
-        return Response.noContent().build();
+        LikeResponseDTO response = likeBO.list(blogId, userId);
+
+        return Response.ok(response).build();
+    }
+
+    private Long currentUserId() {
+        try {
+            Object claim = jwt.getClaim("idUser");
+            if (claim != null) {
+                return Long.valueOf(claim.toString());
+            }
+        } catch (Exception e) {
+            throw new WebApplicationException("Faça login novamente para curtir posts.", Response.Status.UNAUTHORIZED);
+        }
+
+        throw new WebApplicationException("Faça login novamente para curtir posts.", Response.Status.UNAUTHORIZED);
     }
 }

@@ -12,17 +12,12 @@ const textoPagina = document.querySelector('#infoPagina');
 // Função para formatar data em DD/MM/AAAA
 function formatarData(dataString) {
     if (!dataString) return '';
-    
-    // Se for ISO (YYYY-MM-DDTHH:MM:SS)
+
     const date = new Date(dataString);
     if (!isNaN(date)) {
-        const dia = String(date.getDate()).padStart(2, '0');
-        const mes = String(date.getMonth() + 1).padStart(2, '0');
-        const ano = date.getFullYear();
-        return `Postado dia ${dia}/${mes}/${ano}`;
+        return `Postado dia ${new Intl.DateTimeFormat('pt-BR').format(date)}`;
     }
-    
-    // Se for string custom, tenta parsear manualmente
+
     return dataString;
 }
 
@@ -37,64 +32,48 @@ function ordenarPorData(posts) {
 
 async function carregarPosts() {
     try {
-        // 1. Montagem da URL (Contrato de API)
         const url = `/home/posts?page=${paginaAtual}&size=${tamanhoPagina}`;
-        console.log("[home.js] Chamando API:", url);
 
         const response = await fetch(url);
-        console.log("[home.js] Response status:", response.status);
 
         if (!response.ok) throw new Error("Falha na comunicação com o servidor");
 
         let posts = await response.json();
-        console.log("[home.js] Posts recebidos:", posts);
 
-        // 2. Ordenar por data (mais recente primeiro)
         posts = ordenarPorData(posts);
-
-        // 3. Renderização
         renderizarCards(posts);
-
-        // 4. Atualização da Interface (Botões)
         atualizarControles(posts.length);
 
     } catch (error) {
         console.error("[home.js] Erro técnico:", error);
-        containerLista.innerHTML = `<p class="text-danger text-center">Erro ao carregar o conteúdo. Tente novamente mais tarde.</p>`;
+        containerLista.innerHTML = '<div class="empty-state text-danger">Erro ao carregar o conteúdo. Tente novamente mais tarde.</div>';
+        btnProximo.disabled = true;
     }
 }
 
 function renderizarCards(listaDePosts) {
-    // 1. Limpa o terreno (Fundamental para não encavalar os posts)
     containerLista.innerHTML = '';
 
     if (listaDePosts.length === 0) {
-        containerLista.innerHTML = '<p class="text-center">Nenhuma publicação encontrada nesta página.</p>';
+        containerLista.innerHTML = '<div class="empty-state">Nenhuma publicação encontrada nesta página.</div>';
         return;
     }
 
     listaDePosts.forEach(post => {
-        // 2. Tira o 'Xerox' do molde
         const clone = templateCard.content.cloneNode(true);
 
-        // 3. Preenche as lacunas com os dados do DTO
-        clone.querySelector('.post-title').textContent = post.title;
+        clone.querySelector('.post-title').textContent = post.title || 'Post sem título';
         clone.querySelector('.post-date').textContent = formatarData(post.localDateTime);
-        clone.querySelector('.post-subtitle').textContent = post.subtitle;
+        clone.querySelector('.post-subtitle').textContent = post.subtitle || 'Sem resumo disponível.';
         clone.querySelector('.post-link').href = `/blog/?id=${post.id}`;
 
-        // 4. Pendura o card pronto na tela
         containerLista.appendChild(clone);
     });
 }
 
 function atualizarControles(quantidadeRecebida) {
-    // Lógica cética: Se estou na página 0, não posso voltar
     btnAnterior.disabled = (paginaAtual === 0);
-
-    // Se veio menos posts do que o limite, significa que a próxima página está vazia
     btnProximo.disabled = (quantidadeRecebida < tamanhoPagina);
-
     textoPagina.textContent = `Página ${paginaAtual + 1}`;
 }
 
