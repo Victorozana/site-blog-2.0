@@ -10,6 +10,17 @@ const postAuthorLink = document.querySelector('#post-author-link');
 const postAuthorName = document.querySelector('#post-author-name');
 const postAuthorAvatar = document.querySelector('#post-author-avatar');
 const postDescription = document.querySelector('#post-description');
+const postManagement = document.querySelector('#post-management');
+const editPostForm = document.querySelector('#editPostForm');
+const editTitle = document.querySelector('#editTitle');
+const editSubtitle = document.querySelector('#editSubtitle');
+const editCategory = document.querySelector('#editCategory');
+const editDescription = document.querySelector('#editDescription');
+const btnDeletePost = document.querySelector('#btnDeletePost');
+const btnSavePost = document.querySelector('#btnSavePost');
+const postManagementMessage = document.querySelector('#postManagementMessage');
+
+let currentPost = null;
 
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
@@ -60,6 +71,7 @@ async function carregarPost(){
 
 // 5. INJEÇÃO DOS DADOS NA TELA
 function renderizarPost(post){
+    currentPost = post;
     postTitle.textContent = post.title || 'Post sem título';
     postSubtitle.textContent = post.subtitle || '';
     postAuthorName.textContent = post.author || 'Autor desconhecido';
@@ -68,6 +80,36 @@ function renderizarPost(post){
     postAuthorLink.href = post.authorId ? `/profile?id=${post.authorId}` : '#';
     postDate.textContent = formatarData(post.localDateTime);
     postDescription.textContent = post.description || '';
+    renderManagementPanel(post);
+}
+
+function canManagePost(post) {
+    const userRole = typeof readCookie === 'function' ? readCookie('userType') : null;
+    const userId = typeof readCookie === 'function' ? readCookie('userId') : null;
+
+    if (userRole === 'ADMIN') return true;
+    return userRole === 'WRITER' && userId && String(post.authorId) === String(userId);
+}
+
+function renderManagementPanel(post) {
+    if (!postManagement || !canManagePost(post)) {
+        postManagement?.classList.add('d-none');
+        return;
+    }
+
+    postManagement.classList.remove('d-none');
+    editTitle.value = post.title || '';
+    editSubtitle.value = post.subtitle || '';
+    editCategory.value = post.category || 'advices';
+    editDescription.value = post.description || '';
+}
+
+function showManagementMessage(text, type = 'info') {
+    if (!postManagementMessage) return;
+    postManagementMessage.textContent = text;
+    postManagementMessage.classList.remove('is-success', 'is-error');
+    if (type === 'success') postManagementMessage.classList.add('is-success');
+    if (type === 'error') postManagementMessage.classList.add('is-error');
 }
 
 // 6. INTERAÇÃO: likes e comentários
@@ -220,6 +262,84 @@ commentForm?.addEventListener('submit', async (e) => {
         console.warn('Erro ao enviar comentário', e);
     } finally {
         btnSendComment.disabled = false;
+    }
+});
+
+editPostForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const title = editTitle.value.trim();
+    const subtitle = editSubtitle.value.trim();
+    const category = editCategory.value;
+    const description = editDescription.value.trim();
+
+    if (title.length < 3 || title.length > 120) {
+        showManagementMessage('Título deve ter entre 3 e 120 caracteres.', 'error');
+        return;
+    }
+
+    if (subtitle.length > 160) {
+        showManagementMessage('Subtítulo deve ter no máximo 160 caracteres.', 'error');
+        return;
+    }
+
+    if (!category) {
+        showManagementMessage('Selecione uma categoria.', 'error');
+        return;
+    }
+
+    if (description.length < 20 || description.length > 10000) {
+        showManagementMessage('Conteúdo deve ter entre 20 e 10000 caracteres.', 'error');
+        return;
+    }
+
+    try {
+        btnSavePost.disabled = true;
+        showManagementMessage('Salvando alterações...');
+
+        const response = await fetch(`/blog/${id}`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, subtitle, category, description })
+        });
+
+        if (!response.ok) {
+            throw new Error(await readErrorMessage(response, 'Não foi possível atualizar o post.'));
+        }
+
+        showManagementMessage('Post atualizado com sucesso.', 'success');
+        await carregarPost();
+    } catch (error) {
+        showManagementMessage(error.message, 'error');
+    } finally {
+        btnSavePost.disabled = false;
+    }
+});
+
+btnDeletePost?.addEventListener('click', async () => {
+    if (!currentPost) return;
+
+    const confirmed = window.confirm('Tem certeza que deseja excluir este post? Essa ação não pode ser desfeita.');
+    if (!confirmed) return;
+
+    try {
+        btnDeletePost.disabled = true;
+        showManagementMessage('Excluindo post...');
+
+        const response = await fetch(`/blog/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error(await readErrorMessage(response, 'Não foi possível excluir o post.'));
+        }
+
+        window.location.href = '/';
+    } catch (error) {
+        showManagementMessage(error.message, 'error');
+        btnDeletePost.disabled = false;
     }
 });
 

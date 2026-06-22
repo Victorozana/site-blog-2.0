@@ -60,6 +60,55 @@
     white-space: pre-wrap;
 }
 
+.post-management {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(36, 90, 114, 0.14);
+    border-radius: 8px;
+    background: rgba(248, 251, 255, 0.88);
+}
+
+.management-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.management-header h3 {
+    margin: 0;
+    color: #1f2f36;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.edit-post-form textarea {
+    min-height: 220px;
+    resize: vertical;
+}
+
+.management-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.management-message {
+    color: var(--texto-muted);
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.management-message.is-success {
+    color: #287a55;
+}
+
+.management-message.is-error {
+    color: #b42318;
+}
+
 .post-actions {
     padding-top: 1rem;
     border-top: 1px solid rgba(36, 90, 114, 0.1);
@@ -89,5 +138,11 @@
 
     .comment-form {
         grid-template-columns: 1fr;
+    }
+
+    .management-header,
+    .management-actions {
+        align-items: stretch;
+        flex-direction: column;
     }
 }

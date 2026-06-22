@@ -1,6 +1,8 @@
 package com.blog.bo;
 
 import com.blog.dao.BlogDAO;
+import com.blog.dao.CommentDAO;
+import com.blog.dao.LikeDAO;
 import com.blog.model.dto.BlogResponseDTO;
 import com.blog.model.dto.BlogScreenDTO;
 import com.blog.model.dto.MainScreenDTO;
@@ -22,6 +24,10 @@ import java.util.List;
 public class BlogBO {
     @Inject
     BlogDAO blogDAO;
+    @Inject
+    CommentDAO commentDAO;
+    @Inject
+    LikeDAO likeDAO;
     @Inject
     UserBO userBO;
     @Inject
@@ -62,12 +68,46 @@ public class BlogBO {
     }
 
     @Transactional
-    public void deleteBlog(Long id) {
+    public BlogResponseDTO updateBlog(Long blogId, Long userId, boolean admin, BlogRegistrationDTO dto) {
+        BusinessValidator.validatePositiveId(blogId, "Post");
+        BusinessValidator.validatePositiveId(userId, "Usuário");
+        BusinessValidator.validateBlogRegistration(dto);
+
+        Blog blog = blogDAO.findById(blogId);
+
+        if (blog == null) {
+            throw new WebApplicationException("Post não encontrado", Response.Status.NOT_FOUND);
+        }
+
+        if (!admin && !blog.getUser().getId().equals(userId)) {
+            throw new WebApplicationException("Você não tem permissão para editar este post.", Response.Status.FORBIDDEN);
+        }
+
+        blog.setTitle(dto.getTitle().trim());
+        blog.setSubtitle(dto.getSubtitle() == null ? null : dto.getSubtitle().trim());
+        blog.setDescription(dto.getDescription().trim());
+        blog.setCategory(dto.getCategory());
+
+        blogDAO.persist(blog);
+        auditLogBO.log("BLOG_UPDATED", blog.getUser(), "Post atualizado: " + blog.getTitle());
+
+        return toBlogResponseDTO(blog);
+    }
+
+    @Transactional
+    public void deleteBlog(Long id, Long userId, boolean admin) {
         BusinessValidator.validatePositiveId(id, "Post");
+        BusinessValidator.validatePositiveId(userId, "Usuário");
         Blog blog = blogDAO.findById(id);
 
         if (blog != null) {
+            if (!admin && !blog.getUser().getId().equals(userId)) {
+                throw new WebApplicationException("Você não tem permissão para excluir este post.", Response.Status.FORBIDDEN);
+            }
+
             auditLogBO.log("BLOG_DELETED", blog.getUser(), "Post removido: " + blog.getTitle());
+            likeDAO.delete("blog.id", id);
+            commentDAO.delete("blog.id", id);
             blogDAO.delete(blog);
         }
     }
@@ -81,12 +121,14 @@ public class BlogBO {
         }
 
         BlogScreenDTO dto = new BlogScreenDTO();
+        dto.setId(blog.getId());
         dto.setAuthorId(blog.getUser().getId());
         dto.setAuthor(authorName(blog.getUser()));
         dto.setAuthorProfilePictureUrl(blog.getUser().getProfilePictureUrl());
         dto.setDescription(blog.getDescription());
         dto.setTitle(blog.getTitle());
         dto.setSubtitle(blog.getSubtitle());
+        dto.setCategory(blog.getCategory());
         dto.setLocalDateTime(blog.getLocalDateTime());
 
         return dto;
@@ -121,11 +163,36 @@ public class BlogBO {
         return dtos;
     }
 
+    public List<BlogResponseDTO> manageableBlogList(Long userId, boolean admin) {
+        BusinessValidator.validatePositiveId(userId, "Usuário");
+
+        List<Blog> blogs = admin
+                ? blogDAO.find("order by localDateTime desc").list()
+                : blogDAO.find("user.id = ?1 order by localDateTime desc", userId).list();
+
+        return blogs.stream()
+                .map(this::toBlogResponseDTO)
+                .toList();
+    }
+
     private String authorName(User user) {
         if (user.getLastname() == null || user.getLastname().isBlank()) {
             return user.getName();
         }
 
         return user.getName() + " " + user.getLastname();
+    }
+
+    private BlogResponseDTO toBlogResponseDTO(Blog blog) {
+        return new BlogResponseDTO(
+                blog.getId(),
+                blog.getUser().getId(),
+                authorName(blog.getUser()),
+                blog.getTitle(),
+                blog.getSubtitle(),
+                blog.getDescription(),
+                blog.getCategory(),
+                blog.getLocalDateTime()
+        );
     }
 }

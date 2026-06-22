@@ -29,6 +29,7 @@
           </button>
           <div class="options-dropdown" role="menu" hidden>
             <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
+            <a href="/blog/manage" role="menuitem" id="menuManagePosts">Gerenciar Posts</a>
             <a href="/user" role="menuitem">Perfil</a>
             <a href="/admin" role="menuitem" id="menuAdmin">Configurações</a>
             <button type="button" role="menuitem" id="logout-btn">Sair</button>
@@ -52,6 +53,47 @@
         </header>
 
         <section id="post-description" class="post-description mt-4" aria-live="polite">
+        </section>
+
+        <section id="post-management" class="post-management d-none" aria-label="Gerenciar post">
+            <div class="management-header">
+                <div>
+                    <p class="section-kicker">Gerenciar</p>
+                    <h3>Editar publicação</h3>
+                </div>
+                <button id="btnDeletePost" type="button" class="btn btn-outline-danger">Excluir post</button>
+            </div>
+
+            <form id="editPostForm" class="edit-post-form">
+                <div class="mb-3">
+                    <label for="editTitle" class="form-label">Título</label>
+                    <input id="editTitle" class="form-control" type="text" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="editSubtitle" class="form-label">Subtítulo</label>
+                    <input id="editSubtitle" class="form-control" type="text">
+                </div>
+
+                <div class="mb-3">
+                    <label for="editCategory" class="form-label">Categoria</label>
+                    <select id="editCategory" class="form-select" required>
+                        <option value="mistery">Mistério</option>
+                        <option value="selfhelp">Autoajuda</option>
+                        <option value="advices">Dicas</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="editDescription" class="form-label">Conteúdo</label>
+                    <textarea id="editDescription" class="form-control" rows="8" required></textarea>
+                </div>
+
+                <div class="management-actions">
+                    <button id="btnSavePost" type="submit" class="btn btn-primary">Salvar alterações</button>
+                    <span id="postManagementMessage" class="management-message" role="status" aria-live="polite"></span>
+                </div>
+            </form>
         </section>
 
         <div class="post-actions d-flex gap-3 mt-4 align-items-center">

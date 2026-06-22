@@ -8,6 +8,8 @@ const templateCard = document.querySelector('#blog-card-template');
 const btnAnterior = document.querySelector('#btnAnterior');
 const btnProximo = document.querySelector('#btnProximo');
 const textoPagina = document.querySelector('#infoPagina');
+const homeCreatePost = document.querySelector('#homeCreatePost');
+const homeManagePosts = document.querySelector('#homeManagePosts');
 
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
@@ -107,6 +109,15 @@ btnProximo.addEventListener('click', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const labelUsuario = document.querySelector('#userName');
+    const userRole = typeof readCookie === 'function' ? readCookie('userType') : null;
+
+    if (homeCreatePost && !['WRITER', 'ADMIN'].includes(userRole)) {
+        homeCreatePost.remove();
+    }
+
+    if (homeManagePosts && !['WRITER', 'ADMIN'].includes(userRole)) {
+        homeManagePosts.remove();
+    }
 
     if (labelUsuario) {
         // Reaproveita a função de leitura que existe no security.js

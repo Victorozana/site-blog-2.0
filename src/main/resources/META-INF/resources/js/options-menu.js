@@ -57,10 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const userRole = typeof readCookie === 'function' ? readCookie('userType') : null;
     const createPostItem = menu.querySelector('#menuCreatePost');
+    const managePostsItem = menu.querySelector('#menuManagePosts');
     const adminItem = menu.querySelector('#menuAdmin');
 
     if (createPostItem && !['WRITER', 'ADMIN'].includes(userRole)) {
       createPostItem.style.display = 'none';
+    }
+
+    if (managePostsItem && !['WRITER', 'ADMIN'].includes(userRole)) {
+      managePostsItem.style.display = 'none';
     }
 
     if (adminItem && userRole !== 'ADMIN') {

@@ -51,8 +51,12 @@ public class    UserLoginController {
                 .value(response.getUserType()) // Certifique-se de retornar o tipo de usuário no DTO
                 .path("/").maxAge(15 * 24 * 60 * 60).httpOnly(false).build();
 
+        NewCookie userIdCookie = new NewCookie.Builder("userId")
+                .value(response.getIdUser().toString())
+                .path("/").maxAge(15 * 24 * 60 * 60).httpOnly(false).build();
+
         return Response.ok(response)
-                .cookie(jwtCookie).cookie(nameCookie).cookie(roleCookie)
+                .cookie(jwtCookie).cookie(nameCookie).cookie(roleCookie).cookie(userIdCookie)
                 .build();
     }
 
@@ -104,10 +108,18 @@ public class    UserLoginController {
                 .httpOnly(false)
                 .build();
 
+        NewCookie userIdCookie = new NewCookie.Builder("userId")
+                .value("")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(false)
+                .build();
+
         return Response.noContent()
                 .cookie(jwtCookie)
                 .cookie(nameCookie)
                 .cookie(roleCookie)
+                .cookie(userIdCookie)
                 .build();
     }
 }
