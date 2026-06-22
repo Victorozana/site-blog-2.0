@@ -6,6 +6,7 @@ import com.blog.model.dto.CommentResponseDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.Comment;
 import com.blog.model.entity.User;
+import com.blog.validation.BusinessValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,11 +29,19 @@ public class CommentBO {
 
     @Transactional
     public void create(Long userId, Long blogId, CommentRequestDTO dto) {
+        BusinessValidator.validatePositiveId(userId, "Usuário");
+        BusinessValidator.validatePositiveId(blogId, "Post");
+        BusinessValidator.validateComment(dto != null ? dto.getComment() : null);
+
         Blog blog = blogDAO.findById(blogId);
         User user = userDAO.findById(userId);
 
-        if (user == null || blog == null) {
-            throw new WebApplicationException("Usuário ou Blog não encontrado", Response.Status.NOT_FOUND);
+        if (user == null) {
+            throw new WebApplicationException("Usuário não encontrado", Response.Status.UNAUTHORIZED);
+        }
+
+        if (blog == null) {
+            throw new WebApplicationException("Blog não encontrado", Response.Status.NOT_FOUND);
         }
 
         Comment entity = Comment.builder()
@@ -46,6 +55,7 @@ public class CommentBO {
     }
 
     public void remove(Long commentId) {
+        BusinessValidator.validatePositiveId(commentId, "Comentário");
         Comment comment = commentDAO.findById(commentId);
 
         if (comment != null) {
@@ -55,15 +65,19 @@ public class CommentBO {
     }
 
     public List<CommentResponseDTO> list(Long blogId) {
-        return commentDAO.find("blog.id", blogId).stream()
-                .map(comment -> {
-                    return CommentResponseDTO.builder()
-                            .id(comment.getId())
-                            .comment(comment.getComment()) // ou getComment(), dependendo de como está na sua entidade
-                            .author(comment.getUser() != null ? authorName(comment.getUser()) : "Anônimo")
-                            .authorProfilePictureUrl(comment.getUser() != null ? comment.getUser().getProfilePictureUrl() : null)
-                            .build();
-                })
+        BusinessValidator.validatePositiveId(blogId, "Post");
+
+        if (blogDAO.findById(blogId) == null) {
+            throw new WebApplicationException("Blog não encontrado", Response.Status.NOT_FOUND);
+        }
+
+        return commentDAO.find("blog.id = ?1 and user is not null order by id asc", blogId).stream()
+                .map(comment -> CommentResponseDTO.builder()
+                        .id(comment.getId())
+                        .comment(comment.getComment())
+                        .author(authorName(comment.getUser()))
+                        .authorProfilePictureUrl(comment.getUser().getProfilePictureUrl())
+                        .build())
                 .collect(Collectors.toList());
     }
 

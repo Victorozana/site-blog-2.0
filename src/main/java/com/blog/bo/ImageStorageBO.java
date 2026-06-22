@@ -1,5 +1,7 @@
 package com.blog.bo;
 
+import com.blog.exception.BusinessRuleException;
+import com.blog.validation.BusinessValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
@@ -15,6 +17,12 @@ public class ImageStorageBO {
     private final Path uploadDirectory = Paths.get("uploads/images");
 
     public String save(FileUpload file) {
+        if (file == null) {
+            throw new BusinessRuleException("Arquivo de imagem não foi informado.");
+        }
+
+        BusinessValidator.validateImageFileName(file.fileName());
+
         try {
             // Cria a pasta se ela não existir
             if (!Files.exists(uploadDirectory)) {

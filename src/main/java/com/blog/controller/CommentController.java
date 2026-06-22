@@ -26,12 +26,15 @@ public class CommentController {
     @RolesAllowed({"WRITER", "READER", "ADMIN"})
     public Response register(@PathParam("blogId") Long blogId, CommentRequestDTO request) {
         Object claim = jwt.getClaim("idUser");
+
+        if (claim == null) {
+            throw new WebApplicationException("Usuário não autenticado", Response.Status.UNAUTHORIZED);
+        }
+
         Long userId = Long.valueOf(claim.toString());
 
-        // Passa os IDs e o texto extraído do DTO para o Business Object
         commentBO.create(userId, blogId, request);
 
-        // Forma correta de retornar um Status 201 (Created) no Quarkus
         return Response.status(Response.Status.CREATED).build();
     }
 

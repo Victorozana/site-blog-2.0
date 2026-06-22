@@ -39,10 +39,12 @@ public class BlogRegisterController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"WRITER", "ADMIN"})
     public Response register(BlogRegistrationDTO dto){
-        // 1. Pegamos o objeto genérico do JSON, seja ele qual for (Parsson, Jackson, etc)
         Object claimIdUser = jwt.getClaim("idUser");
 
-        // 2. Convertemos para texto e parseamos nativamente para Long (A Blindagem)
+        if (claimIdUser == null) {
+            throw new WebApplicationException("Sessão inválida. Faça login novamente.", Response.Status.UNAUTHORIZED);
+        }
+
         Long idAuthor = Long.parseLong(claimIdUser.toString());
 
         BlogResponseDTO responseDTO = blogBO.createBlog(dto, idAuthor);

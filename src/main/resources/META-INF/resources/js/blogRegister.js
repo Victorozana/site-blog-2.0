@@ -20,12 +20,20 @@ formBlogRegister.addEventListener('submit', async (event) => {
         mostrarMensagem('Por favor, preencha o título!', 'danger');
         return;
     }
+    if (title.length < 3 || title.length > 120) {
+        mostrarMensagem('O título deve ter entre 3 e 120 caracteres.', 'danger');
+        return;
+    }
+    if (subtitle.length > 160) {
+        mostrarMensagem('O subtítulo deve ter no máximo 160 caracteres.', 'danger');
+        return;
+    }
     if (!category) {
         mostrarMensagem('Por favor, selecione uma categoria!', 'danger');
         return;
     }
-    if (!description || description.length < 20) {
-        mostrarMensagem('O conteúdo deve ter pelo menos 20 caracteres!', 'danger');
+    if (!description || description.length < 20 || description.length > 10000) {
+        mostrarMensagem('O conteúdo deve ter entre 20 e 10000 caracteres!', 'danger');
         return;
     }
 
@@ -66,7 +74,7 @@ formBlogRegister.addEventListener('submit', async (event) => {
             }, 2000);
         } else {
             const erro = await response.json();
-            mostrarMensagem(`Erro ao publicar: ${erro.message || 'Erro desconhecido'}`, 'danger');
+            mostrarMensagem(`Erro ao publicar: ${erro.error || erro.message || 'Erro desconhecido'}`, 'danger');
         }
     } catch (error) {
         console.error('Erro na requisição:', error);

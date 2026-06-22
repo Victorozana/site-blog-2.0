@@ -3,8 +3,13 @@ const formLogin = document.getElementById("formLogin");
 async function login(event) {
     event.preventDefault();
 
-    const email = document.querySelector("#email").value;
-    const password = document.querySelector("#password").value;
+    const email = document.querySelector("#email").value.trim();
+    const password = document.querySelector("#password").value.trim();
+
+    if (!email || !password) {
+        alert("Informe email e senha.");
+        return;
+    }
 
     try {
         const response = await fetch("/login/auth", {
@@ -13,7 +18,10 @@ async function login(event) {
             body: JSON.stringify({email: email, password: password})
         });
 
-        if (!response.ok) throw new Error("Credenciais inválidas!");
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || error.message || "Credenciais inválidas!");
+        }
 
         console.log("Login feito. Redirecionando...");
         window.location.href = "/";

@@ -34,6 +34,7 @@ public class User extends PanacheEntityBase{
     private String email;
     @Column(nullable = false, name = "cryptography_password")
     private String cryptographyPassword;
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false, name = "user_type")
     private UserType userType;
     @Column(nullable = false, name = "update_dateTime")

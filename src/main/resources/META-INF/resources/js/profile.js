@@ -66,6 +66,12 @@ async function uploadPhoto() {
 
 async function saveProfile(event) {
     event.preventDefault();
+
+    if (bioInput.value.trim().length > 180) {
+        showMessage('A bio deve ter no máximo 180 caracteres.', 'error');
+        return;
+    }
+
     saveBtn.disabled = true;
     saveBtn.textContent = 'Salvando...';
     showMessage('Salvando alterações...');
@@ -104,6 +110,16 @@ photoInput.addEventListener('change', () => {
     selectedPhoto = file || null;
 
     if (selectedPhoto) {
+        const validExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+        const extension = selectedPhoto.name.split('.').pop().toLowerCase();
+
+        if (!validExtensions.includes(extension)) {
+            showMessage('A foto deve ser JPG, PNG ou WEBP.', 'error');
+            selectedPhoto = null;
+            photoInput.value = '';
+            return;
+        }
+
         if (temporaryPreviewUrl) {
             URL.revokeObjectURL(temporaryPreviewUrl);
         }

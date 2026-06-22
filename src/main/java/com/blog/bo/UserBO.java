@@ -11,6 +11,7 @@ import com.blog.model.dto.UserProfileUpdateDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.dto.UserResponseDTO;
 import com.blog.model.entity.User;
+import com.blog.validation.BusinessValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -49,31 +50,30 @@ public class UserBO {
 
     @Transactional
     public UserResponseDTO saveUser(UserRegistrationDTO dto) {
-        if (dto.getUserType() == UserType.ADMIN) {
-            throw new BusinessRuleException("Administradores não podem ser criados pelo cadastro público.");
-        }
+        BusinessValidator.validateUserRegistration(dto);
 
         if (dto.getUserType() == null) {
             dto.setUserType(UserType.READER);
         }
 
-        User existingUser = userDAO.getUserByEmail(dto.getEmail());
+        String email = dto.getEmail().trim().toLowerCase();
+        User existingUser = userDAO.getUserByEmail(email);
 
         if (existingUser != null){
-            throw new BusinessRuleException("This email already exists!");
+            throw new BusinessRuleException("Este email já está cadastrado.");
         }
 
-        String passwordBefore = dto.getPassword();
+        String passwordBefore = dto.getPassword().trim();
 
         String passwordSecurity = BCrypt.withDefaults().hashToString(12, passwordBefore.toCharArray());
 
         User entity = User.builder()
-                .name(dto.getName())
-                .lastname(dto.getLastname())
-                .email(dto.getEmail())
+                .name(dto.getName().trim())
+                .lastname(dto.getLastname().trim())
+                .email(email)
                 .cryptographyPassword(passwordSecurity)
                 .userType(dto.getUserType())
-                .fone(dto.getFone())
+                .fone(dto.getFone().trim())
                 .dtNasc(dto.getDtNasc())
                 .build();
 
@@ -101,15 +101,14 @@ public class UserBO {
     }
 
     public LoginResponseDTO login(LoginRequestDTO dto){
-        User entity = new User();
+        BusinessValidator.validateLogin(dto);
 
-        //looking for user with email
-        entity = userDAO.getUserByEmail(dto.getEmail());
+        User entity = userDAO.getUserByEmail(dto.getEmail().trim().toLowerCase());
 
         //validation with Bcrypt
         if (entity == null || !validation(entity, dto)){
             auditLogBO.log("LOGIN_FAILED", null, dto.getEmail(), null, "Tentativa de login com credenciais inválidas.");
-            throw new BusinessRuleException("Invalid credentials!");
+            throw new BusinessRuleException("Credenciais inválidas.");
         }
 
         String token = Jwt.issuer("http://localhost:8080")
@@ -146,9 +145,7 @@ public class UserBO {
     }
 
     public UserProfileDTO getPublicProfile(Long userId) {
-        if (userId == null) {
-            throw new WebApplicationException("Usuário não informado", Response.Status.BAD_REQUEST);
-        }
+        BusinessValidator.validatePositiveId(userId, "Usuário");
 
         User user = userDAO.findById(userId);
 
@@ -161,13 +158,16 @@ public class UserBO {
 
     @Transactional
     public UserProfileDTO updateProfile(Long userId, UserProfileUpdateDTO dto) {
+        BusinessValidator.validatePositiveId(userId, "Usuário");
+        String bio = dto != null ? dto.getBio() : null;
+        BusinessValidator.validateBio(bio);
+
         User user = userDAO.findById(userId);
 
         if (user == null) {
             throw new WebApplicationException("Usuário não encontrado", Response.Status.NOT_FOUND);
         }
 
-        String bio = dto != null ? dto.getBio() : null;
         user.setBio(bio == null ? null : bio.trim());
 
         userDAO.persist(user);
@@ -179,13 +179,14 @@ public class UserBO {
     private boolean validation(User user, LoginRequestDTO dto){
         String salvePassword = user.getCryptographyPassword();
 
-        BCrypt.Result result = BCrypt.verifyer().verify(dto.getPassword().toCharArray(), salvePassword);
+        BCrypt.Result result = BCrypt.verifyer().verify(dto.getPassword().trim().toCharArray(), salvePassword);
 
         return result.verified;
     }
 
     @Transactional
     public UserProfileDTO updateProfilePicture(Long userId, String imageUrl) {
+        BusinessValidator.validatePositiveId(userId, "Usuário");
         // 1. Busca o usuário no banco
         User user = userDAO.findById(userId);
 

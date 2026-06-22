@@ -7,6 +7,7 @@ import com.blog.model.dto.LikeResponseDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.Like;
 import com.blog.model.entity.User;
+import com.blog.validation.BusinessValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,9 @@ public class LikeBO {
 
     @Transactional
     public void create(Long userId, Long blogId) {
+        BusinessValidator.validatePositiveId(userId, "Usuário");
+        BusinessValidator.validatePositiveId(blogId, "Post");
+
         // 1. Busca as entidades reais gerenciadas pelo Hibernate
         User user = userDAO.findById(userId);
         Blog blog = blogDAO.findById(blogId);
@@ -55,6 +59,9 @@ public class LikeBO {
 
     @Transactional
     public void remove(Long userId, Long blogId) {
+        BusinessValidator.validatePositiveId(userId, "Usuário");
+        BusinessValidator.validatePositiveId(blogId, "Post");
+
         User user = userDAO.findById(userId);
         long deletedCount = likeDAO.delete("user.id = ?1 and blog.id = ?2", userId, blogId);
 
@@ -64,6 +71,11 @@ public class LikeBO {
     }
 
     public LikeResponseDTO list(Long blogId, Long currentUserId) {
+        BusinessValidator.validatePositiveId(blogId, "Post");
+
+        if (blogDAO.findById(blogId) == null) {
+            throw new WebApplicationException("Post não encontrado", Response.Status.NOT_FOUND);
+        }
 
         // 1. Conta o total de curtidas daquele post
         long total = likeDAO.count("blog.id", blogId);

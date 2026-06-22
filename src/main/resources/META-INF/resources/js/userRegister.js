@@ -26,6 +26,27 @@ function convertDateFormat(dateStr) {
     return `${year}-${month}-${day}`;
 }
 
+function isValidBirthDate(dateStr) {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return false;
+
+    const [day, month, year] = dateStr.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+        return false;
+    }
+
+    const today = new Date();
+    const minimumDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
+    const maximumDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
+
+    return date >= minimumDate && date <= maximumDate;
+}
+
+function isValidName(value) {
+    return /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{2,60}$/.test(value.trim());
+}
+
 // Adicionar event listeners para as máscaras
 document.getElementById("dt_nasc").addEventListener('input', (e) => maskDate(e.target));
 document.getElementById("fone").addEventListener('input', (e) => maskPhone(e.target));
@@ -36,20 +57,31 @@ form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const dtNascRaw = document.getElementById("dt_nasc").value;
+    const name = document.getElementById("name").value.trim();
+    const lastname = document.getElementById("lastname").value.trim();
+
+    if (!isValidName(name)) {
+        alert("Nome deve conter apenas letras e espaços.");
+        return;
+    }
+
+    if (!isValidName(lastname)) {
+        alert("Sobrenome deve conter apenas letras e espaços.");
+        return;
+    }
     
-    // Validar formato da data
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dtNascRaw)) {
-        alert("Data inválida! Use o formato DD/MM/YYYY");
+    if (!isValidBirthDate(dtNascRaw)) {
+        alert("Data inválida. Informe uma data real, entre 13 e 120 anos de idade.");
         return;
     }
 
     const userRegistrationDTO = {
-        name: document.getElementById("name").value,
-        lastname: document.getElementById("lastname").value,
+        name: name,
+        lastname: lastname,
         dtNasc: convertDateFormat(dtNascRaw),
         fone: document.getElementById("fone").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value,
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value.trim(),
         userType: document.getElementById("user_type").value
     };
 
@@ -63,7 +95,7 @@ form.addEventListener("submit", async (event) => {
         } else {
             const erro = await response.json();
             console.error("Erro do servidor:", erro);
-            alert("Erro ao cadastrar: " + (erro.details || "Verifique os dados."));
+            alert("Erro ao cadastrar: " + (erro.error || erro.message || "Verifique os dados."));
         }
     } catch (error) {
         console.error("Falha na conexão:", error);

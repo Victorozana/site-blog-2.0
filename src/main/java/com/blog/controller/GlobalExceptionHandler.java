@@ -1,11 +1,13 @@
 package com.blog.controller;
 
 import com.blog.exception.BusinessRuleException;
+import io.quarkus.security.UnauthorizedException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
+import java.net.URI;
 import java.util.Map;
 
 public class GlobalExceptionHandler {
@@ -15,6 +17,11 @@ public class GlobalExceptionHandler {
         Map<String, String> jsonResponse = Map.of("error", exception.getMessage());
 
         return RestResponse.status(Response.Status.BAD_REQUEST, jsonResponse);
+    }
+
+    @ServerExceptionMapper
+    public Response mapUnauthorizedException(UnauthorizedException exception) {
+        return Response.seeOther(URI.create("/login")).build();
     }
 
     @ServerExceptionMapper

@@ -7,10 +7,13 @@ import com.blog.model.dto.MainScreenDTO;
 import com.blog.model.dto.BlogRegistrationDTO;
 import com.blog.model.entity.Blog;
 import com.blog.model.entity.User;
+import com.blog.validation.BusinessValidator;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +29,22 @@ public class BlogBO {
 
     @Transactional
     public BlogResponseDTO createBlog(BlogRegistrationDTO dto, Long idAuthor) {
+        BusinessValidator.validatePositiveId(idAuthor, "Autor");
+        BusinessValidator.validateBlogRegistration(dto);
+
         User user = userBO.getUserById(idAuthor);
+
+        if (user == null) {
+            throw new WebApplicationException("Autor não encontrado", Response.Status.NOT_FOUND);
+        }
+
         Blog blog = new Blog();
 
         blog.setUser(user);
         blog.setCategory(dto.getCategory());
-        blog.setSubtitle(dto.getSubtitle());
-        blog.setDescription(dto.getDescription());
-        blog.setTitle(dto.getTitle());
+        blog.setSubtitle(dto.getSubtitle() == null ? null : dto.getSubtitle().trim());
+        blog.setDescription(dto.getDescription().trim());
+        blog.setTitle(dto.getTitle().trim());
 
         blogDAO.persist(blog);
         auditLogBO.log("BLOG_CREATED", user, "Post criado: " + blog.getTitle());
@@ -52,6 +63,7 @@ public class BlogBO {
 
     @Transactional
     public void deleteBlog(Long id) {
+        BusinessValidator.validatePositiveId(id, "Post");
         Blog blog = blogDAO.findById(id);
 
         if (blog != null) {
@@ -61,11 +73,14 @@ public class BlogBO {
     }
 
     public BlogScreenDTO findBlogById(Long id) {
+        BusinessValidator.validatePositiveId(id, "Post");
         Blog blog = blogDAO.findById(id);
+
+        if (blog == null) {
+            throw new WebApplicationException("Post não encontrado", Response.Status.NOT_FOUND);
+        }
+
         BlogScreenDTO dto = new BlogScreenDTO();
-
-        System.out.println(blog.getTitle());
-
         dto.setAuthorId(blog.getUser().getId());
         dto.setAuthor(authorName(blog.getUser()));
         dto.setAuthorProfilePictureUrl(blog.getUser().getProfilePictureUrl());
@@ -74,12 +89,18 @@ public class BlogBO {
         dto.setSubtitle(blog.getSubtitle());
         dto.setLocalDateTime(blog.getLocalDateTime());
 
-        System.out.println(dto.getTitle());
-
         return dto;
     }
 
     public List<MainScreenDTO> blogList(int page, int size) {
+        if (page < 0) {
+            throw new WebApplicationException("Página inválida", Response.Status.BAD_REQUEST);
+        }
+
+        if (size < 1 || size > 50) {
+            throw new WebApplicationException("Tamanho da página inválido", Response.Status.BAD_REQUEST);
+        }
+
         List<Blog> blogs = blogDAO.find("order by localDateTime desc").page(Page.of(page, size)).list();
         List<MainScreenDTO> dtos = new ArrayList<>();
 

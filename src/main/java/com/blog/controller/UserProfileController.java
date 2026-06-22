@@ -48,8 +48,7 @@ public class UserProfileController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"WRITER","READER","ADMIN"})
     public UserProfileDTO me() {
-        Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
-        return userBO.getPublicProfile(userId);
+        return userBO.getPublicProfile(currentUserId());
     }
 
     @PATCH
@@ -58,8 +57,7 @@ public class UserProfileController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"WRITER","READER","ADMIN"})
     public UserProfileDTO updateProfile(UserProfileUpdateDTO dto) {
-        Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
-        return userBO.updateProfile(userId, dto);
+        return userBO.updateProfile(currentUserId(), dto);
     }
 
     @PATCH // PATCH é o verbo REST correto quando atualizamos apenas um campo de um recurso
@@ -68,15 +66,9 @@ public class UserProfileController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"WRITER","READER","ADMIN"})
     public UserProfileDTO uploadProfilePicture(@RestForm("file") FileUpload file) {
-
-        // 1. Descobre quem é o usuário baseado no token da requisição
-        Long userId = Long.valueOf(jwt.getClaim("idUser").toString());
-
-        // 2. Salva o arquivo fisicamente na pasta e pega a URL (ex: "/uploads/images/foto.jpg")
         String savedImageUrl = imageStorageBO.save(file);
 
-        // 3. Atualiza o banco de dados
-        return userBO.updateProfilePicture(userId, savedImageUrl);
+        return userBO.updateProfilePicture(currentUserId(), savedImageUrl);
     }
 
     @GET
@@ -102,5 +94,14 @@ public class UserProfileController {
             return Response.serverError().build();
         }
     }
-}
 
+    private Long currentUserId() {
+        Object claim = jwt.getClaim("idUser");
+
+        if (claim == null) {
+            throw new WebApplicationException("Sessão inválida. Faça login novamente.", Response.Status.UNAUTHORIZED);
+        }
+
+        return Long.valueOf(claim.toString());
+    }
+}

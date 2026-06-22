@@ -89,12 +89,12 @@ function renderLikeState(data) {
     btnLike.classList.toggle('text-danger', Boolean(data.userLiked));
 }
 
-async function readErrorMessage(response) {
+async function readErrorMessage(response, fallbackMessage = 'Falha ao processar a solicitação') {
     try {
         const data = await response.json();
-        return data.error || data.message || 'Falha ao processar a curtida';
+        return data.error || data.message || fallbackMessage;
     } catch (e) {
-        return 'Falha ao processar a curtida';
+        return fallbackMessage;
     }
 }
 
@@ -109,10 +109,12 @@ async function fetchLikes(){
 }
 
 async function fetchComments(){
+    if (!id) return;
+
     try{
         const res = await fetch(`/blogs/${id}/comments`, { method: 'GET', credentials: 'include' });
         if (res.ok){
-            const data = await res.json(); // assume array of { id, idUser, comment, createdAt }
+            const data = await res.json();
             renderComments(data);
         }
     }catch(e){ console.warn('Erro ao buscar comentários', e); }
@@ -120,11 +122,15 @@ async function fetchComments(){
 
 function renderComments(list){
     commentsList.innerHTML = '';
-    if (!Array.isArray(list) || list.length === 0) {
+    const validComments = Array.isArray(list)
+        ? list.filter(c => c && c.author && c.comment)
+        : [];
+
+    if (validComments.length === 0) {
         commentsList.innerHTML = '<div class="text-muted">Seja o primeiro a comentar.</div>';
         return;
     }
-    list.forEach(c => {
+    validComments.forEach(c => {
         const div = document.createElement('div');
         div.className = 'list-group-item';
 
@@ -138,7 +144,7 @@ function renderComments(list){
 
         const author = document.createElement('div');
         author.className = 'fw-semibold';
-        author.textContent = c.author || 'Usuário';
+        author.textContent = c.author;
 
         const text = document.createElement('div');
         text.className = 'comment-text';
@@ -172,7 +178,7 @@ btnLike?.addEventListener('click', async () => {
         });
 
         if (!res.ok) {
-            throw new Error(await readErrorMessage(res));
+            throw new Error(await readErrorMessage(res, 'Falha ao processar a curtida'));
         }
 
         const data = await res.json();
@@ -188,9 +194,16 @@ btnLike?.addEventListener('click', async () => {
 commentForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = commentText.value.trim();
-    if (!text) return;
+    if (!text || !id || btnSendComment.disabled) return;
+
+    if (text.length < 2 || text.length > 1000) {
+        console.warn('Comentário deve ter entre 2 e 1000 caracteres.');
+        return;
+    }
 
     try{
+        btnSendComment.disabled = true;
+
         const res = await fetch(`/blogs/${id}/comment`, {
             method: 'POST',
             credentials: 'include',
@@ -199,12 +212,15 @@ commentForm?.addEventListener('submit', async (e) => {
         });
         if (res.ok){
             commentText.value = '';
-            // refresh list
             fetchComments();
         } else {
-            console.warn('Falha ao enviar comentário');
+            console.warn(await readErrorMessage(res, 'Falha ao enviar comentário'));
         }
-    }catch(e){ console.warn('Erro', e); }
+    }catch(e){
+        console.warn('Erro ao enviar comentário', e);
+    } finally {
+        btnSendComment.disabled = false;
+    }
 });
 
 // Reaplica carregamento inicial
