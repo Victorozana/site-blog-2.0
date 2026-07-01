@@ -13,6 +13,7 @@ import jakarta.ws.rs.*;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestForm;
@@ -71,6 +72,20 @@ public class UserProfileController {
         return userBO.updateProfilePicture(currentUserId(), savedImageUrl);
     }
 
+    @DELETE
+    @Path("/me")
+    @RolesAllowed({"WRITER","READER","ADMIN"})
+    public Response deleteAccount() {
+        userBO.deleteUser(currentUserId());
+
+        return Response.noContent()
+                .cookie(expiredCookie("meu_token_jwt", true))
+                .cookie(expiredCookie("userName", false))
+                .cookie(expiredCookie("userType", false))
+                .cookie(expiredCookie("userId", false))
+                .build();
+    }
+
     @GET
     @Path("/uploads/images/{fileName}")
     public Response getImage(@PathParam("fileName") String fileName) {
@@ -103,5 +118,14 @@ public class UserProfileController {
         }
 
         return Long.valueOf(claim.toString());
+    }
+
+    private NewCookie expiredCookie(String name, boolean httpOnly) {
+        return new NewCookie.Builder(name)
+                .value("")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(httpOnly)
+                .build();
     }
 }

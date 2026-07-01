@@ -97,6 +97,33 @@
     color: #9d2635;
 }
 
+.danger-zone {
+    margin-top: 1.35rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(157, 38, 53, 0.18);
+}
+
+.danger-zone h3 {
+    margin: 0;
+    color: #7f1d2d;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.danger-zone p {
+    margin: 0.45rem 0 0.9rem;
+    color: #6d4a51;
+    font-size: 0.94rem;
+    line-height: 1.45;
+}
+
+.delete-account-message {
+    min-height: 22px;
+    margin-top: 0.65rem;
+    color: #9d2635;
+    font-weight: 600;
+}
+
 .public-profile-card {
     max-width: 860px;
     margin: 0 auto;

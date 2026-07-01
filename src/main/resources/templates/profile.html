@@ -55,8 +55,37 @@
             </form>
 
             <div id="profileMessage" class="profile-message" role="status" aria-live="polite"></div>
+
+            <div class="danger-zone" aria-label="Exclusão de conta">
+                <h3>Excluir conta</h3>
+                <p>Esta ação remove definitivamente sua conta, posts, comentários e curtidas.</p>
+                <button id="openDeleteAccountModal" type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    Excluir minha conta
+                </button>
+            </div>
         </aside>
     </section>
+
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="deleteAccountModalLabel">Confirmar exclusão da conta</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Sua conta será excluída definitivamente do sistema. Para confirmar, digite <strong>EXCLUIR</strong>.</p>
+                    <label for="deleteConfirmationInput" class="form-label">Confirmação</label>
+                    <input id="deleteConfirmationInput" class="form-control" type="text" autocomplete="off" placeholder="Digite EXCLUIR">
+                    <div id="deleteAccountMessage" class="delete-account-message" role="status" aria-live="polite"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="confirmDeleteAccountBtn" type="button" class="btn btn-danger" disabled>Excluir definitivamente</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 </body>
 </html>

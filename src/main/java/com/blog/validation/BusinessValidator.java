@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 public final class BusinessValidator {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
-    private static final int MINIMUM_AGE = 13;
+    private static final int MINIMUM_AGE = 18;
 
     private BusinessValidator() {
     }
@@ -59,7 +59,7 @@ public final class BusinessValidator {
     }
 
     public static void validateBio(String bio) {
-        validateOptionalText(bio, "Bio", 180);
+        validateOptionalText(bio, "Bio", 280);
     }
 
     public static void validateComment(String comment) {

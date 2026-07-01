@@ -7,9 +7,14 @@ const message = document.querySelector('#profileMessage');
 const previewImage = document.querySelector('#profilePreviewImage');
 const previewName = document.querySelector('#profilePreviewName');
 const previewBio = document.querySelector('#profilePreviewBio');
+const deleteAccountModal = document.querySelector('#deleteAccountModal');
+const deleteConfirmationInput = document.querySelector('#deleteConfirmationInput');
+const confirmDeleteAccountBtn = document.querySelector('#confirmDeleteAccountBtn');
+const deleteAccountMessage = document.querySelector('#deleteAccountMessage');
 
 let selectedPhoto = null;
 let temporaryPreviewUrl = null;
+const DELETE_CONFIRMATION_TEXT = 'EXCLUIR';
 
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
@@ -26,6 +31,10 @@ function updateBioPreview() {
 function showMessage(text, type = 'info') {
     message.textContent = text;
     message.className = `profile-message profile-message--${type}`;
+}
+
+function showDeleteAccountMessage(text) {
+    deleteAccountMessage.textContent = text;
 }
 
 function applyProfile(profile) {
@@ -67,8 +76,8 @@ async function uploadPhoto() {
 async function saveProfile(event) {
     event.preventDefault();
 
-    if (bioInput.value.trim().length > 180) {
-        showMessage('A bio deve ter no máximo 180 caracteres.', 'error');
+    if (bioInput.value.trim().length > 280) {
+        showMessage('A bio deve ter no máximo 280 caracteres.', 'error');
         return;
     }
 
@@ -105,6 +114,50 @@ async function saveProfile(event) {
     }
 }
 
+function isDeleteConfirmationValid() {
+    return deleteConfirmationInput.value.trim().toUpperCase() === DELETE_CONFIRMATION_TEXT;
+}
+
+function updateDeleteAccountButton() {
+    confirmDeleteAccountBtn.disabled = !isDeleteConfirmationValid();
+    showDeleteAccountMessage('');
+}
+
+async function deleteAccount() {
+    if (!isDeleteConfirmationValid()) {
+        showDeleteAccountMessage('Digite EXCLUIR para confirmar a exclusão.');
+        return;
+    }
+
+    confirmDeleteAccountBtn.disabled = true;
+    confirmDeleteAccountBtn.textContent = 'Excluindo...';
+    showDeleteAccountMessage('Excluindo sua conta...');
+
+    try {
+        const response = await fetch('/user/me', {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            if (typeof clearAuthCookies === 'function') clearAuthCookies();
+            window.location.href = '/login';
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error('Não foi possível excluir sua conta. Tente novamente.');
+        }
+
+        if (typeof clearAuthCookies === 'function') clearAuthCookies();
+        window.location.href = '/login';
+    } catch (error) {
+        showDeleteAccountMessage(error.message);
+        confirmDeleteAccountBtn.disabled = false;
+        confirmDeleteAccountBtn.textContent = 'Excluir definitivamente';
+    }
+}
+
 photoInput.addEventListener('change', () => {
     const [file] = photoInput.files;
     selectedPhoto = file || null;
@@ -131,4 +184,12 @@ photoInput.addEventListener('change', () => {
 
 bioInput.addEventListener('input', updateBioPreview);
 profileForm.addEventListener('submit', saveProfile);
+deleteConfirmationInput.addEventListener('input', updateDeleteAccountButton);
+confirmDeleteAccountBtn.addEventListener('click', deleteAccount);
+deleteAccountModal.addEventListener('hidden.bs.modal', () => {
+    deleteConfirmationInput.value = '';
+    confirmDeleteAccountBtn.disabled = true;
+    confirmDeleteAccountBtn.textContent = 'Excluir definitivamente';
+    showDeleteAccountMessage('');
+});
 document.addEventListener('DOMContentLoaded', loadProfile);

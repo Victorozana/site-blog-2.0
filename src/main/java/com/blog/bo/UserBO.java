@@ -1,5 +1,9 @@
 package com.blog.bo;
 
+import com.blog.dao.AuditLogDAO;
+import com.blog.dao.BlogDAO;
+import com.blog.dao.CommentDAO;
+import com.blog.dao.LikeDAO;
 import com.blog.dao.UserDAO;
 import com.blog.exception.BusinessRuleException;
 import com.blog.model.category.UserType;
@@ -10,6 +14,7 @@ import com.blog.model.dto.UserProfileDTO;
 import com.blog.model.dto.UserProfileUpdateDTO;
 import com.blog.model.dto.UserRegistrationDTO;
 import com.blog.model.dto.UserResponseDTO;
+import com.blog.model.entity.Blog;
 import com.blog.model.entity.User;
 import com.blog.validation.BusinessValidator;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,22 +30,18 @@ import java.util.HashSet;
 
 import java.util.List;
 
-//@SessionScoped escopo por sessão banco de dados, mantido no servidor
-//(geralmente usado em multiplos servidores (microsservicos))
-
-//@RequestScoped criado por requisição na dúvida use esse
-
-//@Dependent CUIDADO!!
-
-//criados e matidos por todo o ciclo de vida da aplicação
-//(sempre o mesmo objeto) CUIDADO!! você tem apenas um
-//objeto quando essa anotação é usada
-//@ApplicationScoped
-
 @ApplicationScoped
 public class UserBO {
     @Inject
     UserDAO userDAO;
+    @Inject
+    BlogDAO blogDAO;
+    @Inject
+    CommentDAO commentDAO;
+    @Inject
+    LikeDAO likeDAO;
+    @Inject
+    AuditLogDAO auditLogDAO;
     @Inject
     AuditLogBO auditLogBO;
 
@@ -83,21 +84,34 @@ public class UserBO {
         return new UserResponseDTO(entity.getId(), entity.getName(), entity.getEmail(), entity.getUserType());
     }
 
-//    public void updateUser(User user) {
-//        var query = "UPDATE USER" +
-//                " SET USERNAME = :username " +
-//                " SET PASSWORD = :password " +
-//                " SET  EMAIL = :email " +
-//                " SET  ROLE = :role " +
-//                " WHERE ID = :id";
-//
-//        var id = user.getId();
-//
-//        userDAO.update(query, id);
-//    }
-
+    @Transactional
     public void deleteUser(Long id) {
-        userDAO.delete(getUserById(id));
+        BusinessValidator.validatePositiveId(id, "Usuário");
+
+        User user = userDAO.findById(id);
+
+        if (user == null) {
+            throw new WebApplicationException("Usuário não encontrado", Response.Status.NOT_FOUND);
+        }
+
+        List<Long> userBlogIds = blogDAO.find("user.id", id)
+                .list()
+                .stream()
+                .map(Blog::getId)
+                .toList();
+
+        likeDAO.delete("user.id", id);
+        commentDAO.delete("user.id", id);
+
+        if (!userBlogIds.isEmpty()) {
+            likeDAO.delete("blog.id in ?1", userBlogIds);
+            commentDAO.delete("blog.id in ?1", userBlogIds);
+            blogDAO.delete("id in ?1", userBlogIds);
+        }
+
+        auditLogDAO.delete("userId", id);
+        userDAO.delete(user);
+        auditLogBO.log("ACCOUNT_DELETED", null, "Conta excluída definitivamente pelo titular.");
     }
 
     public LoginResponseDTO login(LoginRequestDTO dto){

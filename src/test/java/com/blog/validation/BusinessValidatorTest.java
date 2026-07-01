@@ -89,7 +89,8 @@ class BusinessValidatorTest {
     @Test
     void shouldValidateProfileFields() {
         assertDoesNotThrow(() -> BusinessValidator.validateBio("Bio simples."));
-        assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateBio("a".repeat(181)));
+        assertDoesNotThrow(() -> BusinessValidator.validateBio("a".repeat(280)));
+        assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateBio("a".repeat(281)));
         assertDoesNotThrow(() -> BusinessValidator.validateImageFileName("avatar.png"));
         assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateImageFileName("script.exe"));
     }
