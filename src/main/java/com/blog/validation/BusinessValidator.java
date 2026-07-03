@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 public final class BusinessValidator {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
     private static final int MINIMUM_AGE = 18;
+    public static final long MAX_PROFILE_IMAGE_BYTES = 5L * 1024L * 1024L;
+    public static final int MAX_PROFILE_IMAGE_MB = 5;
 
     private BusinessValidator() {
     }
@@ -83,6 +85,16 @@ public final class BusinessValidator {
                 && !lowerFileName.endsWith(".png")
                 && !lowerFileName.endsWith(".webp")) {
             throw new BusinessRuleException("A foto deve ser JPG, PNG ou WEBP.");
+        }
+    }
+
+    public static void validateProfileImageSize(long sizeInBytes) {
+        if (sizeInBytes <= 0) {
+            throw new BusinessRuleException("Arquivo de imagem inválido.");
+        }
+
+        if (sizeInBytes > MAX_PROFILE_IMAGE_BYTES) {
+            throw new BusinessRuleException("A foto de perfil deve ter no máximo " + MAX_PROFILE_IMAGE_MB + " MB.");
         }
     }
 

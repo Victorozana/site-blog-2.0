@@ -15,6 +15,8 @@ const deleteAccountMessage = document.querySelector('#deleteAccountMessage');
 let selectedPhoto = null;
 let temporaryPreviewUrl = null;
 const DELETE_CONFIRMATION_TEXT = 'EXCLUIR';
+const MAX_PROFILE_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_PROFILE_IMAGE_MB = 5;
 
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
@@ -168,6 +170,13 @@ photoInput.addEventListener('change', () => {
 
         if (!validExtensions.includes(extension)) {
             showMessage('A foto deve ser JPG, PNG ou WEBP.', 'error');
+            selectedPhoto = null;
+            photoInput.value = '';
+            return;
+        }
+
+        if (selectedPhoto.size > MAX_PROFILE_IMAGE_BYTES) {
+            showMessage(`A foto de perfil deve ter no máximo ${MAX_PROFILE_IMAGE_MB} MB.`, 'error');
             selectedPhoto = null;
             photoInput.value = '';
             return;

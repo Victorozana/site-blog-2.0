@@ -78,6 +78,12 @@ a:hover {
     color: var(--azul-texto);
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .glass-card {
     width: 100%;
     max-width: 520px;
@@ -219,6 +225,10 @@ footer {
 
     .site-nav {
         min-height: 52px;
+    }
+
+    .header-actions {
+        gap: 0.5rem;
     }
 
     .glass-card {

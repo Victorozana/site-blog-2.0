@@ -24,6 +24,8 @@ public class ImageStorageBO {
         BusinessValidator.validateImageFileName(file.fileName());
 
         try {
+            BusinessValidator.validateProfileImageSize(Files.size(file.filePath()));
+
             // Cria a pasta se ela não existir
             if (!Files.exists(uploadDirectory)) {
                 Files.createDirectories(uploadDirectory);

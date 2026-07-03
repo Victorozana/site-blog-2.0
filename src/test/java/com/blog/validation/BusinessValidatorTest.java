@@ -93,6 +93,8 @@ class BusinessValidatorTest {
         assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateBio("a".repeat(281)));
         assertDoesNotThrow(() -> BusinessValidator.validateImageFileName("avatar.png"));
         assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateImageFileName("script.exe"));
+        assertDoesNotThrow(() -> BusinessValidator.validateProfileImageSize(BusinessValidator.MAX_PROFILE_IMAGE_BYTES));
+        assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateProfileImageSize(BusinessValidator.MAX_PROFILE_IMAGE_BYTES + 1));
     }
 
     private UserRegistrationDTO validUser() {

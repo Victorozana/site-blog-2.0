@@ -7,7 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/options-menu.css">
     <script src="/js/security.js"></script>
+    <script src="/js/options-menu.js" defer></script>
     <script src="/js/publicProfile.js" defer></script>
 </head>
 <body>
@@ -15,7 +17,25 @@
     <div class="container py-3">
         <div class="site-nav">
             <a href="/" class="brand-link">Blog do Victor</a>
-            <a href="/" class="btn btn-outline-dark">Voltar</a>
+            <div class="header-actions">
+                <a href="/" class="btn btn-outline-dark">Voltar</a>
+                <div class="options-menu">
+                    <button class="options-toggle" aria-expanded="false" aria-haspopup="true" aria-label="Mais opções">
+                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" focusable="false">
+                            <circle cx="5" cy="12" r="2"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <circle cx="19" cy="12" r="2"></circle>
+                        </svg>
+                    </button>
+                    <div class="options-dropdown" role="menu" hidden>
+                        <a href="/register/blog" role="menuitem" id="menuCreatePost" class="menu-create-post">Criar Post</a>
+                        <a href="/blog/manage" role="menuitem" id="menuManagePosts">Gerenciar Posts</a>
+                        <a href="/user" role="menuitem">Perfil</a>
+                        <a href="/admin" role="menuitem" id="menuAdmin">Configurações</a>
+                        <button type="button" role="menuitem" id="logout-btn">Sair</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </header>
