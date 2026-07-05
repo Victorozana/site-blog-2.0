@@ -8,6 +8,7 @@ const descriptionInput = document.querySelector('#description');
 const descriptionCount = document.querySelector('#descriptionCount');
 const MAX_DESCRIPTION_LENGTH = 1000;
 
+// atualiza o contador dos caracteres
 function atualizarContadorDescricao() {
     const total = descriptionInput.value.length;
     descriptionCount.textContent = total;
@@ -26,7 +27,7 @@ formBlogRegister.addEventListener('submit', async (event) => {
     const category = document.querySelector('#category').value;
     const description = descriptionInput.value.trim();
 
-    // 3. VALIDAÇÕES
+    // VALIDAÇÕES
     if (!title) {
         mostrarMensagem('Por favor, preencha o título!', 'danger');
         return;
@@ -48,7 +49,7 @@ formBlogRegister.addEventListener('submit', async (event) => {
         return;
     }
 
-    // 4. PREPARAR DADOS PARA ENVIO
+    // PREPARAR DADOS PARA ENVIO
     const blogData = {
         title: title,
         subtitle: subtitle,
@@ -56,7 +57,7 @@ formBlogRegister.addEventListener('submit', async (event) => {
         description: description
     };
 
-    // 5. CHAMAR API
+    // 5. CHAMA API (url)
     try {
         btnPublicar.disabled = true;
         btnPublicar.textContent = 'Publicando...';

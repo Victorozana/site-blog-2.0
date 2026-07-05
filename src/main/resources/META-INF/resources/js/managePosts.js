@@ -26,6 +26,7 @@ async function readErrorMessage(response, fallbackMessage) {
     }
 }
 
+// carregar posts
 async function loadManagedPosts() {
     showMessage('Carregando posts...');
 

@@ -1,4 +1,4 @@
-// 1. CAPTURA DO ID DA URL (A mala que veio da Home)
+// 1. CAPTURA DO ID DA URL (veio da Home)
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
 
@@ -24,6 +24,7 @@ const postManagementMessage = document.querySelector('#postManagementMessage');
 let currentPost = null;
 const MAX_BLOG_CONTENT_LENGTH = 1000;
 
+// url para pegar a imagem
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
     if (url.startsWith('/uploads/images/')) return url.replace('/uploads/images/', '/user/uploads/images/');
@@ -85,14 +86,18 @@ function renderizarPost(post){
     renderManagementPanel(post);
 }
 
+// permissões para editar post
 function canManagePost(post) {
+    // se for admin ou escritor == true
     const userRole = typeof readCookie === 'function' ? readCookie('userType') : null;
+    // se for admin == true, se for escritor e id da autoria == true
     const userId = typeof readCookie === 'function' ? readCookie('userId') : null;
 
     if (userRole === 'ADMIN') return true;
     return userRole === 'WRITER' && userId && String(post.authorId) === String(userId);
 }
 
+// renderização da edição dos posts
 function renderManagementPanel(post) {
     if (!postManagement || !canManagePost(post)) {
         postManagement?.classList.add('d-none');
@@ -135,6 +140,7 @@ const btnSendComment = document.getElementById('btnSendComment');
 
 let likesCount = 0;
 
+// renderiza like
 function renderLikeState(data) {
     likesCount = data.totalLikes || 0;
     likeCountEl.textContent = likesCount;
@@ -151,6 +157,7 @@ async function readErrorMessage(response, fallbackMessage = 'Falha ao processar 
     }
 }
 
+// pega likes assincrono
 async function fetchLikes(){
     try{
         const res = await fetch(`/blogs/${id}/likes`, { method: 'GET', credentials: 'include' });
@@ -161,6 +168,7 @@ async function fetchLikes(){
     }catch(e){ console.warn('Erro ao buscar likes', e); }
 }
 
+// pega comentários assincrono
 async function fetchComments(){
     if (!id) return;
 
@@ -173,6 +181,7 @@ async function fetchComments(){
     }catch(e){ console.warn('Erro ao buscar comentários', e); }
 }
 
+// renderiza lista de comentários
 function renderComments(list){
     commentsList.innerHTML = '';
     const validComments = Array.isArray(list)

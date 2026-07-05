@@ -4,6 +4,7 @@ const auditList = document.querySelector('#auditList');
 const refreshAudit = document.querySelector('#refreshAudit');
 const logoutAdmin = document.querySelector('#logoutAdmin');
 
+// formata a data
 function formatDate(value) {
     if (!value) return '-';
     const date = new Date(value);
@@ -11,11 +12,13 @@ function formatDate(value) {
     return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(date);
 }
 
+// transforma as ROLES em text labels
 function roleLabel(role) {
     const labels = { ADMIN: 'Administrador', WRITER: 'Escritor', READER: 'Leitor' };
     return labels[role] || role || '-';
 }
 
+// garante a permissão da ROLE ADMIN
 async function fetchJson(url) {
     const response = await fetch(url, { credentials: 'include' });
 
@@ -26,6 +29,7 @@ async function fetchJson(url) {
     return response.json();
 }
 
+// renderiza usuários existentes
 function renderUsers(users) {
     usersCount.textContent = users.length;
     usersTable.innerHTML = '';
@@ -42,6 +46,7 @@ function renderUsers(users) {
     });
 }
 
+// renderiza logs de auditoria
 function renderAudit(logs) {
     auditList.innerHTML = '';
 
@@ -65,6 +70,7 @@ function renderAudit(logs) {
     });
 }
 
+// pega assincrono usuários e logs na URL
 async function loadAdminData() {
     try {
         const [users, logs] = await Promise.all([
