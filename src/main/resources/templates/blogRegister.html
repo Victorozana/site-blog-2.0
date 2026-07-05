@@ -45,7 +45,6 @@
         <div class="col-lg-8">
             <div class="glass-card glass-card--wide form-panel">
                 <h2 class="text-center mb-4 fw-bold">Criar Novo Post</h2>
-                
                 <form id="formBlogRegister">
                     <!-- Título do Post -->
                     <div class="mb-4">
@@ -58,7 +57,6 @@
                             required
                         >
                     </div>
-
                     <!-- Subtítulo do Post -->
                     <div class="mb-4">
                         <label class="form-label" for="subtitle">Subtítulo</label>
@@ -69,7 +67,6 @@
                             placeholder="Um breve resumo do post"
                         >
                     </div>
-
                     <!-- Categoria -->
                     <div class="mb-4">
                         <label class="form-label" for="category">Categoria</label>
@@ -80,7 +77,6 @@
                             <option value="advices">Dicas</option>
                         </select>
                     </div>
-
                     <!-- Descrição/Conteúdo do Post -->
                     <div class="mb-4">
                         <label class="form-label" for="description">Conteúdo</label>
@@ -88,18 +84,20 @@
                             class="form-control form-textarea" 
                             id="description" 
                             rows="10"
+                            maxlength="1000"
                             placeholder="Escreva o conteúdo completo do seu post aqui..."
                             required
                         ></textarea>
+                        <div class="character-counter" aria-live="polite">
+                            <span id="descriptionCount">0</span>/1000 caracteres
+                        </div>
                     </div>
-
                     <!-- Botões de Ação -->
                     <div class="form-actions">
                         <button type="submit" class="btn-main flex-grow-1" id="btnPublicar">Publicar Post</button>
                         <button type="reset" class="btn btn-outline-secondary flex-grow-1">Limpar</button>
                     </div>
                 </form>
-
                 <!-- Mensagem de Feedback -->
                 <div id="mensagem" class="mt-3 alert d-none" role="alert"></div>
             </div>

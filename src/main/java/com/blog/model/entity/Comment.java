@@ -1,6 +1,5 @@
 package com.blog.model.entity;
 
-import com.blog.model.dto.CommentRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

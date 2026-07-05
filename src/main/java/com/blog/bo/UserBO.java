@@ -138,10 +138,6 @@ public class UserBO {
         return new LoginResponseDTO(token, entity.getName(), entity.getId(), entity.getUserType().name());
     }
 
-    public List<User> listAll() {
-        return userDAO.listAll();
-    }
-
     public List<AdminUserDTO> listUsersForAdmin() {
         return userDAO.find("order by createdDateTime desc")
                 .list()

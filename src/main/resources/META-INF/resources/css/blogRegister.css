@@ -7,6 +7,18 @@
     resize: vertical;
 }
 
+.character-counter {
+    margin-top: 0.45rem;
+    color: var(--texto-muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+.character-counter.is-near-limit {
+    color: #9d2635;
+}
+
 .form-control::placeholder,
 .form-textarea::placeholder {
     color: #819099;

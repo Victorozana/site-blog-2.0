@@ -75,6 +75,14 @@ class BusinessValidatorTest {
     }
 
     @Test
+    void shouldRejectBlogContentAboveLimit() {
+        BlogRegistrationDTO dto = validBlog();
+        dto.setDescription("a".repeat(BusinessValidator.MAX_BLOG_CONTENT_CHARACTERS + 1));
+
+        assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateBlogRegistration(dto));
+    }
+
+    @Test
     void shouldRejectInvalidComment() {
         assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateComment(" "));
         assertThrows(BusinessRuleException.class, () -> BusinessValidator.validateComment("a"));

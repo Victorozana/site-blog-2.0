@@ -45,9 +45,9 @@ public class HomeController {
     public List<MainScreenDTO> list(
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size){
-        System.out.println("📌 [HomeController] GET /home/posts chamado com page=" + page + ", size=" + size);
+        System.out.println("[HomeController] GET /home/posts chamado com page=" + page + ", size=" + size);
         List<MainScreenDTO> result = blogBO.blogList(page, size);
-        System.out.println("📌 [HomeController] Retornando " + result.size() + " posts");
+        System.out.println("[HomeController] Retornando " + result.size() + " posts");
         return result;
     }
 }

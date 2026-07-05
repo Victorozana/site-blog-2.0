@@ -12,14 +12,21 @@ import java.time.Period;
 import java.util.regex.Pattern;
 
 public final class BusinessValidator {
+    // DEFINE PADRÃO DO EMAIL
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
+    // DEFINE IDADE MÍNIMA PARA SE CADASTRAR
     private static final int MINIMUM_AGE = 18;
+    // MÁXIMO TAMANHO DE IMAGEM POR BYTES
     public static final long MAX_PROFILE_IMAGE_BYTES = 5L * 1024L * 1024L;
+    // MÁXIMO TAMANHO DE IMAGEM POR MEGABYTES
     public static final int MAX_PROFILE_IMAGE_MB = 5;
+    // MÁXIMO TAMANHO DE TEXTO
+    public static final int MAX_BLOG_CONTENT_CHARACTERS = 1000;
 
     private BusinessValidator() {
     }
 
+    // valida se o usuário inseriu os dados completos e corretamente
     public static void validateUserRegistration(UserRegistrationDTO dto) {
         if (dto == null) {
             throw new BusinessRuleException("Dados do usuário não foram informados.");
@@ -32,16 +39,19 @@ public final class BusinessValidator {
         validateEmail(dto.getEmail());
         validatePassword(dto.getPassword());
 
+        // segurança para barrar criação de ADMINS
         if (dto.getUserType() == UserType.ADMIN) {
             throw new BusinessRuleException("Administradores não podem ser criados pelo cadastro público.");
         }
     }
 
+    // valida se os dados de login foram inseridos
     public static void validateLogin(LoginRequestDTO dto) {
         if (dto == null) {
             throw new BusinessRuleException("Informe email e senha.");
         }
 
+        // valida email
         validateEmail(dto.getEmail());
 
         if (isBlank(dto.getPassword())) {
@@ -49,6 +59,7 @@ public final class BusinessValidator {
         }
     }
 
+    // valida se os dados do post foram inseridos
     public static void validateBlogRegistration(BlogRegistrationDTO dto) {
         if (dto == null) {
             throw new BusinessRuleException("Dados do post não foram informados.");
@@ -56,24 +67,28 @@ public final class BusinessValidator {
 
         validateText(dto.getTitle(), "Título", 3, 120);
         validateOptionalText(dto.getSubtitle(), "Subtítulo", 160);
-        validateText(dto.getDescription(), "Conteúdo", 20, 10000);
+        validateText(dto.getDescription(), "Conteúdo", 20, MAX_BLOG_CONTENT_CHARACTERS);
         validateCategory(dto.getCategory());
     }
 
+    // válida bio
     public static void validateBio(String bio) {
         validateOptionalText(bio, "Bio", 280);
     }
 
+    // válida comentário
     public static void validateComment(String comment) {
         validateText(comment, "Comentário", 2, 1000);
     }
 
+    // válida o ID
     public static void validatePositiveId(Long id, String fieldName) {
         if (id == null || id <= 0) {
             throw new BusinessRuleException(fieldName + " inválido.");
         }
     }
 
+    // válida se existe arquivo e o tipo dele
     public static void validateImageFileName(String fileName) {
         if (isBlank(fileName)) {
             throw new BusinessRuleException("Arquivo de imagem não foi informado.");
@@ -88,6 +103,7 @@ public final class BusinessValidator {
         }
     }
 
+    // válida tamanho de imagem do perfil
     public static void validateProfileImageSize(long sizeInBytes) {
         if (sizeInBytes <= 0) {
             throw new BusinessRuleException("Arquivo de imagem inválido.");
@@ -98,6 +114,7 @@ public final class BusinessValidator {
         }
     }
 
+    // válida nome
     private static void validatePersonName(String value, String fieldName) {
         validateText(value, fieldName, 2, 60);
 
@@ -110,6 +127,7 @@ public final class BusinessValidator {
         }
     }
 
+    // válida data de nascimento
     private static void validateBirthDate(LocalDate birthDate) {
         if (birthDate == null) {
             throw new BusinessRuleException("Data de nascimento é obrigatória.");
@@ -129,27 +147,32 @@ public final class BusinessValidator {
         }
     }
 
+    // válida telefone
     private static void validatePhone(String phone) {
         if (isBlank(phone)) {
             throw new BusinessRuleException("Telefone é obrigatório.");
         }
 
+        // define tamanho mínino para telefone
         String digitsOnly = phone.replaceAll("\\D", "");
         if (digitsOnly.length() < 10 || digitsOnly.length() > 11) {
             throw new BusinessRuleException("Telefone deve ter 10 ou 11 dígitos.");
         }
     }
 
+    // válida email
     private static void validateEmail(String email) {
         if (isBlank(email)) {
             throw new BusinessRuleException("Email é obrigatório.");
         }
 
+        // válida padrão email
         if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
             throw new BusinessRuleException("Email inválido.");
         }
     }
 
+    // válida senha, tamanho mínimo 6 caracteres até 72
     private static void validatePassword(String password) {
         if (isBlank(password)) {
             throw new BusinessRuleException("Senha é obrigatória.");
@@ -160,12 +183,14 @@ public final class BusinessValidator {
         }
     }
 
+    // válida categoria
     private static void validateCategory(Category category) {
         if (category == null) {
             throw new BusinessRuleException("Categoria é obrigatória.");
         }
     }
 
+    // válida textos obrigatórios
     private static void validateText(String value, String fieldName, int minLength, int maxLength) {
         if (isBlank(value)) {
             throw new BusinessRuleException(fieldName + " é obrigatório.");
@@ -181,12 +206,14 @@ public final class BusinessValidator {
         }
     }
 
+    // válida textos opcionais
     private static void validateOptionalText(String value, String fieldName, int maxLength) {
         if (value != null && value.trim().length() > maxLength) {
             throw new BusinessRuleException(fieldName + " deve ter no máximo " + maxLength + " caracteres.");
         }
     }
 
+    // valida se o campo está vazio
     private static boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }

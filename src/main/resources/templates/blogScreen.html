@@ -51,10 +51,8 @@
                 </a>
             </div>
         </header>
-
         <section id="post-description" class="post-description mt-4" aria-live="polite">
         </section>
-
         <section id="post-management" class="post-management d-none" aria-label="Gerenciar post">
             <div class="management-header">
                 <div>
@@ -63,18 +61,15 @@
                 </div>
                 <button id="btnDeletePost" type="button" class="btn btn-outline-danger">Excluir post</button>
             </div>
-
             <form id="editPostForm" class="edit-post-form">
                 <div class="mb-3">
                     <label for="editTitle" class="form-label">Título</label>
                     <input id="editTitle" class="form-control" type="text" required>
                 </div>
-
                 <div class="mb-3">
                     <label for="editSubtitle" class="form-label">Subtítulo</label>
                     <input id="editSubtitle" class="form-control" type="text">
                 </div>
-
                 <div class="mb-3">
                     <label for="editCategory" class="form-label">Categoria</label>
                     <select id="editCategory" class="form-select" required>
@@ -83,19 +78,19 @@
                         <option value="advices">Dicas</option>
                     </select>
                 </div>
-
                 <div class="mb-3">
                     <label for="editDescription" class="form-label">Conteúdo</label>
-                    <textarea id="editDescription" class="form-control" rows="8" required></textarea>
+                    <textarea id="editDescription" class="form-control" rows="8" maxlength="1000" required></textarea>
+                    <div class="character-counter" aria-live="polite">
+                        <span id="editDescriptionCount">0</span>/1000 caracteres
+                    </div>
                 </div>
-
                 <div class="management-actions">
                     <button id="btnSavePost" type="submit" class="btn btn-primary">Salvar alterações</button>
                     <span id="postManagementMessage" class="management-message" role="status" aria-live="polite"></span>
                 </div>
             </form>
         </section>
-
         <div class="post-actions d-flex gap-3 mt-4 align-items-center">
             <button id="btnLike" class="btn btn-outline-danger btn-like" aria-pressed="false">
                 <span class="like-icon">❤</span>
@@ -103,7 +98,6 @@
             </button>
             <button id="btnToggleComments" class="btn btn-outline-secondary" aria-expanded="false" aria-controls="comments">Comentários</button>
         </div>
-
         <section id="comments" class="mt-4 d-none">
             <div id="comments-list" class="mb-3">
                 <!-- comentários serão renderizados aqui -->
@@ -114,7 +108,6 @@
                 <button id="btnSendComment" class="btn btn-primary">Enviar</button>
             </form>
         </section>
-
         <footer class="mt-4">
             <a href="/" class="btn btn-sm btn-primary post-link">Voltar aos posts</a>
         </footer>

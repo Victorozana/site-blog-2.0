@@ -16,11 +16,13 @@ const editTitle = document.querySelector('#editTitle');
 const editSubtitle = document.querySelector('#editSubtitle');
 const editCategory = document.querySelector('#editCategory');
 const editDescription = document.querySelector('#editDescription');
+const editDescriptionCount = document.querySelector('#editDescriptionCount');
 const btnDeletePost = document.querySelector('#btnDeletePost');
 const btnSavePost = document.querySelector('#btnSavePost');
 const postManagementMessage = document.querySelector('#postManagementMessage');
 
 let currentPost = null;
+const MAX_BLOG_CONTENT_LENGTH = 1000;
 
 function normalizeImageUrl(url) {
     if (!url) return '/img/avatar-placeholder.svg';
@@ -101,7 +103,8 @@ function renderManagementPanel(post) {
     editTitle.value = post.title || '';
     editSubtitle.value = post.subtitle || '';
     editCategory.value = post.category || 'advices';
-    editDescription.value = post.description || '';
+    editDescription.value = (post.description || '').slice(0, MAX_BLOG_CONTENT_LENGTH);
+    updateEditDescriptionCounter();
 }
 
 function showManagementMessage(text, type = 'info') {
@@ -110,6 +113,14 @@ function showManagementMessage(text, type = 'info') {
     postManagementMessage.classList.remove('is-success', 'is-error');
     if (type === 'success') postManagementMessage.classList.add('is-success');
     if (type === 'error') postManagementMessage.classList.add('is-error');
+}
+
+function updateEditDescriptionCounter() {
+    if (!editDescription || !editDescriptionCount) return;
+
+    const total = editDescription.value.length;
+    editDescriptionCount.textContent = total;
+    editDescriptionCount.parentElement.classList.toggle('is-near-limit', total >= 900);
 }
 
 // 6. INTERAÇÃO: likes e comentários
@@ -288,8 +299,8 @@ editPostForm?.addEventListener('submit', async (event) => {
         return;
     }
 
-    if (description.length < 20 || description.length > 10000) {
-        showManagementMessage('Conteúdo deve ter entre 20 e 10000 caracteres.', 'error');
+    if (description.length < 20 || description.length > MAX_BLOG_CONTENT_LENGTH) {
+        showManagementMessage(`Conteúdo deve ter entre 20 e ${MAX_BLOG_CONTENT_LENGTH} caracteres.`, 'error');
         return;
     }
 
@@ -342,6 +353,8 @@ btnDeletePost?.addEventListener('click', async () => {
         btnDeletePost.disabled = false;
     }
 });
+
+editDescription?.addEventListener('input', updateEditDescriptionCounter);
 
 // Reaplica carregamento inicial
 document.addEventListener('DOMContentLoaded', () => {

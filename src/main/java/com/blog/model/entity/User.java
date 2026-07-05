@@ -1,8 +1,6 @@
 package com.blog.model.entity;
 
 import com.blog.model.category.UserType;
-import com.blog.model.dto.LoginRequestDTO;
-import com.blog.model.dto.UserRegistrationDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,21 +43,6 @@ public class User extends PanacheEntityBase{
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
     private String bio;
-
-    public User(UserRegistrationDTO dto){
-        this.name = dto.getName();
-        this.lastname = dto.getLastname();
-        this.dtNasc = dto.getDtNasc();
-        this.fone = dto.getFone();
-        this.email = dto.getEmail();
-        this.cryptographyPassword = dto.getPassword();
-    }
-
-    public User(LoginRequestDTO dto){
-        this.email = dto.getEmail();
-        this.cryptographyPassword = dto.getPassword();
-    }
-
 
     @PrePersist
     private void dateRegister() {

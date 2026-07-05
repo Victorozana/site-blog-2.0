@@ -6,7 +6,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class BlogRegistrationDTO {
+public class
+BlogRegistrationDTO {
     private Long userId;
     private String title;
     private String subtitle;

@@ -44,6 +44,7 @@ public class UserProfileController {
         return template.instance();
     }
 
+    // retorna o perfil público do usuário passando o ID
     @GET
     @Path("/me")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +62,8 @@ public class UserProfileController {
         return userBO.updateProfile(currentUserId(), dto);
     }
 
-    @PATCH // PATCH é o verbo REST correto quando atualizamos apenas um campo de um recurso
+    // atualiza a imagem do usuário
+    @PATCH
     @Path("/profile-picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -72,6 +74,7 @@ public class UserProfileController {
         return userBO.updateProfilePicture(currentUserId(), savedImageUrl);
     }
 
+    // deleta a conta do usuário
     @DELETE
     @Path("/me")
     @RolesAllowed({"WRITER","READER","ADMIN"})
@@ -86,6 +89,7 @@ public class UserProfileController {
                 .build();
     }
 
+    // pega a imagem atual do usuário
     @GET
     @Path("/uploads/images/{fileName}")
     public Response getImage(@PathParam("fileName") String fileName) {
@@ -93,6 +97,7 @@ public class UserProfileController {
         // Vai até a pasta onde o LocalStorageService salvou as fotos
         File file = new File("uploads/images/" + fileName);
 
+        // se a imagem não existe, retorna resposta 404
         if (!file.exists()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -106,10 +111,12 @@ public class UserProfileController {
 
             return Response.ok(file, contentType).build();
         } catch (Exception e) {
+            // caso cair em alguma exceção dispara error, resposta 500
             return Response.serverError().build();
         }
     }
 
+    // retorna o ID do usuário atual
     private Long currentUserId() {
         Object claim = jwt.getClaim("idUser");
 
@@ -120,6 +127,7 @@ public class UserProfileController {
         return Long.valueOf(claim.toString());
     }
 
+    // expira o cookie para realizar o logout
     private NewCookie expiredCookie(String name, boolean httpOnly) {
         return new NewCookie.Builder(name)
                 .value("")

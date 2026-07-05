@@ -6,13 +6,11 @@ import jakarta.ws.rs.ext.Provider;
 
 import java.io.IOException;
 
-//tem que ver se precisa
 @Provider
 public class RequestFilter implements ContainerRequestFilter{
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-
         System.out.println("Filter executado");
         System.out.println("Metodo: "+requestContext.getMethod());
         System.out.println("URI: "+requestContext.getUriInfo().getRequestUri());

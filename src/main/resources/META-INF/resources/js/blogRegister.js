@@ -4,6 +4,17 @@ console.log("=== JavaScript de Criação de Posts Carregado ===");
 const formBlogRegister = document.querySelector('#formBlogRegister');
 const btnPublicar = document.querySelector('#btnPublicar');
 const mensagemDiv = document.querySelector('#mensagem');
+const descriptionInput = document.querySelector('#description');
+const descriptionCount = document.querySelector('#descriptionCount');
+const MAX_DESCRIPTION_LENGTH = 1000;
+
+function atualizarContadorDescricao() {
+    const total = descriptionInput.value.length;
+    descriptionCount.textContent = total;
+    descriptionCount.parentElement.classList.toggle('is-near-limit', total >= 900);
+}
+
+descriptionInput.addEventListener('input', atualizarContadorDescricao);
 
 // 2. VALIDAÇÃO E ENVIO DO FORMULÁRIO
 formBlogRegister.addEventListener('submit', async (event) => {
@@ -13,7 +24,7 @@ formBlogRegister.addEventListener('submit', async (event) => {
     const title = document.querySelector('#title').value.trim();
     const subtitle = document.querySelector('#subtitle').value.trim();
     const category = document.querySelector('#category').value;
-    const description = document.querySelector('#description').value.trim();
+    const description = descriptionInput.value.trim();
 
     // 3. VALIDAÇÕES
     if (!title) {
@@ -32,8 +43,8 @@ formBlogRegister.addEventListener('submit', async (event) => {
         mostrarMensagem('Por favor, selecione uma categoria!', 'danger');
         return;
     }
-    if (!description || description.length < 20 || description.length > 10000) {
-        mostrarMensagem('O conteúdo deve ter entre 20 e 10000 caracteres!', 'danger');
+    if (!description || description.length < 20 || description.length > MAX_DESCRIPTION_LENGTH) {
+        mostrarMensagem(`O conteúdo deve ter entre 20 e ${MAX_DESCRIPTION_LENGTH} caracteres!`, 'danger');
         return;
     }
 
@@ -66,6 +77,7 @@ formBlogRegister.addEventListener('submit', async (event) => {
             
             // Limpar formulário
             formBlogRegister.reset();
+            atualizarContadorDescricao();
             limparRascunho();
             
             // Redirecionar após 2 segundos
@@ -107,7 +119,7 @@ formBlogRegister.addEventListener('input', () => {
         title: document.querySelector('#title').value,
         subtitle: document.querySelector('#subtitle').value,
         category: document.querySelector('#category').value,
-        description: document.querySelector('#description').value,
+        description: descriptionInput.value,
         timestamp: new Date().toISOString()
     };
     
@@ -130,9 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#title').value = dados.title;
             document.querySelector('#subtitle').value = dados.subtitle;
             document.querySelector('#category').value = dados.category;
-            document.querySelector('#description').value = dados.description;
+            descriptionInput.value = (dados.description || '').slice(0, MAX_DESCRIPTION_LENGTH);
+            atualizarContadorDescricao();
             
             mostrarMensagem('Rascunho restaurado!', 'info');
         }
     }
+
+    atualizarContadorDescricao();
 });
