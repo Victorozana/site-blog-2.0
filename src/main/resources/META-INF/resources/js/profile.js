@@ -1,4 +1,4 @@
-const profileForm = document.querySelector('#profileForm');
+    const profileForm = document.querySelector('#profileForm');
 const photoInput = document.querySelector('#photoInput');
 const bioInput = document.querySelector('#bio');
 const bioCount = document.querySelector('#bioCount');

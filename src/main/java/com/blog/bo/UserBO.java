@@ -49,6 +49,7 @@ public class UserBO {
         return userDAO.findById(id);
     }
 
+    // cria usuário
     @Transactional
     public UserResponseDTO saveUser(UserRegistrationDTO dto) {
         BusinessValidator.validateUserRegistration(dto);
@@ -84,6 +85,7 @@ public class UserBO {
         return new UserResponseDTO(entity.getId(), entity.getName(), entity.getEmail(), entity.getUserType());
     }
 
+    // deleta usuário
     @Transactional
     public void deleteUser(Long id) {
         BusinessValidator.validatePositiveId(id, "Usuário");
@@ -114,6 +116,7 @@ public class UserBO {
         auditLogBO.log("ACCOUNT_DELETED", null, "Conta excluída definitivamente pelo titular.");
     }
 
+    // login usuário
     public LoginResponseDTO login(LoginRequestDTO dto){
         BusinessValidator.validateLogin(dto);
 
@@ -138,6 +141,7 @@ public class UserBO {
         return new LoginResponseDTO(token, entity.getName(), entity.getId(), entity.getUserType().name());
     }
 
+    // retorna lista de usuários criado em ordem cronologica
     public List<AdminUserDTO> listUsersForAdmin() {
         return userDAO.find("order by createdDateTime desc")
                 .list()
@@ -154,6 +158,7 @@ public class UserBO {
                 .toList();
     }
 
+    // pega o perfil público
     public UserProfileDTO getPublicProfile(Long userId) {
         BusinessValidator.validatePositiveId(userId, "Usuário");
 
@@ -166,6 +171,7 @@ public class UserBO {
         return toProfileDTO(user);
     }
 
+    // atualiza perfil
     @Transactional
     public UserProfileDTO updateProfile(Long userId, UserProfileUpdateDTO dto) {
         BusinessValidator.validatePositiveId(userId, "Usuário");
@@ -186,6 +192,7 @@ public class UserBO {
         return toProfileDTO(user);
     }
 
+    // validação de login do usuário
     private boolean validation(User user, LoginRequestDTO dto){
         String salvePassword = user.getCryptographyPassword();
 
@@ -194,6 +201,7 @@ public class UserBO {
         return result.verified;
     }
 
+    // atualiza foto de perfil
     @Transactional
     public UserProfileDTO updateProfilePicture(Long userId, String imageUrl) {
         BusinessValidator.validatePositiveId(userId, "Usuário");
@@ -214,6 +222,7 @@ public class UserBO {
         return toProfileDTO(user);
     }
 
+    //  retorna dto perfil de usuário
     private UserProfileDTO toProfileDTO(User user) {
         return new UserProfileDTO(
                 user.getId(),
@@ -223,6 +232,7 @@ public class UserBO {
         );
     }
 
+    // pega o nome inteiro
     private String toFullName(User user) {
         if (user.getLastname() == null || user.getLastname().isBlank()) {
             return user.getName();
