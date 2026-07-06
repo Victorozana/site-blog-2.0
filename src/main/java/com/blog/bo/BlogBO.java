@@ -33,6 +33,7 @@ public class BlogBO {
     @Inject
     AuditLogBO auditLogBO;
 
+    // cria post
     @Transactional
     public BlogResponseDTO createBlog(BlogRegistrationDTO dto, Long idAuthor) {
         BusinessValidator.validatePositiveId(idAuthor, "Autor");
@@ -67,6 +68,7 @@ public class BlogBO {
         );
     }
 
+    // atualiza post
     @Transactional
     public BlogResponseDTO updateBlog(Long blogId, Long userId, boolean admin, BlogRegistrationDTO dto) {
         BusinessValidator.validatePositiveId(blogId, "Post");
@@ -94,6 +96,7 @@ public class BlogBO {
         return toBlogResponseDTO(blog);
     }
 
+    // deleta post
     @Transactional
     public void deleteBlog(Long id, Long userId, boolean admin) {
         BusinessValidator.validatePositiveId(id, "Post");
@@ -112,6 +115,7 @@ public class BlogBO {
         }
     }
 
+    // acha blog passando o ID, retornando DTO
     public BlogScreenDTO findBlogById(Long id) {
         BusinessValidator.validatePositiveId(id, "Post");
         Blog blog = blogDAO.findById(id);
@@ -134,6 +138,7 @@ public class BlogBO {
         return dto;
     }
 
+    // retorna paginação de posts passando a página atual e tamanho
     public List<MainScreenDTO> blogList(int page, int size) {
         if (page < 0) {
             throw new WebApplicationException("Página inválida", Response.Status.BAD_REQUEST);
@@ -163,9 +168,11 @@ public class BlogBO {
         return dtos;
     }
 
+
     public List<BlogResponseDTO> manageableBlogList(Long userId, boolean admin) {
         BusinessValidator.validatePositiveId(userId, "Usuário");
 
+        // se for admin, retorna todos, se não passa o id do usuário
         List<Blog> blogs = admin
                 ? blogDAO.find("order by localDateTime desc").list()
                 : blogDAO.find("user.id = ?1 order by localDateTime desc", userId).list();
@@ -175,6 +182,7 @@ public class BlogBO {
                 .toList();
     }
 
+    // formatação de nome do autor
     private String authorName(User user) {
         if (user.getLastname() == null || user.getLastname().isBlank()) {
             return user.getName();
@@ -183,6 +191,7 @@ public class BlogBO {
         return user.getName() + " " + user.getLastname();
     }
 
+    // dto de resposta
     private BlogResponseDTO toBlogResponseDTO(Blog blog) {
         return new BlogResponseDTO(
                 blog.getId(),
