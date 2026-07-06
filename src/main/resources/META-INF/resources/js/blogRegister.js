@@ -6,13 +6,14 @@ const btnPublicar = document.querySelector('#btnPublicar');
 const mensagemDiv = document.querySelector('#mensagem');
 const descriptionInput = document.querySelector('#description');
 const descriptionCount = document.querySelector('#descriptionCount');
-const MAX_DESCRIPTION_LENGTH = 1000;
+const MAX_DESCRIPTION_LENGTH = 50000;
+const NEAR_DESCRIPTION_LIMIT = 45000;
 
 // atualiza o contador dos caracteres
 function atualizarContadorDescricao() {
     const total = descriptionInput.value.length;
-    descriptionCount.textContent = total;
-    descriptionCount.parentElement.classList.toggle('is-near-limit', total >= 900);
+    descriptionCount.textContent = total.toLocaleString('pt-BR');
+    descriptionCount.parentElement.classList.toggle('is-near-limit', total >= NEAR_DESCRIPTION_LIMIT);
 }
 
 descriptionInput.addEventListener('input', atualizarContadorDescricao);

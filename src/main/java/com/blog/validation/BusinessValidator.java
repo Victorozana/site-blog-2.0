@@ -20,8 +20,9 @@ public final class BusinessValidator {
     public static final long MAX_PROFILE_IMAGE_BYTES = 5L * 1024L * 1024L;
     // MÁXIMO TAMANHO DE IMAGEM POR MEGABYTES
     public static final int MAX_PROFILE_IMAGE_MB = 5;
-    // MÁXIMO TAMANHO DE TEXTO
-    public static final int MAX_BLOG_CONTENT_CHARACTERS = 1000;
+    // MÁXIMO TAMANHO DE TEXTO DO POST. O PostgreSQL TEXT suporta muito mais,
+    // mas 50 mil caracteres mantém o blog confortável sem aceitar textos abusivos.
+    public static final int MAX_BLOG_CONTENT_CHARACTERS = 50000;
 
     private BusinessValidator() {
     }

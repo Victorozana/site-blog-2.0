@@ -22,7 +22,8 @@ const btnSavePost = document.querySelector('#btnSavePost');
 const postManagementMessage = document.querySelector('#postManagementMessage');
 
 let currentPost = null;
-const MAX_BLOG_CONTENT_LENGTH = 1000;
+const MAX_BLOG_CONTENT_LENGTH = 50000;
+const NEAR_BLOG_CONTENT_LIMIT = 45000;
 
 // url para pegar a imagem
 function normalizeImageUrl(url) {
@@ -124,8 +125,8 @@ function updateEditDescriptionCounter() {
     if (!editDescription || !editDescriptionCount) return;
 
     const total = editDescription.value.length;
-    editDescriptionCount.textContent = total;
-    editDescriptionCount.parentElement.classList.toggle('is-near-limit', total >= 900);
+    editDescriptionCount.textContent = total.toLocaleString('pt-BR');
+    editDescriptionCount.parentElement.classList.toggle('is-near-limit', total >= NEAR_BLOG_CONTENT_LIMIT);
 }
 
 // 6. INTERAÇÃO: likes e comentários
@@ -370,4 +371,3 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarPost();
     fetchLikes();
 });
-
