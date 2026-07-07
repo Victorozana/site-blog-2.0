@@ -38,6 +38,7 @@ public class BlogScreenController {
         return template.instance();
     }
 
+    // retorna o post passando ID
     @GET
     @Path("/data")
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,6 +47,7 @@ public class BlogScreenController {
         return blogBO.findBlogById(id);
     }
 
+    // tela de edição do post
     @GET
     @Path("/manage")
     @Produces(MediaType.TEXT_HTML)
@@ -54,6 +56,7 @@ public class BlogScreenController {
         return managePosts.instance();
     }
 
+    // retorna lista de posts gerenciaveis
     @GET
     @Path("/manage/data")
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,6 +65,7 @@ public class BlogScreenController {
         return blogBO.manageableBlogList(currentUserId(), isAdmin());
     }
 
+    // atualiza post
     @PATCH
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -71,6 +75,7 @@ public class BlogScreenController {
         return blogBO.updateBlog(id, currentUserId(), isAdmin(), dto);
     }
 
+    // exclui o post
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,6 +85,7 @@ public class BlogScreenController {
         return Response.noContent().build();
     }
 
+    // pega o usuário atual usando o claim do token
     private Long currentUserId() {
         Object claim = jwt.getClaim("idUser");
 
@@ -90,6 +96,7 @@ public class BlogScreenController {
         return Long.valueOf(claim.toString());
     }
 
+    // verifica se é admin, true or false, pegando do JWT
     private boolean isAdmin() {
         return jwt.getGroups() != null && jwt.getGroups().contains("ADMIN");
     }
